@@ -12,7 +12,7 @@ GET        /check-your-answers                          controllers.CheckYourAns
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /isAgentManagingTrust                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
-POST       /isAgentManagingTrust                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
-GET        /changeIsAgentManagingTrust                  controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeIsAgentManagingTrust                  controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
+GET        /agent-trustee                               controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
+POST       /agent-trustee                               controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
+GET        /change/agent-trustee                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
+POST       /change/agent-trustee                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
