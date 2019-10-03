@@ -16,3 +16,5 @@ GET        /agent-trustee                               controllers.IsAgentManag
 POST       /agent-trustee                               controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
 GET        /change/agent-trustee                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
 POST       /change/agent-trustee                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
+
+GET        /:utr                                        controllers.SaveUTRController.save(utr: String)
