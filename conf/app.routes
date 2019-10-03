@@ -11,3 +11,8 @@ GET        /this-service-has-been-reset                 controllers.SessionExpir
 GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /isAgentManagingTrust                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
+POST       /isAgentManagingTrust                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
+GET        /changeIsAgentManagingTrust                  controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeIsAgentManagingTrust                  controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
