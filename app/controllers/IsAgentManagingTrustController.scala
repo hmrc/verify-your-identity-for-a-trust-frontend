@@ -21,7 +21,7 @@ import forms.IsAgentManagingTrustFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.IsAgentManagingTrustPage
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -47,12 +47,17 @@ class IsAgentManagingTrustController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+      request.userAnswers.get(UtrPage) map { utr =>
 
-      Ok(view(preparedForm, mode))
+        val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+
+        Ok(view(preparedForm, mode, utr))
+
+      } getOrElse Redirect(routes.SessionExpiredController.onPageLoad())
+
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -60,8 +65,10 @@ class IsAgentManagingTrustController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          request.userAnswers.get(UtrPage) map { utr =>
+            Future.successful(BadRequest(view(formWithErrors, mode, utr)))
+          } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        ,
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IsAgentManagingTrustPage, value))

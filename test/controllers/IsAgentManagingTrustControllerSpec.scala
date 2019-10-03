@@ -23,7 +23,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.IsAgentManagingTrustPage
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.inject.bind
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
@@ -40,6 +40,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new IsAgentManagingTrustFormProvider()
   val form = formProvider()
+  val utr = "0987654321"
 
   lazy val isAgentManagingTrustRoute = routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
@@ -47,7 +48,12 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers
+        .set(UtrPage, utr)
+        .success
+        .value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -58,14 +64,18 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(fakeRequest, messages).toString
+        view(form, NormalMode, utr)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(IsAgentManagingTrustPage, true).success.value
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(IsAgentManagingTrustPage, true)
+        .success.value
+        .set(UtrPage, utr)
+        .success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -78,7 +88,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, utr)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -112,7 +122,12 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val userAnswers = emptyUserAnswers
+        .set(UtrPage, utr)
+        .success
+        .value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       val request =
         FakeRequest(POST, isAgentManagingTrustRoute)
@@ -127,7 +142,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, utr)(fakeRequest, messages).toString
 
       application.stop()
     }

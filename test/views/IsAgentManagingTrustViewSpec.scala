@@ -30,12 +30,14 @@ class IsAgentManagingTrustViewSpec extends YesNoViewBehaviours {
 
   val form = new IsAgentManagingTrustFormProvider()()
 
+  val utr = "0987654321"
+
   "IsAgentManagingTrust view" must {
 
     val view = viewFor[IsAgentManagingTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, utr)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
