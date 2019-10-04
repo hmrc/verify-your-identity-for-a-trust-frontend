@@ -18,3 +18,5 @@ GET        /change/agent-trustee                        controllers.IsAgentManag
 POST       /change/agent-trustee                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
 
 GET        /:utr                                        controllers.SaveUTRController.save(utr: String)
+
+GET        /claim/success                               controllers.IvSuccessController.onPageLoad
