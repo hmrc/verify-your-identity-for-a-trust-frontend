@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import pages.UtrPage
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import repositories.SessionRepository
@@ -43,6 +43,6 @@ class SaveUTRController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(userAnswers)
         _              <- sessionRepository.set(updatedAnswers)
-      } yield Ok
+      } yield Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
   }
 }
