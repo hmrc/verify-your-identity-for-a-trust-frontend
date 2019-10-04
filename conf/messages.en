@@ -45,5 +45,6 @@ unauthorised.heading = You can’t access this service with this account
 
 isAgentManagingTrust.title = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.heading = Is an agent managing the trust’s online register for the trustees?
+isAgentManagingTrust.subheading = This trust’s UTR: {0}
 isAgentManagingTrust.checkYourAnswersLabel = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.error.required = Select yes if an agent is managing the trust’s online register for the trustees
