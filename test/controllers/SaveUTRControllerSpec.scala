@@ -17,8 +17,8 @@
 package controllers
 
 import base.SpecBase
-import models.UserAnswers
-import org.mockito.Mockito.{when, verify}
+import models.{NormalMode, UserAnswers}
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.mockito.ArgumentCaptor
 import play.api.inject.bind
@@ -52,7 +52,8 @@ class SaveUTRControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
         captor.getValue.get(UtrPage).value mustBe utr
 
@@ -74,7 +75,8 @@ class SaveUTRControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
         captor.getValue.get(UtrPage).value mustBe utr
 
