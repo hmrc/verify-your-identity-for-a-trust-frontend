@@ -11,3 +11,12 @@ GET        /this-service-has-been-reset                 controllers.SessionExpir
 GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /agent-trustee                               controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
+POST       /agent-trustee                               controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
+GET        /change/agent-trustee                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
+POST       /change/agent-trustee                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
+
+GET        /:utr                                        controllers.SaveUTRController.save(utr: String)
+
+GET        /claim/success                               controllers.IvSuccessController.onPageLoad
