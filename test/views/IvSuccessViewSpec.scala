@@ -32,6 +32,11 @@ class IvSuccessViewSpec extends ViewBehaviours {
     behave like normalPage(applyView, "ivSuccess.agent","paragraph1", "paragraph2","paragraph3",
       "paragraph4", "paragraph5")
 
+    "display the correct subheading" in {
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("ivSuccess.subheading", utr))
+    }
+
   }
 
   "IvSuccess view with no Agent" must {
@@ -42,6 +47,11 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
     behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2","paragraph3",
       "paragraph4")
+
+    "display the correct subheading" in {
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("ivSuccess.subheading", utr))
+    }
 
   }
 
