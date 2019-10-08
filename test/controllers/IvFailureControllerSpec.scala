@@ -40,7 +40,7 @@ class IvFailureControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe routes.IVFailureController.trustLocked().url
+      redirectLocation(result).value mustEqual routes.IVFailureController.trustLocked().url
 
       application.stop()
     }
