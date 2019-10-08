@@ -18,11 +18,11 @@ package controllers
 
 import base.SpecBase
 import models.{NormalMode, UserAnswers}
-import org.mockito.Mockito.{verify, when}
-import org.scalatestplus.mockito.MockitoSugar.mock
 import org.mockito.ArgumentCaptor
-import play.api.inject.bind
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.UtrPage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -34,7 +34,9 @@ class SaveUTRControllerSpec extends SpecBase {
   val utr = "0987654321"
 
   "SaveUTRController" must {
+
     "send UTR to session repo" when {
+
       "user answers does not exist" in {
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])

@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package navigation
+package views
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, NormalMode, UserAnswers}
+import views.behaviours.ViewBehaviours
+import views.html.BeforeYouContinueView
 
-class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+class BeforeYouContinueViewSpec extends ViewBehaviours {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
+  "BeforeYouContinue view" must {
+
+    val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
+
+    val applyView = view("0987654321")(fakeRequest, messages)
+
+    behave like normalPage(applyView, "beforeYouContinue")
+
+    behave like pageWithBackLink(applyView)
+  }
 }
