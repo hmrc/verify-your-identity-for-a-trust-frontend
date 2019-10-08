@@ -21,4 +21,9 @@ GET        /change/managed-by-agent                        controllers.IsAgentMa
 POST       /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
 
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
+
 GET        /:utr                                        controllers.SaveUTRController.save(utr: String)
+
+GET        /failure                                     controllers.IVFailureController.onTrustIVFailure
+
+GET        /locked                                      controllers.IVFailureController.trustLocked
