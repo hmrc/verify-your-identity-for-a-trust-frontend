@@ -16,28 +16,19 @@
 
 package controllers
 
-import controllers.actions.IdentifierAction
+import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.UnauthorisedView
 
-import scala.concurrent.Future
-
-class IVFailureController @Inject()(
+class FallbackFailureController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
-                                        unauthorisedView: UnauthorisedView,
-                                        identify: IdentifierAction
+                                        errorHandler: ErrorHandler
                                       ) extends FrontendBaseController with I18nSupport {
 
-  def onTrustIVFailure: Action[AnyContent] = identify.async {
+  def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
-      Future.successful(Redirect(routes.IVFailureController.trustLocked()))
-  }
-
-  def trustLocked : Action[AnyContent] = identify.async {
-    implicit request =>
-      Future.successful(Ok(unauthorisedView()))
+      InternalServerError(errorHandler.internalServerErrorTemplate)
   }
 }
