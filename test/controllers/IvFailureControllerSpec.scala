@@ -29,6 +29,7 @@ class IvFailureControllerSpec extends SpecBase {
   "IvFailure Controller" must {
 
     "redirect to trust locked page when user fails Trusts IV after multiple attempts" in {
+
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request = FakeRequest(GET, onIVFailureRoute)

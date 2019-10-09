@@ -2,6 +2,10 @@
 
 GET        /                                            controllers.IndexController.onPageLoad
 
+GET        /callback-failure                                     controllers.IVFailureController.onTrustIVFailure
+
+GET        /locked                                      controllers.IVFailureController.trustLocked
+
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
@@ -23,7 +27,3 @@ POST       /change/managed-by-agent                        controllers.IsAgentMa
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
 GET        /:utr                                        controllers.SaveUTRController.save(utr: String)
-
-GET        /failure                                     controllers.IVFailureController.onTrustIVFailure
-
-GET        /locked                                      controllers.IVFailureController.trustLocked
