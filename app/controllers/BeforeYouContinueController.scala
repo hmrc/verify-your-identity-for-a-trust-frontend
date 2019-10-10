@@ -61,8 +61,8 @@ class BeforeYouContinueController @Inject()(
       } yield {
 
         relationship.check(request.internalId, utr) { _ =>
-          val successRedirect = routes.BeforeYouContinueController.onPageLoad().absoluteURL
-          val failureRedirect = routes.UnauthorisedController.onPageLoad().absoluteURL
+          val successRedirect = routes.IvSuccessController.onPageLoad().absoluteURL
+          val failureRedirect = routes.IVFailureController.onTrustIVFailure().absoluteURL
 
           val host = s"${config.relationshipEstablishmentJourneyService}/trusts-relationship-establishment/relationships/$utr"
 

@@ -76,3 +76,11 @@ beforeYouContinue.p2 = Your answers must match the details provided to HMRC when
 beforeYouContinue.p3 = Do not enter any other details when answering these questions, even if someone from the trust wrote to HMRC to change them.
 beforeYouContinue.p4 = If you need help using the service
 beforeYouContinue.a = contact the trusts helpline (opens in a new window or tab)
+
+locked.title = Sorry, you cannot access this trust
+locked.heading = Sorry, you cannot access this trust
+locked.p1 = You have not passed the security questions asked by HMRC.
+locked.p2 = Try again in 30 minutes.
+locked.p3 = If you need help with the service contact the
+locked.link = trusts helpline (opens in a new window or tab)
+locked.subheading = This trust’s UTR: {0}
