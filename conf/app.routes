@@ -2,6 +2,14 @@
 
 GET        /                                            controllers.IndexController.onPageLoad
 
+GET        /callback-failure                            controllers.IVFailureController.onTrustIVFailure
+
+GET        /locked                                      controllers.IVFailureController.trustLocked
+
+GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad
+
+GET        /claimed                                     controllers.IvSuccessController.onPageLoad
+
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
@@ -21,4 +29,5 @@ GET        /change/managed-by-agent                        controllers.IsAgentMa
 POST       /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
 
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
+
 GET        /:utr                                        controllers.SaveUTRController.save(utr: String)
