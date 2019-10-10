@@ -16,19 +16,22 @@
 
 package controllers
 
-import controllers.actions.IdentifierAction
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
+import pages.UtrPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.UnauthorisedView
+import views.html.TrustLocked
 
 import scala.concurrent.Future
 
 class IVFailureController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
-                                        unauthorisedView: UnauthorisedView,
-                                        identify: IdentifierAction
+                                        lockedView: TrustLocked,
+                                        identify: IdentifierAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction
                                       ) extends FrontendBaseController with I18nSupport {
 
   def onTrustIVFailure: Action[AnyContent] = identify.async {
@@ -36,8 +39,11 @@ class IVFailureController @Inject()(
       Future.successful(Redirect(routes.IVFailureController.trustLocked()))
   }
 
-  def trustLocked : Action[AnyContent] = identify.async {
+  def trustLocked : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(unauthorisedView()))
+      request.userAnswers.get(UtrPage) map {
+        utr =>
+          Future.successful(Ok(lockedView(utr)))
+      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 }

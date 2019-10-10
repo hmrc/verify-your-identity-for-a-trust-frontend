@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import pages.UtrPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -24,26 +25,52 @@ class IvFailureControllerSpec extends SpecBase {
 
 //  {"journeyId":"47a8a543-6961-4221-86e8-d22e2c3c91de","relationship":{"relationshipName":"Trusts","businessKeys":[{"name":"utr","value":"3000000001"}],"credId":"987459879458"},"errorKey":"TRUST_LOCKED"}
 
-  def onIVFailureRoute = routes.IVFailureController.onTrustIVFailure().url
-
   "IvFailure Controller" must {
 
-    "redirect to trust locked page when user fails Trusts IV after multiple attempts" in {
+    "callback-failure route" when {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "redirect to trust locked page when user fails Trusts IV after multiple attempts" in {
 
-      val request = FakeRequest(GET, onIVFailureRoute)
-        .withHeaders(
-          ("JourneyFailure", "http://localhost:9662/relationship-establishment/journey-failure/47a8a543-6961-4221-86e8-d22e2c3c91de")
-        )
+        val onIVFailureRoute = routes.IVFailureController.onTrustIVFailure().url
 
-      val result = route(application, request).value
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      status(result) mustEqual SEE_OTHER
+        val request = FakeRequest(GET, onIVFailureRoute)
+          .withHeaders(
+            ("JourneyFailure", "http://localhost:9662/relationship-establishment/journey-failure/47a8a543-6961-4221-86e8-d22e2c3c91de")
+          )
 
-      redirectLocation(result).value mustEqual routes.IVFailureController.trustLocked().url
+        val result = route(application, request).value
 
-      application.stop()
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.IVFailureController.trustLocked().url
+
+        application.stop()
+      }
+    }
+
+    "locked route" when {
+
+      "return OK and the correct view for a GET for locked route" in {
+
+        val onLockedRoute = routes.IVFailureController.trustLocked().url
+
+        val answers = emptyUserAnswers
+          .set(UtrPage, "3000000001").success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+        val request = FakeRequest(GET, onLockedRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+
+        contentAsString(result) must include("Sorry, you cannot access this trust")
+
+        application.stop()
+      }
     }
 
   }
