@@ -20,11 +20,10 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
 import models.TaxEnrolmentsRequest
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
-import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -94,36 +93,24 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
 
       "returns 400 BAD_REQUEST" in {
 
-        val response =
-          """{
-            |  "status": "400",
-            |  "message":  "Unable to parse request body into a TrustClaim"
-            |}""".stripMargin
-
         wiremock(
           payload = request,
           expectedStatus = BAD_REQUEST,
-          expectedResponse = response
+          expectedResponse = ""
         )
 
         recoverToSucceededIf[BadRequestException](connector.enrol(TaxEnrolmentsRequest(utr)))
 
       }
-      "returns 500 INTERNAL_SERVER_ERROR" in {
-
-        val response =
-          """{
-            |  "status": "500",
-            |  "message":  ""unable to store to trusts store""
-            |}""".stripMargin
+      "returns 401 UNAUTHORIZED" in {
 
         wiremock(
           payload = request,
-          expectedStatus = Status.INTERNAL_SERVER_ERROR,
-          expectedResponse = response
+          expectedStatus = UNAUTHORIZED,
+          expectedResponse = ""
         )
 
-        recoverToSucceededIf[Upstream5xxResponse](connector.enrol(TaxEnrolmentsRequest(utr)))
+        recoverToSucceededIf[Upstream4xxResponse](connector.enrol(TaxEnrolmentsRequest(utr)))
 
       }
 
