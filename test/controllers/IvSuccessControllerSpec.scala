@@ -21,6 +21,7 @@ import connectors.TaxEnrolmentsConnector
 import models.{TaxEnrolmentsRequest, UserAnswers}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.inject.bind
@@ -33,7 +34,7 @@ import views.html.IvSuccessView
 
 import scala.concurrent.Future
 
-class IvSuccessControllerSpec extends SpecBase {
+class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
   private val utr = "0987654321"
 
@@ -42,6 +43,12 @@ class IvSuccessControllerSpec extends SpecBase {
 
   when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
     .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+
+  override def beforeAll(): Unit = {
+    reset(connector)
+    reset(service)
+    super.beforeAll()
+  }
 
   "IvSuccess Controller" must {
 
