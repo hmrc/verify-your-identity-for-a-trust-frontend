@@ -37,7 +37,7 @@ class RelationshipEstablishmentService @Inject()(
                                                 )
   extends RelationshipEstablishment with AuthPartialFunctions {
 
-  lazy val success: Future[Result] = Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+  lazy protected val success: Future[Result] = Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
 
   def check(internalId: String, utr: String, failure: Future[Result], success: Future[Result] = success)
            (implicit request: Request[AnyContent]): Future[Result] = {
@@ -65,7 +65,7 @@ class RelationshipEstablishmentService @Inject()(
 
 trait RelationshipEstablishment extends AuthorisedFunctions {
 
-  val success: Future[Result]
+  protected val success: Future[Result]
 
   def check(internalId: String, utr: String, failure: Future[Result], success: Future[Result] = success)
            (implicit request: Request[AnyContent]): Future[Result]

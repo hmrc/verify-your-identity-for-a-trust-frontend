@@ -41,9 +41,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
   private val connector = mock[TaxEnrolmentsConnector]
   private val service = mock[RelationshipEstablishment]
 
-  when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-    .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-
   override def beforeAll(): Unit = {
     reset(connector)
     reset(service)
@@ -72,6 +69,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       when(service.check(eqTo("id"), eqTo(utr), any(), any())(any()))
         .thenReturn(Future.successful(Results.Ok(viewAsString)))
+
+      when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
+        .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
 
       val result = route(application, request).value
 
@@ -106,6 +106,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       when(service.check(eqTo("id"), eqTo(utr), any(), any())(any()))
         .thenReturn(Future.successful(Results.Ok(viewAsString)))
+
+      when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
+        .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
 
       val result = route(application, request).value
 
