@@ -51,8 +51,7 @@ class IsAgentManagingTrustController @Inject()(
 
       request.userAnswers.get(UtrPage) map { utr =>
 
-        relationship.check(request.internalId, utr) {
-          _ =>
+        lazy val body = {
             val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
               case None => form
               case Some(value) => form.fill(value)
@@ -60,6 +59,8 @@ class IsAgentManagingTrustController @Inject()(
 
             Future.successful(Ok(view(preparedForm, mode, utr)))
         }
+
+        relationship.check(request.internalId, utr, body, body)
 
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 

@@ -30,7 +30,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
   val utr = "1234567890"
 
-  def harness = (request: Request[AnyContent]) => Future.successful(Results.Ok)
+  def harness = Future.successful(Results.Ok)
 
   implicit val ec = implicitly[ExecutionContext]
 
@@ -44,7 +44,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
         val service = new RelationshipEstablishmentService(auth)
 
-        val result = service.check(fakeInternalId, utr)(harness)
+        val result = service.check(fakeInternalId, utr, harness, harness)
 
         status(result) mustBe SEE_OTHER
 
@@ -58,11 +58,11 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
           "continue the request action" in {
 
-            val auth = new FakeFailingAuthConnector(new FailedRelationship())
+            val auth = new FakeFailingAuthConnector(FailedRelationship())
 
             val service = new RelationshipEstablishmentService(auth)
 
-            val result = service.check(fakeInternalId, utr)(harness)
+            val result = service.check(fakeInternalId, utr, harness, harness)
 
             status(result) mustBe OK
           }
@@ -77,7 +77,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
           val service = new RelationshipEstablishmentService(auth)
 
-          val result = service.check(fakeInternalId, utr)(harness)
+          val result = service.check(fakeInternalId, utr, harness, harness)
 
           status(result) mustBe SEE_OTHER
 

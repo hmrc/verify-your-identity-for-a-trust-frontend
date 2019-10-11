@@ -17,15 +17,31 @@
 package controllers
 
 import base.SpecBase
-import models.UserAnswers
+import connectors.TaxEnrolmentsConnector
+import models.{TaxEnrolmentsRequest, UserAnswers}
+import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{IsAgentManagingTrustPage, UtrPage}
+import play.api.inject.bind
+import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.RelationshipEstablishment
+import uk.gov.hmrc.http.HttpResponse
 import views.html.IvSuccessView
+
+import scala.concurrent.Future
 
 class IvSuccessControllerSpec extends SpecBase {
 
-  val utr = "0987654321"
+  private val utr = "0987654321"
+
+  private val connector = mock[TaxEnrolmentsConnector]
+  private val service = mock[RelationshipEstablishment]
+
+  when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
+    .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
 
   "IvSuccess Controller" must {
 
@@ -35,19 +51,29 @@ class IvSuccessControllerSpec extends SpecBase {
         .set(IsAgentManagingTrustPage, true).success.value
         .set(UtrPage, utr).success.value
 
+      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = service)
+        .overrides(Seq(
+          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
+        ))
+        .build()
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
-
-      val result = route(application, request).value
+      val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
       val view = application.injector.instanceOf[IvSuccessView]
 
+      val viewAsString = view(isAgent = true, utr)(fakeRequest, messages).toString
+
+      when(service.check(eqTo("id"), eqTo(utr), any(), any())(any()))
+        .thenReturn(Future.successful(Results.Ok(viewAsString)))
+
+      val result = route(application, request).value
+
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(isAgent = true, utr)(fakeRequest, messages).toString
+      contentAsString(result) mustEqual viewAsString
+
+      verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+      verify(service).check(eqTo("id"), eqTo(utr), any(), any())(any())
 
       application.stop()
 
@@ -59,19 +85,29 @@ class IvSuccessControllerSpec extends SpecBase {
         .set(IsAgentManagingTrustPage, false).success.value
         .set(UtrPage, utr).success.value
 
+      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = service)
+        .overrides(Seq(
+          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
+        ))
+        .build()
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
-
-      val result = route(application, request).value
+      val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
       val view = application.injector.instanceOf[IvSuccessView]
 
+      val viewAsString = view(isAgent = false, utr)(fakeRequest, messages).toString
+
+      when(service.check(eqTo("id"), eqTo(utr), any(), any())(any()))
+        .thenReturn(Future.successful(Results.Ok(viewAsString)))
+
+      val result = route(application, request).value
+
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(isAgent = false, utr)(fakeRequest, messages).toString
+      contentAsString(result) mustEqual viewAsString
+
+      verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+      verify(service).check(eqTo("id"), eqTo(utr), any(), any())(any())
 
       application.stop()
 

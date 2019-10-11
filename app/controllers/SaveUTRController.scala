@@ -38,8 +38,7 @@ class SaveUTRController @Inject()(
   def save(utr: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
-      relationship.check(request.internalId, utr) {
-        _ =>
+      lazy val body = {
           val userAnswers = request.userAnswers match {
             case Some(userAnswers) => userAnswers.set(UtrPage, utr)
             case _ =>
@@ -50,6 +49,8 @@ class SaveUTRController @Inject()(
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
       }
+
+      relationship.check(request.internalId, utr, body, body)
 
   }
 }

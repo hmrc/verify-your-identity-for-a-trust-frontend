@@ -37,7 +37,7 @@ class RelationshipEstablishmentService @Inject()(
                                                 )
   extends RelationshipEstablishment with AuthPartialFunctions {
 
-  def check(internalId: String, utr: String)(body: Request[AnyContent] => Future[Result])
+  def check(internalId: String, utr: String, success: Future[Result], failure: Future[Result])
            (implicit request: Request[AnyContent]): Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -46,7 +46,7 @@ class RelationshipEstablishmentService @Inject()(
       case FailedRelationship(msg) =>
         // relationship does not exist
         Logger.info(s"Relationship does not exist in Trust IV for user $internalId due to $msg")
-        body(request)
+        failure
     }
 
     val recoverComposed = failedRelationshipPF orElse recoverFromException
@@ -63,7 +63,7 @@ class RelationshipEstablishmentService @Inject()(
 
 trait RelationshipEstablishment extends AuthorisedFunctions {
 
-  def check(internalId: String, utr: String)(body: Request[AnyContent] => Future[Result])
+  def check(internalId: String, utr: String, success: Future[Result], failure: Future[Result])
            (implicit request: Request[AnyContent]): Future[Result]
 
 }

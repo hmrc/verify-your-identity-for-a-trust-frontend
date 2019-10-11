@@ -46,9 +46,10 @@ class BeforeYouContinueController @Inject()(
     implicit request =>
 
       request.userAnswers.get(UtrPage) map { utr =>
-        relationship.check(request.internalId, utr) { _ =>
+        lazy val body = {
             Future.successful(Ok(view(utr)))
         }
+        relationship.check(request.internalId, utr, body, body)
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
@@ -60,7 +61,7 @@ class BeforeYouContinueController @Inject()(
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
 
-        relationship.check(request.internalId, utr) { _ =>
+        lazy val body =  {
           val successRedirect = routes.IvSuccessController.onPageLoad().absoluteURL
           val failureRedirect = routes.IVFailureController.onTrustIVFailure().absoluteURL
 
@@ -76,6 +77,8 @@ class BeforeYouContinueController @Inject()(
           }
 
         }
+
+        relationship.check(request.internalId, utr, body, body)
       }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 }

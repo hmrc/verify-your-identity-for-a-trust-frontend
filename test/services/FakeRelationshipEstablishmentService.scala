@@ -26,8 +26,7 @@ class FakeRelationshipEstablishmentService extends RelationshipEstablishment {
 
   override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful())
 
-  override def check(internalId: String, utr: String)(body: Request[AnyContent] => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
-    body(request)
-  }
+  override def check(internalId: String, utr: String, success: Future[Result], failure: Future[Result])
+                    (implicit request: Request[AnyContent]): Future[Result] = success
 
 }

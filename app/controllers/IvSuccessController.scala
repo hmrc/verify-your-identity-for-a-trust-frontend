@@ -21,10 +21,11 @@ import javax.inject.Inject
 import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.RelationshipEstablishment
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IvSuccessView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IvSuccessController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -32,22 +33,29 @@ class IvSuccessController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
+                                       relationshipEstablishment: RelationshipEstablishment,
                                        view: IvSuccessView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage).map { utr =>
+        request.userAnswers.get(UtrPage).map { utr =>
 
-        val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
-          case None => false
-          case Some(value) => value
+          lazy val body = {
+
+          val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
+            case None => false
+            case Some(value) => value
+          }
+
+          Future.successful(Ok(view(isAgentManagingTrust, utr)))
+
         }
 
-        Ok(view(isAgentManagingTrust, utr))
+          relationshipEstablishment.check(request.internalId, utr, body, body)
 
-      } getOrElse Redirect(routes.SessionExpiredController.onPageLoad())
+      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 
   }
 }
