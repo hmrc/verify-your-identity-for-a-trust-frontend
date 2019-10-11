@@ -60,7 +60,7 @@ class IsAgentManagingTrustController @Inject()(
             Future.successful(Ok(view(preparedForm, mode, utr)))
         }
 
-        relationship.check(request.internalId, utr, body, body)
+        relationship.check(request.internalId, utr, body)
 
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 

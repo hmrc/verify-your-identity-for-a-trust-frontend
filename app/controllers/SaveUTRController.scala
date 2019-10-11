@@ -50,7 +50,7 @@ class SaveUTRController @Inject()(
           } yield Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
       }
 
-      relationship.check(request.internalId, utr, body, body)
+      relationship.check(request.internalId, utr, body)
 
   }
 }

@@ -62,7 +62,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
             val service = new RelationshipEstablishmentService(auth)
 
-            val result = service.check(fakeInternalId, utr, harness, harness)
+            val result = service.check(fakeInternalId, utr, harness)
 
             status(result) mustBe OK
           }
@@ -77,7 +77,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
           val service = new RelationshipEstablishmentService(auth)
 
-          val result = service.check(fakeInternalId, utr, harness, harness)
+          val result = service.check(fakeInternalId, utr, harness)
 
           status(result) mustBe SEE_OTHER
 

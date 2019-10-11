@@ -49,7 +49,7 @@ class BeforeYouContinueController @Inject()(
         lazy val body = {
             Future.successful(Ok(view(utr)))
         }
-        relationship.check(request.internalId, utr, body, body)
+        relationship.check(request.internalId, utr, body)
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
@@ -78,7 +78,7 @@ class BeforeYouContinueController @Inject()(
 
         }
 
-        relationship.check(request.internalId, utr, body, body)
+        relationship.check(request.internalId, utr, body)
       }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 }
