@@ -39,7 +39,7 @@ class RelationshipEstablishmentService @Inject()(
 
   lazy protected val success: Future[Result] = Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
 
-  def check(internalId: String, utr: String, failure: Future[Result], success: Future[Result] = success)
+  def check(internalId: String, utr: String, onFailure: Future[Result], onSuccess: Future[Result] = success)
            (implicit request: Request[AnyContent]): Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -48,14 +48,14 @@ class RelationshipEstablishmentService @Inject()(
       case FailedRelationship(msg) =>
         // relationship does not exist
         Logger.info(s"Relationship does not exist in Trust IV for user $internalId due to $msg")
-        failure
+        onFailure
     }
 
     val recoverComposed = failedRelationshipPF orElse recoverFromException
 
     authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
       Logger.info(s"Relationship established in Trust IV for user $internalId")
-      success
+      onSuccess
     } recoverWith {
       recoverComposed
     }
@@ -67,7 +67,7 @@ trait RelationshipEstablishment extends AuthorisedFunctions {
 
   protected val success: Future[Result]
 
-  def check(internalId: String, utr: String, failure: Future[Result], success: Future[Result] = success)
+  def check(internalId: String, utr: String, onFailure: Future[Result], onSuccess: Future[Result] = success)
            (implicit request: Request[AnyContent]): Future[Result]
 
 }

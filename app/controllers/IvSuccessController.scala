@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.TaxEnrolmentsRequest
 import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result, Results}
 import services.RelationshipEstablishment
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IvSuccessView
@@ -45,21 +45,23 @@ class IvSuccessController @Inject()(
 
       request.userAnswers.get(UtrPage).map { utr =>
 
-        lazy val body = {
+        def body(enrol: Boolean): Future[Result] = {
 
-          taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
+          val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
+            case None => false
+            case Some(value) => value
+          }
 
-            val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
-              case None => false
-              case Some(value) => value
+          if(enrol){
+            taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
+              Ok(view(isAgentManagingTrust, utr))
             }
-
-            Ok(view(isAgentManagingTrust, utr))
-
+          } else {
+            Future.successful(Ok(view(isAgentManagingTrust, utr)))
           }
 
         }
-        relationshipEstablishment.check(request.internalId, utr, Future.successful(Results.Ok), body)
+        relationshipEstablishment.check(request.internalId, utr, body(false), body(true))
 
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 
