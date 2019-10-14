@@ -41,50 +41,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
   private val connector = mock[TaxEnrolmentsConnector]
   private val service = mock[RelationshipEstablishment]
 
-  override def beforeAll(): Unit = {
-    reset(connector)
-    reset(service)
-    super.beforeAll()
-  }
-
   "IvSuccess Controller" must {
-
-    "return OK and the correct view for a GET with Agent" in {
-
-      val userAnswers = UserAnswers(userAnswersId)
-        .set(IsAgentManagingTrustPage, true).success.value
-        .set(UtrPage, utr).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = service)
-        .overrides(Seq(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
-        ))
-        .build()
-
-      val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
-
-      val view = application.injector.instanceOf[IvSuccessView]
-
-      val viewAsString = view(isAgent = true, utr)(fakeRequest, messages).toString
-
-      when(service.check(eqTo("id"), eqTo(utr), any(), any())(any()))
-        .thenReturn(Future.successful(Results.Ok(viewAsString)))
-
-      when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-        .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
-
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual viewAsString
-
-      verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
-      verify(service).check(eqTo("id"), eqTo(utr), any(), any())(any())
-
-      application.stop()
-
-    }
 
     "return OK and the correct view for a GET with no Agent" in {
 
@@ -119,9 +76,53 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
       verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
       verify(service).check(eqTo("id"), eqTo(utr), any(), any())(any())
 
+      reset(connector)
+      reset(service)
+
       application.stop()
 
     }
+
+    "return OK and the correct view for a GET with Agent" in {
+
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(IsAgentManagingTrustPage, true).success.value
+        .set(UtrPage, utr).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = service)
+        .overrides(Seq(
+          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
+        ))
+        .build()
+
+      val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+
+      val view = application.injector.instanceOf[IvSuccessView]
+
+      val viewAsString = view(isAgent = true, utr)(fakeRequest, messages).toString
+
+      when(service.check(eqTo("id"), eqTo(utr), any(), any())(any()))
+        .thenReturn(Future.successful(Results.Ok(viewAsString)))
+
+      when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
+        .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual viewAsString
+
+      verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+      verify(service).check(eqTo("id"), eqTo(utr), any(), any())(any())
+
+      reset(connector)
+      reset(service)
+
+      application.stop()
+
+    }
+
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
