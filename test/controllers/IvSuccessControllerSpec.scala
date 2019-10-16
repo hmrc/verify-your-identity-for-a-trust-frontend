@@ -29,7 +29,7 @@ import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.RelationshipEstablishment
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{BadRequestException, HttpResponse, Upstream4xxResponse}
 import views.html.IvSuccessView
 
 import scala.concurrent.Future
@@ -123,21 +123,102 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
     }
 
+    "redirect to Session Expired" when {
+      "no existing data is found" in {
 
-    "redirect to Session Expired for a GET if no existing data is found" in {
+        val application = applicationBuilder(userAnswers = None).build()
 
-      val application = applicationBuilder(userAnswers = None).build()
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
-      val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val result = route(application, request).value
 
-      val result = route(application, request).value
+        status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        application.stop()
 
-      application.stop()
+      }
+      "tax enrolments fails" when {
+        "401 UNAUTHORIZED" in {
 
+          val userAnswers = UserAnswers(userAnswersId)
+            .set(IsAgentManagingTrustPage, true).success.value
+            .set(UtrPage, utr).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = service)
+            .overrides(Seq(
+              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
+            ))
+            .build()
+
+          val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+
+          val view = application.injector.instanceOf[IvSuccessView]
+
+          val viewAsString = view(isAgent = true, utr)(fakeRequest, messages).toString
+
+          when(service.check(eqTo("id"), eqTo(utr), any(), any())(any()))
+            .thenReturn(Future.successful(Results.Ok(viewAsString)))
+
+          when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
+            .thenReturn(Future.failed(Upstream4xxResponse("Unauthorized", UNAUTHORIZED, UNAUTHORIZED)))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual viewAsString
+
+          verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+          verify(service).check(eqTo("id"), eqTo(utr), any(), any())(any())
+
+          reset(connector)
+          reset(service)
+
+          application.stop()
+
+        }
+        "400 BAD_REQUEST" in {
+
+          val userAnswers = UserAnswers(userAnswersId)
+            .set(IsAgentManagingTrustPage, true).success.value
+            .set(UtrPage, utr).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = service)
+            .overrides(Seq(
+              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
+            ))
+            .build()
+
+          val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+
+          val view = application.injector.instanceOf[IvSuccessView]
+
+          val viewAsString = view(isAgent = true, utr)(fakeRequest, messages).toString
+
+          when(service.check(eqTo("id"), eqTo(utr), any(), any())(any()))
+            .thenReturn(Future.successful(Results.Ok(viewAsString)))
+
+          when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
+            .thenReturn(Future.failed(new BadRequestException("BadRequest")))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual viewAsString
+
+          verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+          verify(service).check(eqTo("id"), eqTo(utr), any(), any())(any())
+
+          reset(connector)
+          reset(service)
+
+          application.stop()
+
+        }
+      }
     }
 
   }
