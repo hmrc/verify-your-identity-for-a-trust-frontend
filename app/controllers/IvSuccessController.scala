@@ -18,9 +18,11 @@ package controllers
 
 import connectors.TaxEnrolmentsConnector
 import controllers.actions._
+import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{NormalMode, TaxEnrolmentsRequest}
+import models.{NormalMode, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError}
 import pages.{IsAgentManagingTrustPage, UtrPage}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
 import services.RelationshipEstablishment
@@ -37,7 +39,8 @@ class IvSuccessController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
                                      relationshipEstablishment: RelationshipEstablishment,
                                      taxEnrolmentsConnector: TaxEnrolmentsConnector,
-                                     view: IvSuccessView
+                                     view: IvSuccessView,
+                                     errorHandler: ErrorHandler
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -54,6 +57,10 @@ class IvSuccessController @Inject()(
 
           Ok(view(isAgentManagingTrust, utr))
 
+        } recover {
+          case UpstreamTaxEnrolmentsError(_) =>
+            Logger.error(s"[TaxEnrolments][error] failed to create enrolment for ${request.internalId}")
+            InternalServerError(errorHandler.internalServerErrorTemplate)
         }
 
         lazy val onFailure = Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))

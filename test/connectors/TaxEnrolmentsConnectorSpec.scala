@@ -18,7 +18,7 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
-import models.TaxEnrolmentsRequest
+import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -86,7 +86,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
         )
 
         connector.enrol(TaxEnrolmentsRequest(utr)) map { response =>
-          response.status mustBe NO_CONTENT
+          response mustBe EnrolmentCreated
         }
 
       }
@@ -99,7 +99,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
           expectedResponse = ""
         )
 
-        recoverToSucceededIf[BadRequestException](connector.enrol(TaxEnrolmentsRequest(utr)))
+        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr)))
 
       }
       "returns 401 UNAUTHORIZED" in {
@@ -110,7 +110,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
           expectedResponse = ""
         )
 
-        recoverToSucceededIf[Upstream4xxResponse](connector.enrol(TaxEnrolmentsRequest(utr)))
+        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr)))
 
       }
 

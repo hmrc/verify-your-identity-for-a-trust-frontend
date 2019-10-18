@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.TaxEnrolmentsConnector
-import models.{TaxEnrolmentsRequest, UserAnswers}
+import models.{EnrolmentCreated, TaxEnrolmentsRequest, UserAnswers}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterAll
@@ -65,7 +65,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         .thenReturn(Future.successful(Results.Ok(viewAsString)))
 
       when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-        .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+        .thenReturn(Future.successful(EnrolmentCreated))
 
       val result = route(application, request).value
 
@@ -105,7 +105,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         .thenReturn(Future.successful(Results.Ok(viewAsString)))
 
       when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-        .thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
+        .thenReturn(Future.successful(EnrolmentCreated))
 
       val result = route(application, request).value
 
@@ -124,6 +124,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
     }
 
     "redirect to Session Expired" when {
+
       "no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
@@ -139,7 +140,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         application.stop()
 
       }
+
       "tax enrolments fails" when {
+
         "401 UNAUTHORIZED" in {
 
           val userAnswers = UserAnswers(userAnswersId)
