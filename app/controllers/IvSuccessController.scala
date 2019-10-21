@@ -52,7 +52,7 @@ class IvSuccessController @Inject()(
 
       request.userAnswers.get(UtrPage).map { utr =>
 
-        def onSuccess = {
+        def onRelationshipFound = {
           taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
 
             val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
@@ -69,17 +69,15 @@ class IvSuccessController @Inject()(
           }
         }
 
-        lazy val onFailure = Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
+        lazy val onRelationshipNotFound = Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
 
         relationshipEstablishment.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            onSuccess
+            onRelationshipFound
           case RelationshipNotFound =>
-            onFailure
-        } recoverWith {
-            recoverFromException()
+            onRelationshipNotFound
         }
-
+        
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 
   }

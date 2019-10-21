@@ -88,8 +88,6 @@ class BeforeYouContinueController @Inject()(
             Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             onRelationshipNotFound
-        } recoverWith {
-          recoverFromException()
         }
       }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
