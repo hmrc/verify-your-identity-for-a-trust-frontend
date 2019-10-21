@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import connectors.TaxEnrolmentsConnector
 import controllers.actions._
 import handlers.ErrorHandler
@@ -24,8 +25,8 @@ import models.{NormalMode, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError}
 import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
-import services.RelationshipEstablishment
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IvSuccessView
 
@@ -41,31 +42,43 @@ class IvSuccessController @Inject()(
                                      taxEnrolmentsConnector: TaxEnrolmentsConnector,
                                      view: IvSuccessView,
                                      errorHandler: ErrorHandler
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                   )(implicit ec: ExecutionContext,
+                                     val config: FrontendAppConfig)
+  extends FrontendBaseController with I18nSupport
+                                    with AuthPartialFunctions {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(UtrPage).map { utr =>
 
-        lazy val onSuccess =  taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
+        def onSuccess = {
+          taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
 
-          val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
-            case None => false
-            case Some(value) => value
+            val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
+              case None => false
+              case Some(value) => value
+            }
+
+            Ok(view(isAgentManagingTrust, utr))
+
+          } recover {
+            case _ =>
+              Logger.error(s"[TaxEnrolments][error] failed to create enrolment for ${request.internalId} $utr")
+              InternalServerError(errorHandler.internalServerErrorTemplate)
           }
-
-          Ok(view(isAgentManagingTrust, utr))
-
-        } recover {
-          case UpstreamTaxEnrolmentsError(_) =>
-            Logger.error(s"[TaxEnrolments][error] failed to create enrolment for ${request.internalId}")
-            InternalServerError(errorHandler.internalServerErrorTemplate)
         }
 
         lazy val onFailure = Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
 
-        relationshipEstablishment.check(request.internalId, utr, onFailure, onSuccess)
+        relationshipEstablishment.check(request.internalId, utr) flatMap {
+          case RelationshipFound =>
+            onSuccess
+          case RelationshipNotFound =>
+            onFailure
+        } recoverWith {
+            recoverFromException()
+        }
 
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 

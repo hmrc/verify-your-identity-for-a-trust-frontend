@@ -17,11 +17,8 @@
 package services
 
 import config.FrontendAppConfig
-import controllers.actions.AuthPartialFunctions
-import controllers.routes
 import javax.inject.Inject
 import play.api.Logger
-import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,35 +26,39 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
+sealed trait RelationEstablishmentStatus
+
+case object RelationshipFound extends RelationEstablishmentStatus
+case object RelationshipNotFound extends RelationEstablishmentStatus
+case class RelationshipError(reason : String) extends Exception(reason)
+
 class RelationshipEstablishmentService @Inject()(
                                                   val authConnector: AuthConnector
                                                 )(
                                                   implicit val config: FrontendAppConfig,
                                                   implicit val executionContext: ExecutionContext
                                                 )
-  extends RelationshipEstablishment with AuthPartialFunctions {
+  extends RelationshipEstablishment {
 
-  lazy protected val success: Future[Result] = Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
 
-  def check(internalId: String, utr: String, onFailure: Future[Result], onSuccess: Future[Result] = success)
-           (implicit request: Request[AnyContent]): Future[Result] = {
+  def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    def failedRelationshipPF: PartialFunction[Throwable, Future[Result]] = {
+    def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
         // relationship does not exist
         Logger.info(s"Relationship does not exist in Trust IV for user $internalId due to $msg")
-        onFailure
+        Future.successful(RelationshipNotFound)
+      case e : Throwable =>
+        throw RelationshipError(e.getMessage)
     }
-
-    val recoverComposed = failedRelationshipPF orElse recoverFromException
 
     authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
       Logger.info(s"Relationship established in Trust IV for user $internalId")
-      onSuccess
+        Future.successful(RelationshipFound)
     } recoverWith {
-      recoverComposed
+      failedRelationshipPF
     }
   }
 
@@ -65,9 +66,6 @@ class RelationshipEstablishmentService @Inject()(
 
 trait RelationshipEstablishment extends AuthorisedFunctions {
 
-  protected val success: Future[Result]
-
-  def check(internalId: String, utr: String, onFailure: Future[Result], onSuccess: Future[Result] = success)
-           (implicit request: Request[AnyContent]): Future[Result]
+  def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus]
 
 }

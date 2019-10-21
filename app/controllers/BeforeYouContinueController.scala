@@ -24,7 +24,7 @@ import models.TrustsStoreRequest
 import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.RelationshipEstablishment
+import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.BeforeYouContinueView
 
@@ -38,18 +38,23 @@ class BeforeYouContinueController @Inject()(
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: BeforeYouContinueView,
-                                       config: FrontendAppConfig,
                                        connector: TrustsStoreConnector
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     )(implicit ec: ExecutionContext,
+                                       config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(UtrPage) map { utr =>
-        lazy val body = {
+        def body = {
             Future.successful(Ok(view(utr)))
         }
-        relationship.check(request.internalId, utr, body)
+        relationship.check(request.internalId, utr) flatMap {
+          case RelationshipFound =>
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+          case RelationshipNotFound =>
+            body
+        }
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
@@ -61,7 +66,7 @@ class BeforeYouContinueController @Inject()(
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
 
-        lazy val body =  {
+        def onRelationshipNotFound =  {
           val successRedirect = routes.IvSuccessController.onPageLoad().absoluteURL
           val failureRedirect = routes.IVFailureController.onTrustIVFailure().absoluteURL
 
@@ -78,7 +83,14 @@ class BeforeYouContinueController @Inject()(
 
         }
 
-        relationship.check(request.internalId, utr, body)
+        relationship.check(request.internalId, utr) flatMap {
+          case RelationshipFound =>
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+          case RelationshipNotFound =>
+            onRelationshipNotFound
+        } recoverWith {
+          recoverFromException()
+        }
       }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 }

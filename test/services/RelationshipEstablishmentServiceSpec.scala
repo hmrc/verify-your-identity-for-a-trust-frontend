@@ -16,21 +16,20 @@
 
 package services
 
+import java.util.concurrent.TimeUnit
+
 import base.SpecBase
 import controllers.actions.{FakeAuthConnector, FakeFailingAuthConnector}
-import controllers.routes
-import play.api.mvc.{AnyContent, Request, Results}
-import play.api.test.Helpers._
+import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.auth.core.{FailedRelationship, MissingBearerToken}
 
 import scala.concurrent.ExecutionContext.Implicits._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
-class RelationshipEstablishmentServiceSpec extends SpecBase {
+class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
   val utr = "1234567890"
-
-  def harness = Future.successful(Results.Ok)
 
   implicit val ec = implicitly[ExecutionContext]
 
@@ -38,17 +37,15 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
     "the user hasn't logged in" must {
 
-      "redirect the user to log in " in {
+      "throw an exception" in {
 
         val auth = new FakeFailingAuthConnector(new MissingBearerToken)
 
         val service = new RelationshipEstablishmentService(auth)
 
-        val result = service.check(fakeInternalId, utr, harness, harness)
-
-        status(result) mustBe SEE_OTHER
-
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        intercept[RelationshipError] {
+          Await.result(service.check(fakeInternalId, utr), Duration(5, TimeUnit.SECONDS))
+        }
       }
     }
 
@@ -56,32 +53,36 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
         "where no relationship exists" must {
 
-          "continue the request action" in {
+          "return RelationshipNotFound" in {
 
             val auth = new FakeFailingAuthConnector(FailedRelationship())
 
             val service = new RelationshipEstablishmentService(auth)
 
-            val result = service.check(fakeInternalId, utr, harness)
+            val result = service.check(fakeInternalId, utr)
 
-            status(result) mustBe OK
+            whenReady(result) {
+              s =>
+                s mustBe RelationshipNotFound
+            }
           }
 
         }
 
       "where a relationship exists" must {
 
-        "redirect to success page" in {
+        "return RelationshipFound" in {
 
           val auth = new FakeAuthConnector(Future.successful())
 
           val service = new RelationshipEstablishmentService(auth)
 
-          val result = service.check(fakeInternalId, utr, harness)
+          val result = service.check(fakeInternalId, utr)
 
-          status(result) mustBe SEE_OTHER
-
-          redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad().url
+          whenReady(result) {
+            s =>
+              s mustBe RelationshipFound
+          }
 
         }
 

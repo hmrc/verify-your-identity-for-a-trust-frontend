@@ -22,7 +22,7 @@ import models.{NormalMode, UserAnswers}
 import pages.UtrPage
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import repositories.SessionRepository
-import services.RelationshipEstablishment
+import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,7 +50,12 @@ class SaveUTRController @Inject()(
           } yield Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
       }
 
-      relationship.check(request.internalId, utr, body)
+      relationship.check(request.internalId, utr) flatMap {
+        case RelationshipFound =>
+          Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+        case RelationshipNotFound =>
+          body
+      }
 
   }
 }

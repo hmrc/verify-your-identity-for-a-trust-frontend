@@ -28,6 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.inject.bind
 import play.api.mvc.Call
+import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
 import uk.gov.hmrc.http.HttpResponse
 import views.html.BeforeYouContinueView
 
@@ -38,13 +39,15 @@ class BeforeYouContinueControllerSpec extends SpecBase {
   val utr = "0987654321"
   val managedByAgent = true
 
+  val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
+
   "BeforeYouContinue Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val answers = emptyUserAnswers.set(UtrPage, utr).success.value
 
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
+      val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
       val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
 
@@ -73,7 +76,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
         .set(UtrPage, "0987654321").success.value
         .set(IsAgentManagingTrustPage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(answers))
+      val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing)
         .overrides(bind[TrustsStoreConnector].toInstance(connector))
         .overrides(bind[Navigator].toInstance(fakeNavigator))
         .build()

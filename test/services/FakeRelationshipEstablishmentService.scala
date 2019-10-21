@@ -22,13 +22,11 @@ import uk.gov.hmrc.auth.core.AuthConnector
 
 import scala.concurrent.Future
 
-class FakeRelationshipEstablishmentService extends RelationshipEstablishment {
-
-  val success = Future.successful(Results.Ok)
+class FakeRelationshipEstablishmentService(response: RelationEstablishmentStatus = RelationshipFound) extends RelationshipEstablishment {
 
   override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful())
 
-  override def check(internalId: String, utr: String, success: Future[Result], failure: Future[Result])
-                    (implicit request: Request[AnyContent]): Future[Result] = success
+  override def check(internalId: String, utr: String)
+                    (implicit request: Request[AnyContent]) = Future.successful(response)
 
 }

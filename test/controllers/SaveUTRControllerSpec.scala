@@ -26,12 +26,15 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
 
 import scala.concurrent.Future
 
 class SaveUTRControllerSpec extends SpecBase {
 
   val utr = "0987654321"
+
+  val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
   "SaveUTRController" must {
 
@@ -46,7 +49,7 @@ class SaveUTRControllerSpec extends SpecBase {
         when(mockSessionRepository.set(captor.capture()))
           .thenReturn(Future.successful(true))
 
-        val application = applicationBuilder(userAnswers = None)
+        val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -69,7 +72,7 @@ class SaveUTRControllerSpec extends SpecBase {
         when(mockSessionRepository.set(captor.capture()))
           .thenReturn(Future.successful(true))
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFailing)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 

@@ -25,11 +25,11 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.inject.bind
-import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
 import views.html.IsAgentManagingTrustView
 
 import scala.concurrent.Future
@@ -44,6 +44,8 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val isAgentManagingTrustRoute = routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
+  val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
+
   "IsAgentManagingTrust Controller" must {
 
     "return OK and the correct view for a GET" in {
@@ -53,7 +55,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
         .success
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(
+        userAnswers = Some(userAnswers),
+        relationshipEstablishment = fakeEstablishmentServiceFailing ).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -77,7 +81,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
         .set(UtrPage, utr)
         .success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(
+        userAnswers = Some(userAnswers),
+        relationshipEstablishment = fakeEstablishmentServiceFailing).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -100,7 +106,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), relationshipEstablishment = fakeEstablishmentServiceFailing)
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -127,7 +133,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
         .success
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers),
+        relationshipEstablishment = fakeEstablishmentServiceFailing)
+        .build()
 
       val request =
         FakeRequest(POST, isAgentManagingTrustRoute)
@@ -149,7 +157,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -164,7 +172,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing).build()
 
       val request =
         FakeRequest(POST, isAgentManagingTrustRoute)
