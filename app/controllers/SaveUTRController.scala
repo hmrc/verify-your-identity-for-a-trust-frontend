@@ -22,7 +22,7 @@ import models.{NormalMode, UserAnswers}
 import pages.UtrPage
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import repositories.SessionRepository
-import services.RelationshipEstablishment
+import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,8 +38,7 @@ class SaveUTRController @Inject()(
   def save(utr: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
-      relationship.check(request.internalId, utr) {
-        _ =>
+      lazy val body = {
           val userAnswers = request.userAnswers match {
             case Some(userAnswers) => userAnswers.set(UtrPage, utr)
             case _ =>
@@ -49,6 +48,13 @@ class SaveUTRController @Inject()(
             updatedAnswers <- Future.fromTry(userAnswers)
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+      }
+
+      relationship.check(request.internalId, utr) flatMap {
+        case RelationshipFound =>
+          Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+        case RelationshipNotFound =>
+          body
       }
 
   }

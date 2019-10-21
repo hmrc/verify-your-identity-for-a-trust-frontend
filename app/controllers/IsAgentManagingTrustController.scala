@@ -25,7 +25,7 @@ import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.RelationshipEstablishment
+import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IsAgentManagingTrustView
 
@@ -51,14 +51,20 @@ class IsAgentManagingTrustController @Inject()(
 
       request.userAnswers.get(UtrPage) map { utr =>
 
-        relationship.check(request.internalId, utr) {
-          _ =>
+        lazy val body = {
             val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
               case None => form
               case Some(value) => form.fill(value)
             }
 
             Future.successful(Ok(view(preparedForm, mode, utr)))
+        }
+
+        relationship.check(request.internalId, utr) flatMap {
+          case RelationshipFound =>
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+          case RelationshipNotFound =>
+            body
         }
 
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))

@@ -36,5 +36,4 @@ class TrustsStoreConnector @Inject()(http: HttpClient, config : FrontendAppConfi
     response
   }
 
-
 }

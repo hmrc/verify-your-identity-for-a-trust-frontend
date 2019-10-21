@@ -17,17 +17,16 @@
 package services
 
 import controllers.actions.FakeAuthConnector
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, Request, Result, Results}
 import uk.gov.hmrc.auth.core.AuthConnector
 
 import scala.concurrent.Future
 
-class FakeRelationshipEstablishmentService extends RelationshipEstablishment {
+class FakeRelationshipEstablishmentService(response: RelationEstablishmentStatus = RelationshipFound) extends RelationshipEstablishment {
 
   override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful())
 
-  override def check(internalId: String, utr: String)(body: Request[AnyContent] => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
-    body(request)
-  }
+  override def check(internalId: String, utr: String)
+                    (implicit request: Request[AnyContent]) = Future.successful(response)
 
 }

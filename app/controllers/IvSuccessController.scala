@@ -16,38 +16,69 @@
 
 package controllers
 
+import config.FrontendAppConfig
+import connectors.TaxEnrolmentsConnector
 import controllers.actions._
+import handlers.ErrorHandler
 import javax.inject.Inject
+import models.{NormalMode, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError}
 import pages.{IsAgentManagingTrustPage, UtrPage}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IvSuccessView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IvSuccessController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: IvSuccessView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     override val messagesApi: MessagesApi,
+                                     identify: IdentifierAction,
+                                     getData: DataRetrievalAction,
+                                     requireData: DataRequiredAction,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     relationshipEstablishment: RelationshipEstablishment,
+                                     taxEnrolmentsConnector: TaxEnrolmentsConnector,
+                                     view: IvSuccessView,
+                                     errorHandler: ErrorHandler
+                                   )(implicit ec: ExecutionContext,
+                                     val config: FrontendAppConfig)
+  extends FrontendBaseController with I18nSupport
+                                    with AuthPartialFunctions {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(UtrPage).map { utr =>
 
-        val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
-          case None => false
-          case Some(value) => value
+        def onRelationshipFound = {
+          taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
+
+            val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
+              case None => false
+              case Some(value) => value
+            }
+
+            Ok(view(isAgentManagingTrust, utr))
+
+          } recover {
+            case _ =>
+              Logger.error(s"[TaxEnrolments][error] failed to create enrolment for ${request.internalId} $utr")
+              InternalServerError(errorHandler.internalServerErrorTemplate)
+          }
         }
 
-        Ok(view(isAgentManagingTrust, utr))
+        lazy val onRelationshipNotFound = Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
 
-      } getOrElse Redirect(routes.SessionExpiredController.onPageLoad())
+        relationshipEstablishment.check(request.internalId, utr) flatMap {
+          case RelationshipFound =>
+            onRelationshipFound
+          case RelationshipNotFound =>
+            onRelationshipNotFound
+        }
+        
+      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 
   }
 }
