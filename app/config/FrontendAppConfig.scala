@@ -56,8 +56,14 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val relationshipIdentifier : String =
     configuration.get[String]("microservice.services.self.relationship-establishment.identifier")
 
-  lazy val relationshipEstablishmentJourneyService : String =
+  private def relationshipEstablishmentPath(utr: String) : String =
+    s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$utr"
+
+  private def relationshipEstablishmentHost : String =
     configuration.get[String]("microservice.services.relationship-establishment-frontend.host")
+
+  def relationshipEstablishmentUrl(utr: String) : String =
+    s"${relationshipEstablishmentHost}/${relationshipEstablishmentPath(utr)}"
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
