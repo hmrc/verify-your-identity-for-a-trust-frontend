@@ -21,9 +21,10 @@ import controllers.routes
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.Call
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "claim-a-trust-frontend"
@@ -56,14 +57,30 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val relationshipIdentifier : String =
     configuration.get[String]("microservice.services.self.relationship-establishment.identifier")
 
-  private def relationshipEstablishmentPath(utr: String) : String =
+  private def relationshipEstablishmentFrontendPath(utr: String) : String =
     s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$utr"
 
-  private def relationshipEstablishmentHost : String =
+  private def relationshipEstablishmentFrontendHost : String =
     configuration.get[String]("microservice.services.relationship-establishment-frontend.host")
 
-  def relationshipEstablishmentUrl(utr: String) : String =
-    s"${relationshipEstablishmentHost}/${relationshipEstablishmentPath(utr)}"
+  private def stubbedRelationshipEstablishmentFrontendPath(utr: String) : String =
+    s"${configuration.get[String]("microservice.services.test.relationship-establishment-frontend.path")}/$utr"
+
+  private def stubbedRelationshipEstablishmentFrontendHost : String =
+    configuration.get[String]("microservice.services.test.relationship-establishment-frontend.host")
+
+  lazy val relationshipEstablishmentStubbed: Boolean =
+    configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
+
+  def relationshipEstablishmentFrontendtUrl(utr: String) : String = {
+    if(relationshipEstablishmentStubbed) {
+      s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(utr)}"
+    } else {
+      s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(utr)}"
+    }
+  }
+
+  def relationshipEstablishmentBaseUrl : String = servicesConfig.baseUrl("test.relationship-establishment")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
