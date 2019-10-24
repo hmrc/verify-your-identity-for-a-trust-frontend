@@ -70,7 +70,7 @@ class BeforeYouContinueController @Inject()(
           val successRedirect = routes.IvSuccessController.onPageLoad().absoluteURL
           val failureRedirect = routes.IVFailureController.onTrustIVFailure().absoluteURL
 
-          val host = config.relationshipEstablishmenFrontendtUrl(utr)
+          val host = config.relationshipEstablishmentFrontendtUrl(utr)
 
           val queryString: Map[String, Seq[String]] = Map(
             "success" -> Seq(successRedirect),

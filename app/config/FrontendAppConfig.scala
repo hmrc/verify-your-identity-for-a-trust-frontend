@@ -63,9 +63,22 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   private def relationshipEstablishmentFrontendHost : String =
     configuration.get[String]("microservice.services.relationship-establishment-frontend.host")
 
-  def relationshipEstablishmenFrontendtUrl(utr: String) : String =
-    s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(utr)}"
+  private def stubbedRelationshipEstablishmentFrontendPath(utr: String) : String =
+    s"${configuration.get[String]("microservice.services.test.relationship-establishment-frontend.path")}/$utr"
 
+  private def stubbedRelationshipEstablishmentFrontendHost : String =
+    configuration.get[String]("microservice.services.test.relationship-establishment-frontend.host")
+
+  lazy val relationshipEstablishmentStubbed: Boolean =
+    configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
+
+  def relationshipEstablishmentFrontendtUrl(utr: String) : String = {
+    if(relationshipEstablishmentStubbed) {
+      s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(utr)}"
+    } else {
+      s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(utr)}"
+    }
+  }
 
   def relationshipEstablishmentBaseUrl : String = servicesConfig.baseUrl("test.relationship-establishment")
 
