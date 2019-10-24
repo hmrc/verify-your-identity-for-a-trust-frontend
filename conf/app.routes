@@ -30,4 +30,4 @@ POST       /change/managed-by-agent                        controllers.IsAgentMa
 
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
-GET        /:utr                                        controllers.SaveUTRController.save(utr: String)
+GET        /save/:utr                                        controllers.SaveUTRController.save(utr: String)
