@@ -87,13 +87,16 @@ class TestRelationshipEstablishmentController @Inject()(
 
       Logger.warn("[TestRelationshipEstablishmentController] TrustIV is using a test route, you don't want this in production.")
 
+      val succeedRegex = "(1\\d{9})".r
+      val failRegex = "(2\\d{9})".r
+
       utr match {
-        case "1000000001" =>
+        case utr @ succeedRegex(_) =>
           relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, utr) map {
             _ =>
               Redirect(controllers.routes.IvSuccessController.onPageLoad())
           }
-        case "1000000002" =>
+        case failRegex(_) =>
           Future.successful(Redirect(controllers.routes.IVFailureController.onTrustIVFailure()))
         case _ =>
           Future.successful(Redirect(controllers.routes.IVFailureController.onTrustIVFailure()))
