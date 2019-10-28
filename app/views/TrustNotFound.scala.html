@@ -21,15 +21,14 @@ main_template: MainTemplate
 @(utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("locked.title")
+title = messages("notFound.title")
 ) {
 
-    <span class="govuk-caption-xl">@messages("locked.subheading", utr)</span>
-    @components.heading("locked.heading", headingSize = "heading-large govuk-fieldset__heading")
+@components.heading("notFound.heading", headingSize = "heading-large")
 
-    <p>@messages("locked.p1")</p>
-    <p>@messages("locked.p2")</p>
-    <p>@messages("locked.p3")</p>
-    <p>@messages("locked.p4") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("locked.link1")</a>.</p>
-    <p>@messages("locked.p5") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("locked.link2")</a>.</p>
+<p>@messages("notFound.p1")</p>
+<p>@messages("notFound.p2")</p>
+<p>@messages("notFound.p3") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("notFound.link1")</a>.</p>
+<p>@messages("notFound.p4") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("notFound.link2")</a>.</p>
+<p>@messages("notFound.p5") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("notFound.link3")</a>.</p>
 }

@@ -38,6 +38,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
   val utr = "0987654321"
   val managedByAgent = true
+  val trustLocked = false
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
@@ -69,7 +70,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val connector = mock[TrustsStoreConnector]
 
-      when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent)))(any(), any(), any()))
+      when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
         .thenReturn(Future.successful(HttpResponse(CREATED)))
 
       val answers = emptyUserAnswers
@@ -89,7 +90,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       redirectLocation(result).value must include("0987654321")
 
-      verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent)))(any(), any(), any())
+      verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
 
       application.stop()
 

@@ -14,14 +14,29 @@
  * limitations under the License.
  */
 
-package models
+package views
 
-import play.api.libs.json.{Json, Writes}
+import views.behaviours.ViewBehaviours
+import views.html.TrustLocked
 
-final case class TrustsStoreRequest(internalId: String, utr: String, managedByAgent: Boolean, trustLocked: Boolean)
+class TrustLockedViewSpec extends ViewBehaviours {
 
-object TrustsStoreRequest {
+  val utr = "0987654321"
 
-  implicit val writes: Writes[TrustsStoreRequest] = Json.writes[TrustsStoreRequest]
+  "TrustLocked view" must {
+
+    val view = viewFor[TrustLocked](Some(emptyUserAnswers))
+
+    val applyView = view.apply(utr)(fakeRequest, messages)
+
+    behave like normalPage(applyView, "locked","p1", "p2","p3",
+      "p4", "link1", "p5", "link2")
+
+    "display the correct subheading" in {
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("locked.subheading", utr))
+    }
+
+  }
 
 }

@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package connectors
 
-import play.api.libs.json.{Json, Writes}
+import config.FrontendAppConfig
+import javax.inject.Inject
+import play.api.libs.json.JsValue
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-final case class TrustsStoreRequest(internalId: String, utr: String, managedByAgent: Boolean, trustLocked: Boolean)
+import scala.concurrent.{ExecutionContext, Future}
 
-object TrustsStoreRequest {
+class RelationshipEstablishmentConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
-  implicit val writes: Writes[TrustsStoreRequest] = Json.writes[TrustsStoreRequest]
+  def journeyId(journeyFailure: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): Future[JsValue] = {
+    val url = s"${config.relationshipEstablishmentUrl}/journey-failure/$journeyFailure"
 
+    http.GET[JsValue](url)
+  }
 }
