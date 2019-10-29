@@ -2,9 +2,13 @@
 
 GET        /                                            controllers.IndexController.onPageLoad
 
-GET        /callback-failure                            controllers.IVFailureController.onTrustIVFailure
+GET        /callback-failure                            controllers.IvFailureController.onTrustIvFailure
 
-GET        /locked                                      controllers.IVFailureController.trustLocked
+GET        /locked                                      controllers.IvFailureController.trustLocked
+
+GET        /still-processing                            controllers.IvFailureController.trustStillProcessing
+
+GET        /not-found                                   controllers.IvFailureController.trustNotFound
 
 GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad
 

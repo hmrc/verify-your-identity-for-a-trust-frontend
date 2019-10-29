@@ -97,9 +97,9 @@ class TestRelationshipEstablishmentController @Inject()(
               Redirect(controllers.routes.IvSuccessController.onPageLoad())
           }
         case failRegex(_) =>
-          Future.successful(Redirect(controllers.routes.IVFailureController.onTrustIVFailure()))
+          Future.successful(Redirect(controllers.routes.IvFailureController.onTrustIvFailure()))
         case _ =>
-          Future.successful(Redirect(controllers.routes.IVFailureController.onTrustIVFailure()))
+          Future.successful(Redirect(controllers.routes.IvFailureController.onTrustIvFailure()))
       }
   }
 

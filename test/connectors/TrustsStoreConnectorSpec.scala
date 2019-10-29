@@ -47,7 +47,7 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
   val internalId = "some-authenticated-internal-id"
   val managedByAgent = true
 
-  val request = TrustsStoreRequest(internalId, utr, managedByAgent)
+  val request = TrustsStoreRequest(internalId, utr, managedByAgent, false)
 
   private def wiremock(payload: String, expectedStatus: Int, expectedResponse: String) =
     server.stubFor(

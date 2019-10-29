@@ -68,7 +68,7 @@ class BeforeYouContinueController @Inject()(
 
         def onRelationshipNotFound =  {
           val successRedirect = routes.IvSuccessController.onPageLoad().absoluteURL
-          val failureRedirect = routes.IVFailureController.onTrustIVFailure().absoluteURL
+          val failureRedirect = routes.IvFailureController.onTrustIvFailure().absoluteURL
 
           val host = config.relationshipEstablishmentFrontendtUrl(utr)
 
@@ -77,7 +77,7 @@ class BeforeYouContinueController @Inject()(
             "failure" -> Seq(failureRedirect)
           )
 
-          connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent)) map { _ =>
+          connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = false)) map { _ =>
             Redirect(host, queryString)
           }
 

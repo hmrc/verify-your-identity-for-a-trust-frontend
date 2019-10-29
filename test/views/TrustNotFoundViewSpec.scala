@@ -14,14 +14,29 @@
  * limitations under the License.
  */
 
-package models
+package views
 
-import play.api.libs.json.{Json, Writes}
+import views.behaviours.ViewBehaviours
+import views.html.TrustNotFound
 
-final case class TrustsStoreRequest(internalId: String, utr: String, managedByAgent: Boolean, trustLocked: Boolean)
+class TrustNotFoundViewSpec extends ViewBehaviours {
 
-object TrustsStoreRequest {
+  val utr = "0987654321"
 
-  implicit val writes: Writes[TrustsStoreRequest] = Json.writes[TrustsStoreRequest]
+  "TrustNotFound view" must {
+
+    val view = viewFor[TrustNotFound](Some(emptyUserAnswers))
+
+    val applyView = view.apply(utr)(fakeRequest, messages)
+
+    behave like normalPage(applyView, "notFound","p1", "p2","p3",
+      "p4", "link1", "p5", "link2", "link3")
+
+    "display the correct heading" in {
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("notFound.heading", utr))
+    }
+
+  }
 
 }
