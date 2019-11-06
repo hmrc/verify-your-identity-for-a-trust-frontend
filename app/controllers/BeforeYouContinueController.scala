@@ -68,13 +68,8 @@ class BeforeYouContinueController @Inject()(
 
         def onRelationshipNotFound =  {
 
-          def buildAbsoluteUrl(path : String) = {
-            val claimATrustHost : String = config.claimATrustFrontendHost
-            s"$claimATrustHost/claim-a-trust/$path"
-          }
-
-          val successRedirect = buildAbsoluteUrl(routes.IvSuccessController.onPageLoad().url)
-          val failureRedirect = buildAbsoluteUrl(routes.IvFailureController.onTrustIvFailure().url)
+          val successRedirect = config.successUrl
+          val failureRedirect = config.failureUrl
 
           val host = config.relationshipEstablishmentFrontendtUrl(utr)
 
