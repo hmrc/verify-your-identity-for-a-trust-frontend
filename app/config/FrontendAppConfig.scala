@@ -85,6 +85,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def relationshipEstablishmentBaseUrl : String = servicesConfig.baseUrl("test.relationship-establishment")
 
+  lazy val claimATrustFrontendHost : String =
+    configuration.get[String]("microservice.services.self.claim-a-trust-frontend.host")
+
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
