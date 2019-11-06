@@ -67,8 +67,9 @@ class BeforeYouContinueController @Inject()(
       } yield {
 
         def onRelationshipNotFound =  {
-          val successRedirect = routes.IvSuccessController.onPageLoad().absoluteURL
-          val failureRedirect = routes.IvFailureController.onTrustIvFailure().absoluteURL
+
+          val successRedirect = config.successUrl
+          val failureRedirect = config.failureUrl
 
           val host = config.relationshipEstablishmentFrontendtUrl(utr)
 
