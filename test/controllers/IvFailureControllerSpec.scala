@@ -22,7 +22,7 @@ import pages.UtrPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
-import models.TrustsStoreRequest
+import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{verify, when}
@@ -36,7 +36,6 @@ import org.mockito.Matchers.{eq => eqTo, _}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.libs.json.{JsValue, Json, Writes}
-
 
 import scala.concurrent.Future
 import org.mockito.Matchers._
@@ -87,15 +86,6 @@ class IvFailureControllerSpec extends SpecBase {
           .set(UtrPage, "1234567890").success.value
           .set(IsAgentManagingTrustPage, true).success.value
 
-
-        val jsonWithErrorKey = Json.parse(
-          """
-            |{
-            | "errorKey": "TRUST_LOCKED"
-            |}
-            |""".stripMargin
-        )
-
         val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
@@ -106,7 +96,7 @@ class IvFailureControllerSpec extends SpecBase {
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
-          .thenReturn(Future.successful(jsonWithErrorKey))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.Locked))
 
         val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
@@ -125,14 +115,6 @@ class IvFailureControllerSpec extends SpecBase {
           .set(UtrPage, "1234567890").success.value
           .set(IsAgentManagingTrustPage, true).success.value
 
-        val jsonWithErrorKey = Json.parse(
-          """
-            |{
-            | "errorKey": "UTR_NOT_FOUND"
-            |}
-            |""".stripMargin
-        )
-
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(
             bind[RelationshipEstablishmentConnector].toInstance(connector)
@@ -140,7 +122,7 @@ class IvFailureControllerSpec extends SpecBase {
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
-          .thenReturn(Future.successful(jsonWithErrorKey))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotFound))
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
 
@@ -161,14 +143,6 @@ class IvFailureControllerSpec extends SpecBase {
           .set(UtrPage, "1234567890").success.value
           .set(IsAgentManagingTrustPage, true).success.value
 
-        val jsonWithErrorKey = Json.parse(
-          """
-            |{
-            | "errorKey": "UTR_IN_PROCESSING"
-            |}
-            |""".stripMargin
-        )
-
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(
             bind[RelationshipEstablishmentConnector].toInstance(connector)
@@ -176,7 +150,7 @@ class IvFailureControllerSpec extends SpecBase {
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
-          .thenReturn(Future.successful(jsonWithErrorKey))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.InProcessing))
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
 

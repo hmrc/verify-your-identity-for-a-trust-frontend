@@ -18,7 +18,7 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
-import models.TaxEnrolmentsRequest
+import models.{RelationshipEstablishmentStatus, TaxEnrolmentsRequest}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.Application
 import play.api.http.Status
@@ -52,8 +52,10 @@ class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with MustMatc
       .willReturn(okJson(expectedJourneyFailureReason)))
 
   "RelationshipEstablishmentConnector" must {
+
     "Calling GET /" which {
-      "returns 200 OK" in {
+
+      "returns 200 OK with a locked response" in {
 
         val expectedJourneyFailureReason =
           """
@@ -65,8 +67,59 @@ class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with MustMatc
           expectedJourneyFailureReason = expectedJourneyFailureReason
         )
 
-        connector.journeyId(journeyFailure) map { json =>
-          json mustBe Json.parse(expectedJourneyFailureReason)
+        connector.journeyId(journeyFailure) map { status =>
+          status mustBe RelationshipEstablishmentStatus.Locked
+        }
+      }
+
+      "returns 200 OK with a not found response" in {
+
+        val expectedJourneyFailureReason =
+          """
+            |{
+            | "errorKey": "UTR_NOT_FOUND"
+            |}""".stripMargin
+
+        wiremock(
+          expectedJourneyFailureReason = expectedJourneyFailureReason
+        )
+
+        connector.journeyId(journeyFailure) map { status =>
+          status mustBe RelationshipEstablishmentStatus.NotFound
+        }
+      }
+
+      "returns 200 OK with an InProcessing response" in {
+
+        val expectedJourneyFailureReason =
+          """
+            |{
+            | "errorKey": "UTR_IN_PROCESSING"
+            |}""".stripMargin
+
+        wiremock(
+          expectedJourneyFailureReason = expectedJourneyFailureReason
+        )
+
+        connector.journeyId(journeyFailure) map { status =>
+          status mustBe RelationshipEstablishmentStatus.InProcessing
+        }
+      }
+
+      "returns 200 OK with an unsupported status" in {
+
+        val expectedJourneyFailureReason =
+          """
+            |{
+            | "errorKey": "UNSUPPORTED"
+            |}""".stripMargin
+
+        wiremock(
+          expectedJourneyFailureReason = expectedJourneyFailureReason
+        )
+
+        connector.journeyId(journeyFailure) map { status =>
+          status mustBe a[RelationshipEstablishmentStatus.UnsupportedRelationshipStatus]
         }
       }
     }

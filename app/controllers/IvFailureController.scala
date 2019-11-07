@@ -19,20 +19,17 @@ package controllers
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
-import models.TrustsStoreRequest
+import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
+import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
 import pages.{IsAgentManagingTrustPage, UtrPage}
+import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.{TrustLocked, TrustNotFound, TrustStillProcessing}
 
 import scala.concurrent.{ExecutionContext, Future}
-import models.TrustsStoreRequest
-import models.requests.DataRequest
-import pages.{IsAgentManagingTrustPage, UtrPage}
-import play.api.Logger
-import views.html.TrustLocked
 
 class IvFailureController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
@@ -47,19 +44,22 @@ class IvFailureController @Inject()(
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def renderFailureReason(utr: String, journeyId: String)(implicit hc : HeaderCarrier) = {
-    relationshipEstablishmentConnector.journeyId(journeyId).map {
-      rawJson => (rawJson \ "errorKey").as[String] match {
-        case "TRUST_LOCKED" =>
-          Logger.info(s"[IvFailure][status] $utr is locked")
-          Redirect(routes.IvFailureController.trustLocked())
-        case "UTR_NOT_FOUND" =>
-          Logger.info(s"[IvFailure][status] $utr was not found")
-          Redirect(routes.IvFailureController.trustNotFound())
-        case "UTR_IN_PROCESSING" =>
-          Logger.info(s"[IvFailure][status] $utr is processing")
-          Redirect(routes.IvFailureController.trustStillProcessing())
-        case _ => throw new InternalServerException("Internal server error")
-      }
+    relationshipEstablishmentConnector.journeyId(journeyId) map {
+      case RelationshipEstablishmentStatus.Locked =>
+        Logger.info(s"[IvFailure][status] $utr is locked")
+        Redirect(routes.IvFailureController.trustLocked())
+      case RelationshipEstablishmentStatus.NotFound =>
+        Logger.info(s"[IvFailure][status] $utr was not found")
+        Redirect(routes.IvFailureController.trustNotFound())
+      case RelationshipEstablishmentStatus.InProcessing =>
+        Logger.info(s"[IvFailure][status] $utr is processing")
+        Redirect(routes.IvFailureController.trustStillProcessing())
+      case UnsupportedRelationshipStatus(reason) =>
+        Logger.warn(s"[IvFailure][status] Unsupported IV failure reason: $reason")
+        Redirect(routes.FallbackFailureController.onPageLoad())
+      case UpstreamRelationshipError(response) =>
+        Logger.warn(s"[IvFailure][status] HTTP response: $response")
+        Redirect(routes.FallbackFailureController.onPageLoad())
     }
   }
 
