@@ -30,6 +30,7 @@ import views.html.{TrustLocked, TrustNotFound, TrustStillProcessing}
 import scala.concurrent.{ExecutionContext, Future}
 import models.TrustsStoreRequest
 import pages.{IsAgentManagingTrustPage, UtrPage}
+import play.api.Logger
 import views.html.TrustLocked
 
 class IvFailureController @Inject()(
@@ -46,10 +47,10 @@ class IvFailureController @Inject()(
 
   def onTrustIvFailure: Action[AnyContent] = identify.async {
     implicit request =>
-      val queryString = request.getQueryString("journeyFailure")
+      val queryString = request.getQueryString("journeyId")
       queryString match {
-        case Some(journeyFailure) =>
-          relationshipEstablishmentConnector.journeyId(journeyFailure).map {
+        case Some(id) =>
+          relationshipEstablishmentConnector.journeyId(id).map {
             rawJson => (rawJson \ "errorKey").as[String] match {
               case "TRUST_LOCKED" => Redirect(routes.IvFailureController.trustLocked())
               case "UTR_NOT_FOUND" => Redirect(routes.IvFailureController.trustNotFound())
@@ -57,7 +58,9 @@ class IvFailureController @Inject()(
               case _ => throw new InternalServerException("Internal server error")
             }
           }
-        case None => Future.successful(Redirect(routes.IvFailureController.trustLocked()))
+        case None =>
+          Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a journeyId to determine the reason")
+          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
       }
   }
 

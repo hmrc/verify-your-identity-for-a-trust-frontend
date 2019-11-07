@@ -55,6 +55,27 @@ class IvFailureControllerSpec extends SpecBase {
 
     "callback-failure route" when {
 
+      "redirect to IV FallbackFailure when no journeyId is provided" in {
+        val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .build()
+
+        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+
+        application.stop()
+      }
+
       "redirect to trust locked page when user fails Trusts IV after multiple attempts" in {
 
         val jsonWithErrorKey = Json.parse(
@@ -77,7 +98,7 @@ class IvFailureControllerSpec extends SpecBase {
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(Future.successful(jsonWithErrorKey))
 
-        val request = FakeRequest(GET, onIvFailureRoute)
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
         val result = route(application, request).value
 
@@ -88,7 +109,7 @@ class IvFailureControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to trust utr not found page when the utr isnt found" in {
+      "redirect to trust utr not found page when the utr isn't found" in {
 
         val jsonWithErrorKey = Json.parse(
           """
@@ -109,7 +130,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
 
-        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyFailure=47a8a543-6961-4221-86e8-d22e2c3c91de")
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
         val result = route(application, request).value
 
@@ -141,7 +162,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
 
-        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyFailure=47a8a543-6961-4221-86e8-d22e2c3c91de")
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
         val result = route(application, request).value
 
