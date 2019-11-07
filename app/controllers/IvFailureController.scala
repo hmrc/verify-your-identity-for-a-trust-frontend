@@ -22,13 +22,14 @@ import javax.inject.Inject
 import models.TrustsStoreRequest
 import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.InternalServerException
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.{TrustLocked, TrustNotFound, TrustStillProcessing}
 
 import scala.concurrent.{ExecutionContext, Future}
 import models.TrustsStoreRequest
+import models.requests.DataRequest
 import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.Logger
 import views.html.TrustLocked
@@ -45,21 +46,39 @@ class IvFailureController @Inject()(
                                      connector: TrustsStoreConnector
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onTrustIvFailure: Action[AnyContent] = identify.async {
+  private def renderFailureReason(utr: String, journeyId: String)(implicit hc : HeaderCarrier) = {
+    relationshipEstablishmentConnector.journeyId(journeyId).map {
+      rawJson => (rawJson \ "errorKey").as[String] match {
+        case "TRUST_LOCKED" =>
+          Logger.info(s"[IvFailure][status] $utr is locked")
+          Redirect(routes.IvFailureController.trustLocked())
+        case "UTR_NOT_FOUND" =>
+          Logger.info(s"[IvFailure][status] $utr was not found")
+          Redirect(routes.IvFailureController.trustNotFound())
+        case "UTR_IN_PROCESSING" =>
+          Logger.info(s"[IvFailure][status] $utr is processing")
+          Redirect(routes.IvFailureController.trustStillProcessing())
+        case _ => throw new InternalServerException("Internal server error")
+      }
+    }
+  }
+
+  def onTrustIvFailure: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val queryString = request.getQueryString("journeyId")
-      queryString match {
-        case Some(id) =>
-          relationshipEstablishmentConnector.journeyId(id).map {
-            rawJson => (rawJson \ "errorKey").as[String] match {
-              case "TRUST_LOCKED" => Redirect(routes.IvFailureController.trustLocked())
-              case "UTR_NOT_FOUND" => Redirect(routes.IvFailureController.trustNotFound())
-              case "UTR_IN_PROCESSING" => Redirect(routes.IvFailureController.trustStillProcessing())
-              case _ => throw new InternalServerException("Internal server error")
-            }
+
+      request.userAnswers.get(UtrPage) match {
+        case Some(utr) =>
+          val queryString = request.getQueryString("journeyId")
+
+          queryString.fold{
+            Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a journeyId to determine the reason")
+            Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+          }{
+            journeyId =>
+              renderFailureReason(utr, journeyId)
           }
         case None =>
-          Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a journeyId to determine the reason")
+          Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a UTR")
           Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
       }
   }
