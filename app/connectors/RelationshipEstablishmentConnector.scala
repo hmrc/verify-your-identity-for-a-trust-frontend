@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import play.api.libs.json.JsValue
+import models.RelationshipEstablishmentStatus.RelationshipEstablishmentStatus
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -26,9 +26,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RelationshipEstablishmentConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
-  def journeyId(id: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): Future[JsValue] = {
+  def journeyId(id: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): Future[RelationshipEstablishmentStatus] = {
     val url = s"${config.relationshipEstablishmentUrl}/journey-failure/$id"
 
-    http.GET[JsValue](url)
+    http.GET[RelationshipEstablishmentStatus](url)
   }
 }

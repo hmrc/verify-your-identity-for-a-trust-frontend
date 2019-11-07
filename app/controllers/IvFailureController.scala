@@ -19,8 +19,7 @@ package controllers
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
-import models.TrustsStoreRequest
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -47,19 +46,19 @@ class IvFailureController @Inject()(
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def renderFailureReason(utr: String, journeyId: String)(implicit hc : HeaderCarrier) = {
-    relationshipEstablishmentConnector.journeyId(journeyId).map {
-      rawJson => (rawJson \ "errorKey").as[String] match {
-        case "TRUST_LOCKED" =>
-          Logger.info(s"[IvFailure][status] $utr is locked")
-          Redirect(routes.IvFailureController.trustLocked())
-        case "UTR_NOT_FOUND" =>
-          Logger.info(s"[IvFailure][status] $utr was not found")
-          Redirect(routes.IvFailureController.trustNotFound())
-        case "UTR_IN_PROCESSING" =>
-          Logger.info(s"[IvFailure][status] $utr is processing")
-          Redirect(routes.IvFailureController.trustStillProcessing())
-        case _ => throw new InternalServerException("Internal server error")
-      }
+    relationshipEstablishmentConnector.journeyId(journeyId) map {
+      case RelationshipEstablishmentStatus.Locked =>
+        Logger.info(s"[IvFailure][status] $utr is locked")
+        Redirect(routes.IvFailureController.trustLocked())
+      case RelationshipEstablishmentStatus.NotFound =>
+        Logger.info(s"[IvFailure][status] $utr was not found")
+        Redirect(routes.IvFailureController.trustNotFound())
+      case RelationshipEstablishmentStatus.InProcessing =>
+        Logger.info(s"[IvFailure][status] $utr is processing")
+        Redirect(routes.IvFailureController.trustStillProcessing())
+      case RelationshipEstablishmentStatus.RelationshipError(reason) =>
+        Logger.warn(s"[IvFailure][status] Unsupported IV failure reason: $reason")
+        Redirect(routes.FallbackFailureController.onPageLoad())
     }
   }
 
