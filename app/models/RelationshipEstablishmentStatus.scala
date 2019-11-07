@@ -25,7 +25,8 @@ object RelationshipEstablishmentStatus {
   case object Locked extends RelationshipEstablishmentStatus
   case object NotFound extends RelationshipEstablishmentStatus
   case object InProcessing extends RelationshipEstablishmentStatus
-  case class RelationshipError(reason: String) extends RelationshipEstablishmentStatus
+  case class UnsupportedRelationshipStatus(reason: String) extends RelationshipEstablishmentStatus
+  case class UpstreamRelationshipError(reason: String) extends RelationshipEstablishmentStatus
 
   import play.api.http.Status._
 
@@ -37,9 +38,9 @@ object RelationshipEstablishmentStatus {
             case Some("TRUST_LOCKED")       => Locked
             case Some("UTR_NOT_FOUND")      => NotFound
             case Some("UTR_IN_PROCESSING")  => InProcessing
-            case Some(unsupported)          => RelationshipError(unsupported)
+            case Some(unsupported)          => UnsupportedRelationshipStatus(unsupported)
           }
-        case status => throw new RuntimeException(s"Unexpected status code $status")
+        case status => UpstreamRelationshipError(s"Unexpected HTTP response code $status")
       }
     }
   }

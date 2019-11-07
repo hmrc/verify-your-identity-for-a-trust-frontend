@@ -119,7 +119,7 @@ class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with MustMatc
         )
 
         connector.journeyId(journeyFailure) map { status =>
-          status mustBe a[RelationshipEstablishmentStatus.RelationshipError]
+          status mustBe a[RelationshipEstablishmentStatus.UnsupportedRelationshipStatus]
         }
       }
     }

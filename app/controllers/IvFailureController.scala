@@ -19,19 +19,17 @@ package controllers
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
+import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
+import pages.{IsAgentManagingTrustPage, UtrPage}
+import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.{TrustLocked, TrustNotFound, TrustStillProcessing}
 
 import scala.concurrent.{ExecutionContext, Future}
-import models.TrustsStoreRequest
-import models.requests.DataRequest
-import pages.{IsAgentManagingTrustPage, UtrPage}
-import play.api.Logger
-import views.html.TrustLocked
 
 class IvFailureController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
@@ -56,8 +54,11 @@ class IvFailureController @Inject()(
       case RelationshipEstablishmentStatus.InProcessing =>
         Logger.info(s"[IvFailure][status] $utr is processing")
         Redirect(routes.IvFailureController.trustStillProcessing())
-      case RelationshipEstablishmentStatus.RelationshipError(reason) =>
+      case UnsupportedRelationshipStatus(reason) =>
         Logger.warn(s"[IvFailure][status] Unsupported IV failure reason: $reason")
+        Redirect(routes.FallbackFailureController.onPageLoad())
+      case UpstreamRelationshipError(response) =>
+        Logger.warn(s"[IvFailure][status] HTTP response: $response")
         Redirect(routes.FallbackFailureController.onPageLoad())
     }
   }
