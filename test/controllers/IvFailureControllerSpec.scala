@@ -56,9 +56,14 @@ class IvFailureControllerSpec extends SpecBase {
     "callback-failure route" when {
 
       "redirect to IV FallbackFailure when no journeyId is provided" in {
+
+        val answers = emptyUserAnswers
+          .set(UtrPage, "1234567890").success.value
+          .set(IsAgentManagingTrustPage, true).success.value
+
         val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
           .overrides(bind[Navigator].toInstance(fakeNavigator))
           .build()
@@ -78,6 +83,11 @@ class IvFailureControllerSpec extends SpecBase {
 
       "redirect to trust locked page when user fails Trusts IV after multiple attempts" in {
 
+        val answers = emptyUserAnswers
+          .set(UtrPage, "1234567890").success.value
+          .set(IsAgentManagingTrustPage, true).success.value
+
+
         val jsonWithErrorKey = Json.parse(
           """
             |{
@@ -90,7 +100,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
           .overrides(bind[Navigator].toInstance(fakeNavigator))
           .build()
@@ -111,6 +121,10 @@ class IvFailureControllerSpec extends SpecBase {
 
       "redirect to trust utr not found page when the utr isn't found" in {
 
+        val answers = emptyUserAnswers
+          .set(UtrPage, "1234567890").success.value
+          .set(IsAgentManagingTrustPage, true).success.value
+
         val jsonWithErrorKey = Json.parse(
           """
             |{
@@ -119,7 +133,7 @@ class IvFailureControllerSpec extends SpecBase {
             |""".stripMargin
         )
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(
             bind[RelationshipEstablishmentConnector].toInstance(connector)
           )
@@ -143,6 +157,10 @@ class IvFailureControllerSpec extends SpecBase {
 
       "redirect to trust utr in processing page when the utr is processing" in {
 
+        val answers = emptyUserAnswers
+          .set(UtrPage, "1234567890").success.value
+          .set(IsAgentManagingTrustPage, true).success.value
+
         val jsonWithErrorKey = Json.parse(
           """
             |{
@@ -151,7 +169,7 @@ class IvFailureControllerSpec extends SpecBase {
             |""".stripMargin
         )
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(
             bind[RelationshipEstablishmentConnector].toInstance(connector)
           )
