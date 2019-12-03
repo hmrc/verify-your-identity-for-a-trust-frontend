@@ -37,6 +37,13 @@ class IvSuccessViewSpec extends ViewBehaviours {
       assertContainsText(doc, messages("ivSuccess.subheading", utr))
     }
 
+    "display the register link when config.mvpEnabled is true" in {
+
+
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("ivSuccess.subheading", utr))
+    }
+
   }
 
   "IvSuccess view with no Agent" must {
