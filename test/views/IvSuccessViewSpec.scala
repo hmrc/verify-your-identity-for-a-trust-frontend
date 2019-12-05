@@ -28,10 +28,6 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
   "IvSuccess view with Agent" must {
 
-    val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
-
-    val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
-
     "display the register link when config.mvpEnabled is false" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -47,6 +43,11 @@ class IvSuccessViewSpec extends ViewBehaviours {
     }
 
     "display the correct subheading" in {
+
+      val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
+
+      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
+
       val doc = asDocument(applyView)
       assertContainsText(doc, messages("ivSuccess.subheading", utr))
     }
