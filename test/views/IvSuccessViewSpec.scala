@@ -28,7 +28,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
   "IvSuccess view with Agent" must {
 
-    "display the register link when config.mvpEnabled is false" when {
+    "display the register link when config.playbackEnabled is false" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .configure("microservice.services.features.playback.enabled" -> false)
@@ -39,7 +39,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
       behave like normalPage(applyView, "ivSuccess.agent", "paragraph1", "paragraph2", "paragraph3",
-        "paragraph4", "paragraph5")
+        "paragraph5")
     }
 
     "display the correct subheading" in {
@@ -52,7 +52,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
       assertContainsText(doc, messages("ivSuccess.subheading", utr))
     }
 
-    "do not display the register link when config.mvpEnabled is true" when {
+    "do not display the register link when config.playbackEnabled is true" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .configure("microservice.services.features.playback.enabled" -> true)
@@ -63,7 +63,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
       behave like normalPage(applyView, "ivSuccess.agent","paragraph1", "paragraph2","paragraph3",
-       "paragraph5")
+        "paragraph4", "paragraph5")
     }
 
   }
