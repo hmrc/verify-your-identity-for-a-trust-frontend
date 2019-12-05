@@ -34,7 +34,7 @@
         <p>@messages("ivSuccess.agent.paragraph2")</p>
         <p>@messages("ivSuccess.agent.paragraph3")</p>
 
-        @if(config.mvpEnabled) {
+        @if(config.playbackEnabled) {
             <p>@messages("ivSuccess.agent.paragraph5") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
             } else {
             <p>@messages("ivSuccess.agent.paragraph4") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a>.</p>
