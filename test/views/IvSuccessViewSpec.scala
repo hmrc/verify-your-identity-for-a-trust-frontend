@@ -31,7 +31,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
     "display the register link when config.mvpEnabled is false" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .configure("microservice.services.features.mvp.enabled" -> false)
+        .configure("microservice.services.features.playback.enabled" -> false)
         .build()
 
       val view = application.injector.instanceOf[IvSuccessView]
@@ -55,7 +55,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
     "do not display the register link when config.mvpEnabled is true" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .configure("microservice.services.features.mvp.enabled" -> true)
+        .configure("microservice.services.features.playback.enabled" -> true)
         .build()
 
       val view = application.injector.instanceOf[IvSuccessView]
