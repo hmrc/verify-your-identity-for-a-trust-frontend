@@ -16,8 +16,11 @@
 
 package views
 
+import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import views.behaviours.ViewBehaviours
 import views.html.IvSuccessView
+import play.api.inject.guice.GuiceApplicationBuilder
+import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 
 class IvSuccessViewSpec extends ViewBehaviours {
 
@@ -25,16 +28,42 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
   "IvSuccess view with Agent" must {
 
-    val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
+    "display the register link when config.mvpEnabled is false" when {
 
-    val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .configure("microservice.services.features.mvp.enabled" -> false)
+        .build()
 
-    behave like normalPage(applyView, "ivSuccess.agent","paragraph1", "paragraph2","paragraph3",
-      "paragraph4", "paragraph5")
+      val view = application.injector.instanceOf[IvSuccessView]
+
+      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
+
+      behave like normalPage(applyView, "ivSuccess.agent", "paragraph1", "paragraph2", "paragraph3",
+        "paragraph4", "paragraph5")
+    }
 
     "display the correct subheading" in {
+
+      val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
+
+      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
+
       val doc = asDocument(applyView)
       assertContainsText(doc, messages("ivSuccess.subheading", utr))
+    }
+
+    "do not display the register link when config.mvpEnabled is true" when {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .configure("microservice.services.features.mvp.enabled" -> true)
+        .build()
+
+      val view = application.injector.instanceOf[IvSuccessView]
+
+      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
+
+      behave like normalPage(applyView, "ivSuccess.agent","paragraph1", "paragraph2","paragraph3",
+       "paragraph5")
     }
 
   }
