@@ -71,7 +71,7 @@ ivSuccess.no.agent.paragraph4 = If you need help using the service
 beforeYouContinue.title = Before you continue
 beforeYouContinue.heading = Before you continue
 beforeYouContinue.subheading = This trust’s UTR: {0}
-beforeYouContinue.p1 = You will be asked to answer several questions about the trust. This is so we can confirm you are authorised to view and amend the trust’s details.
+beforeYouContinue.p1 = You will be asked to answer several questions about the trust. This is so you can claim the trust (which links your Government Gateway account to your registered trust).
 beforeYouContinue.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
 beforeYouContinue.p3 = Do not enter any other details when answering these questions, even if someone from the trust wrote to HMRC to change them.
 beforeYouContinue.p4 = If you need help using the service
@@ -79,10 +79,11 @@ beforeYouContinue.a = contact the trusts helpline (opens in a new window or tab)
 
 locked.title = Your answers do not match the details we hold about this trust
 locked.heading = Your answers do not match the details we hold about this trust
-locked.p1 = As you have had 3 unsuccessful tries at accessing this trust, you will need to try again in 30 minutes.
-locked.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
-locked.p3 = If you need help with the service
-locked.link1 = contact the trusts helpline
+locked.p1 = As you have had 3 unsuccessful tries at accessing this trust you will need to try again in 30 minutes.
+locked.p2 = You need to answer the security questions correctly so you can claim the trust (which links your Government Gateway account to your registered trust).
+locked.p3 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
+locked.p4 = If you need help using the service,
+locked.link1 =  contact the trusts helpline (opens in a new window or tab)
 locked.subheading = This trust’s UTR: {0}
 
 stillProcessing.title = Sorry, you cannot access this trust
