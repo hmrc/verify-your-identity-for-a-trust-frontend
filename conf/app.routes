@@ -11,11 +11,6 @@ GET        /not-found                                   controllers.IvFailureCon
 
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
-GET        /managed-by-agent                               controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
-POST       /managed-by-agent                               controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
-GET        /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
-POST       /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
-
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
 GET        /save/:utr                                        controllers.SaveUTRController.save(utr: String, claimed: Boolean = true)

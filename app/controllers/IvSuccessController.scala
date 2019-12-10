@@ -70,7 +70,7 @@ class IvSuccessController @Inject()(
           }
         }
 
-        lazy val onRelationshipNotFound = Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
+        lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.trusts.routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
 
         relationshipEstablishment.check(request.internalId, utr) flatMap {
           case RelationshipFound =>

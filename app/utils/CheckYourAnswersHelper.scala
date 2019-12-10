@@ -18,13 +18,11 @@ package utils
 
 import java.time.format.DateTimeFormatter
 
-import controllers.routes
 import models.{CheckMode, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import viewmodels.AnswerRow
-import CheckYourAnswersHelper._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
@@ -33,7 +31,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("isAgentManagingTrust.checkYourAnswersLabel")),
         yesOrNo(x),
-        routes.IsAgentManagingTrustController.onPageLoad(CheckMode).url
+        controllers.trusts.routes.IsAgentManagingTrustController.onPageLoad(CheckMode).url
       )
   }
 

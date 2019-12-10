@@ -43,7 +43,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider()
   val utr = "0987654321"
 
-  lazy val isAgentManagingTrustRoute = routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+  lazy val isAgentManagingTrustRoute = controllers.trusts.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 

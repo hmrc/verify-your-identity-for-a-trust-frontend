@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.trusts
 
 import controllers.actions._
+import controllers.trusts.routes.SessionExpiredController
 import forms.IsAgentManagingTrustFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -28,7 +29,6 @@ import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IsAgentManagingTrustView
-import controllers.trusts.routes.SessionExpiredController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -63,7 +63,7 @@ class IsAgentManagingTrustController @Inject()(
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }

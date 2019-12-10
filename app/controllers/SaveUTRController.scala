@@ -47,7 +47,7 @@ class SaveUTRController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(userAnswers)
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+          } yield Redirect(controllers.trusts.routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
       }
 
       relationship.check(request.internalId, utr) flatMap {
