@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.trusts.routes._
+@import controllers.claim.routes._
 @import models.Mode
 
 @this(
@@ -22,10 +22,11 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, utr: String, claimed: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, utr: String, claim: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("isAgentManagingTrust.title")}"
+    title = s"${errorPrefix(form)} ${messages("isAgentManagingTrust.title")}",
+    claim = claim
     ) {
 
     @formHelper(action = IsAgentManagingTrustController.onSubmit(mode), 'autoComplete -> "off") {

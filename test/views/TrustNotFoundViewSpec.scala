@@ -27,7 +27,7 @@ class TrustNotFoundViewSpec extends ViewBehaviours {
 
     val view = viewFor[TrustNotFound](Some(emptyUserAnswers))
 
-    val applyView = view.apply(utr)(fakeRequest, messages)
+    val applyView = view.apply(utr, true)(fakeRequest, messages)
 
     behave like normalPage(applyView, "notFound","p1", "p2","p3",
       "p4", "link1", "p5", "link2", "link3")

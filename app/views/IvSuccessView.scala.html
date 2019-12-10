@@ -21,10 +21,11 @@
  config: FrontendAppConfig
 )
 
-@(isAgent: Boolean, utr: String)(implicit request: Request[_], messages: Messages)
+@(isAgent: Boolean, utr: String, claim: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
- title = if(isAgent) {messages("ivSuccess.agent.title")} else {messages("ivSuccess.no.agent.title")}
+ title = if(isAgent) {messages("ivSuccess.agent.title")} else {messages("ivSuccess.no.agent.title")},
+ claim = claim
 ) {
 
     <span class="govuk-caption-xl">@messages("ivSuccess.subheading", utr)</span>

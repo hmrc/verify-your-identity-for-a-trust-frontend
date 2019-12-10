@@ -19,13 +19,14 @@
     formHelper: FormWithCSRF
 )
 
-@(utr: String, claimed: Boolean)(implicit request: Request[_], messages: Messages)
+@(utr: String, claim: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("beforeYouContinue.title")
+    title = messages("beforeYouContinue.title"),
+    claim = claim
     ) {
 
-    @formHelper(action = controllers.trusts.routes.BeforeYouContinueController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.claim.routes.BeforeYouContinueController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

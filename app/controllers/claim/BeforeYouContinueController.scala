@@ -45,13 +45,10 @@ class BeforeYouContinueController @Inject()(
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      (for {
-        utr <- request.userAnswers.get(UtrPage)
-        claimed <- request.userAnswers.get(IsClaimedPage)
-      } yield {
+      request.userAnswers.get(UtrPage) map { utr =>
 
         def body = {
-          Future.successful(Ok(view(utr, claimed)))
+          Future.successful(Ok(view(utr, true)))
         }
 
         relationship.check(request.internalId, utr) flatMap {
@@ -61,7 +58,7 @@ class BeforeYouContinueController @Inject()(
             body
         }
 
-      }) getOrElse Future.successful(Redirect(controllers.claim.routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(controllers.claim.routes.SessionExpiredController.onPageLoad()))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {

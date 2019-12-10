@@ -18,10 +18,11 @@
     main_template: MainTemplate
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(claim: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("session_expired.title")
+    title = messages("session_expired.title"),
+    claim = claim
     ) {
 
     @components.heading("session_expired.heading")

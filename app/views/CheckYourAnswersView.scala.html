@@ -20,10 +20,11 @@
     main_template: MainTemplate
 )
 
-@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(answerSections: Seq[Section], claim: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("checkYourAnswers.title")
+    title = messages("checkYourAnswers.title"),
+    claim = claim
     ) {
 
     @components.heading("checkYourAnswers.heading")</h1>

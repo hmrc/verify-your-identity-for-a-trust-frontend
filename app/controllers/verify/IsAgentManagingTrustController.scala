@@ -50,10 +50,7 @@ class IsAgentManagingTrustController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      (for {
-        utr <- request.userAnswers.get(UtrPage)
-        claimed <- request.userAnswers.get(IsClaimedPage)
-      } yield {
+      request.userAnswers.get(UtrPage) map { utr =>
 
         lazy val body = {
             val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
@@ -61,7 +58,7 @@ class IsAgentManagingTrustController @Inject()(
               case Some(value) => form.fill(value)
             }
 
-            Future.successful(Ok(view(preparedForm, mode, utr, claimed)))
+            Future.successful(Ok(view(preparedForm, mode, utr, false)))
         }
 
         relationship.check(request.internalId, utr) flatMap {
@@ -71,7 +68,7 @@ class IsAgentManagingTrustController @Inject()(
             body
         }
 
-      }) getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
 
   }
 

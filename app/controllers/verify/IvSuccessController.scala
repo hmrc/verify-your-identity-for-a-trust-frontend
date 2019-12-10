@@ -61,7 +61,7 @@ class IvSuccessController @Inject()(
               case Some(value) => value
             }
 
-            Ok(view(isAgentManagingTrust, utr))
+            Ok(view(isAgentManagingTrust, utr, false))
 
           } recover {
             case _ =>

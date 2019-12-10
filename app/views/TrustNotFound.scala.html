@@ -18,10 +18,10 @@
 main_template: MainTemplate
 )
 
-@(utr: String)(implicit request: Request[_], messages: Messages)
+@(utr: String, claim: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("notFound.title")
+title = messages("notFound.title"), claim = claim
 ) {
 
 @components.heading("notFound.heading", headingSize = "heading-large")

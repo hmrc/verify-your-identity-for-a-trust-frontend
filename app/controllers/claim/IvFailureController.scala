@@ -91,7 +91,7 @@ class IvFailureController @Inject()(
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
         connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = true)) map { _ =>
-          Ok(lockedView(utr))
+          Ok(lockedView(utr, true))
         }
       }) getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
@@ -100,7 +100,7 @@ class IvFailureController @Inject()(
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>
-          Future.successful(Ok(notFoundView(utr)))
+          Future.successful(Ok(notFoundView(utr, true)))
       } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
 
@@ -108,7 +108,7 @@ class IvFailureController @Inject()(
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>
-          Future.successful(Ok(stillProcessingView(utr)))
+          Future.successful(Ok(stillProcessingView(utr, true)))
       } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
 }

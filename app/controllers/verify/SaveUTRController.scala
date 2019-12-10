@@ -39,11 +39,11 @@ class SaveUTRController @Inject()(
     implicit request =>
 
       lazy val body = {
-          val userAnswers = (request.userAnswers match {
+          val userAnswers = request.userAnswers match {
             case Some(userAnswers) => userAnswers.set(UtrPage, utr)
             case _ =>
               UserAnswers(request.internalId).set(UtrPage, utr)
-          }).flatMap(_.set(IsClaimedPage, claimed))
+          }
           for {
             updatedAnswers <- Future.fromTry(userAnswers)
             _              <- sessionRepository.set(updatedAnswers)

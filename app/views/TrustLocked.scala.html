@@ -18,10 +18,11 @@
 main_template: MainTemplate
 )
 
-@(utr: String)(implicit request: Request[_], messages: Messages)
+@(utr: String, claim: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("locked.title")
+    title = messages("locked.title"),
+    claim = claim
 ) {
 
     <span class="govuk-caption-xl">@messages("locked.subheading", utr)</span>

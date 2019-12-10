@@ -41,6 +41,6 @@ class CheckYourAnswersController @Inject()(
 
       val sections = Seq(AnswerSection(None, Seq()))
 
-      Ok(view(sections))
+      Ok(view(sections, true))
   }
 }
