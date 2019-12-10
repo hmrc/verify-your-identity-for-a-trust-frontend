@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.trusts
 
 import handlers.ErrorHandler
 import javax.inject.Inject

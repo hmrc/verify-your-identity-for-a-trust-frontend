@@ -9,8 +9,6 @@ GET        /still-processing                            controllers.IvFailureCon
 
 GET        /not-found                                   controllers.IvFailureController.trustNotFound
 
-GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad
-
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
 GET        /managed-by-agent                               controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)

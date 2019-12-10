@@ -57,10 +57,10 @@ class IvFailureController @Inject()(
         Redirect(routes.IvFailureController.trustStillProcessing())
       case UnsupportedRelationshipStatus(reason) =>
         Logger.warn(s"[IvFailure][status] Unsupported IV failure reason: $reason")
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(controllers.trusts.routes.FallbackFailureController.onPageLoad())
       case UpstreamRelationshipError(response) =>
         Logger.warn(s"[IvFailure][status] HTTP response: $response")
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(controllers.trusts.routes.FallbackFailureController.onPageLoad())
     }
   }
 
@@ -73,14 +73,14 @@ class IvFailureController @Inject()(
 
           queryString.fold{
             Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a journeyId to determine the reason")
-            Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+            Future.successful(Redirect(controllers.trusts.routes.FallbackFailureController.onPageLoad()))
           }{
             journeyId =>
               renderFailureReason(utr, journeyId)
           }
         case None =>
           Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a UTR")
-          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+          Future.successful(Redirect(controllers.trusts.routes.FallbackFailureController.onPageLoad()))
       }
   }
 
