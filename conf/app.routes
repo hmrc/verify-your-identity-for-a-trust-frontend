@@ -1,8 +1,8 @@
 
 ->         /                                            trusts.Routes
 
-GET        /claimed                                     controllers.IvSuccessController.onPageLoad(claimed: Boolean = true)
+GET        /claimed                                     controllers.IvSuccessController.onPageLoad()
 
-GET        /save/:utr                                        controllers.SaveUTRController.save(utr: String, claimed: Boolean = true)
+GET        /save/:utr                                   controllers.SaveUTRController.save(utr: String, claimed: Boolean = true)
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)

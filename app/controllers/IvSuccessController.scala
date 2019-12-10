@@ -48,7 +48,7 @@ class IvSuccessController @Inject()(
   extends FrontendBaseController with I18nSupport
                                     with AuthPartialFunctions {
 
-  def onPageLoad(claimed: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(UtrPage).map { utr =>
