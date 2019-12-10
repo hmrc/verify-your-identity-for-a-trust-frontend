@@ -23,7 +23,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -42,6 +42,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new IsAgentManagingTrustFormProvider()
   val form = formProvider()
   val utr = "0987654321"
+  val claimed = true
 
   lazy val isAgentManagingTrustRoute = controllers.trusts.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
@@ -53,6 +54,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
       val userAnswers = emptyUserAnswers
         .set(UtrPage, utr)
+        .success
+        .value
+        .set(IsClaimedPage, true)
         .success
         .value
 
@@ -69,7 +73,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, utr)(fakeRequest, messages).toString
+        view(form, NormalMode, utr, claimed)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -80,6 +84,8 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
         .set(IsAgentManagingTrustPage, true)
         .success.value
         .set(UtrPage, utr)
+        .success.value
+        .set(IsClaimedPage, true)
         .success.value
 
       val application = applicationBuilder(
@@ -95,7 +101,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, utr)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, utr, claimed)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -133,6 +139,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
         .set(UtrPage, utr)
         .success
         .value
+        .set(IsClaimedPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers),
         relationshipEstablishment = fakeEstablishmentServiceFailing)
@@ -151,7 +160,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, utr)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, utr, claimed)(fakeRequest, messages).toString
 
       application.stop()
     }

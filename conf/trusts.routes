@@ -9,20 +9,17 @@ POST       /managed-by-agent                               controllers.trusts.Is
 GET        /change/managed-by-agent                        controllers.trusts.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
 POST       /change/managed-by-agent                        controllers.trusts.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
 
-GET        /callback-failure                            controllers.trusts.IvFailureController.onTrustIvFailure
+GET        /callback-failure                            controllers.trusts.IvFailureController.onTrustIvFailure()
+GET        /locked                                      controllers.trusts.IvFailureController.trustLocked()
+GET        /still-processing                            controllers.trusts.IvFailureController.trustStillProcessing()
+GET        /not-found                                   controllers.trusts.IvFailureController.trustNotFound()
 
-GET        /locked                                      controllers.trusts.IvFailureController.trustLocked
+GET        /something-went-wrong                        controllers.trusts.FallbackFailureController.onPageLoad()
 
-GET        /still-processing                            controllers.trusts.IvFailureController.trustStillProcessing
-
-GET        /not-found                                   controllers.trusts.IvFailureController.trustNotFound
-
-GET        /something-went-wrong                        controllers.trusts.FallbackFailureController.onPageLoad
-
-GET        /check-your-answers                          controllers.trusts.CheckYourAnswersController.onPageLoad
+GET        /check-your-answers                          controllers.trusts.CheckYourAnswersController.onPageLoad()
 
 GET        /language/:lang                              controllers.trusts.LanguageSwitchController.switchToLanguage(lang: String)
 
 GET        /unauthorised                                controllers.trusts.UnauthorisedController.onPageLoad
 
-GET        /home                                            controllers.trusts.IndexController.onPageLoad
+GET        /                                            controllers.trusts.IndexController.onPageLoad

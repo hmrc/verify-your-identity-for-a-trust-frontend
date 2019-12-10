@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package views
+package pages
 
-import views.behaviours.ViewBehaviours
-import views.html.BeforeYouContinueView
+import play.api.libs.json.JsPath
 
-class BeforeYouContinueViewSpec extends ViewBehaviours {
+case object IsClaimedPage extends QuestionPage[Boolean] {
 
-  val claimed = true
+  override def path: JsPath = JsPath \ toString
 
-  "BeforeYouContinue view" must {
+  override def toString: String = "isClaimed"
 
-    val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
-
-    val applyView = view("0987654321", claimed)(fakeRequest, messages)
-
-    behave like normalPage(applyView, "beforeYouContinue")
-
-    behave like pageWithBackLink(applyView)
-  }
 }

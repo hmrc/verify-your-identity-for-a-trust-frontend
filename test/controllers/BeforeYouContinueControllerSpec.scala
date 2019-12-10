@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TrustsStoreConnector
 import models.TrustsStoreRequest
 import navigation.{FakeNavigator, Navigator}
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.mockito.Mockito._
 import org.mockito.Matchers.{eq => eqTo, _}
@@ -39,6 +39,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
   val utr = "0987654321"
   val managedByAgent = true
   val trustLocked = false
+  val claimed = false
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
@@ -46,7 +47,9 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val answers = emptyUserAnswers.set(UtrPage, utr).success.value
+      val answers = emptyUserAnswers
+        .set(UtrPage, utr).success.value
+        .set(IsClaimedPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
@@ -59,7 +62,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(utr)(fakeRequest, messages).toString
+        view(utr, claimed)(fakeRequest, messages).toString
 
       application.stop()
     }

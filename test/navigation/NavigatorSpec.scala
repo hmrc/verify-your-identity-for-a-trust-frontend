@@ -17,14 +17,15 @@
 package navigation
 
 import base.SpecBase
-import controllers.routes
-import pages._
-import models._
 import controllers.trusts.routes.IndexController
+import models._
+import pages._
 
 class NavigatorSpec extends SpecBase {
 
   val navigator = new Navigator
+
+  val claimed = true
 
   "Navigator" when {
 

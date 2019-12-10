@@ -22,7 +22,7 @@ import forms.IsAgentManagingTrustFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -50,7 +50,10 @@ class IsAgentManagingTrustController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage) map { utr =>
+      (for {
+        utr <- request.userAnswers.get(UtrPage)
+        claimed <- request.userAnswers.get(IsClaimedPage)
+      } yield {
 
         lazy val body = {
             val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
@@ -58,7 +61,7 @@ class IsAgentManagingTrustController @Inject()(
               case Some(value) => form.fill(value)
             }
 
-            Future.successful(Ok(view(preparedForm, mode, utr)))
+            Future.successful(Ok(view(preparedForm, mode, utr, claimed)))
         }
 
         relationship.check(request.internalId, utr) flatMap {
@@ -68,7 +71,7 @@ class IsAgentManagingTrustController @Inject()(
             body
         }
 
-      } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+      }) getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
 
   }
 
@@ -77,9 +80,12 @@ class IsAgentManagingTrustController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          request.userAnswers.get(UtrPage) map { utr =>
-            Future.successful(BadRequest(view(formWithErrors, mode, utr)))
-          } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+          (for {
+            utr <- request.userAnswers.get(UtrPage)
+            claimed <- request.userAnswers.get(IsClaimedPage)
+          } yield {
+            Future.successful(BadRequest(view(formWithErrors, mode, utr, claimed)))
+          }) getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
         ,
         value =>
           for {

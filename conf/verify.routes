@@ -1,7 +1,7 @@
 
 ->         /trusts                                            trusts.Routes
 
-GET        /verified                                     controllers.IvSuccessController.onPageLoad
+GET        /verified                                     controllers.IvSuccessController.onPageLoad(claimed: Boolean = false)
 
 GET        /save/:utr                                        controllers.SaveUTRController.save(utr: String, claimed: Boolean = false)
 

@@ -25,6 +25,8 @@ import views.html.CheckYourAnswersView
 
 class CheckYourAnswersControllerSpec extends SpecBase {
 
+  val claimed = true
+
   "Check Your Answers Controller" must {
 
     "return OK and the correct view for a GET" in {

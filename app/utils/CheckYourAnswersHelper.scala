@@ -26,7 +26,7 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  def isAgentManagingTrust: Option[AnswerRow] = userAnswers.get(IsAgentManagingTrustPage) map {
+  def isAgentManagingTrust(): Option[AnswerRow] = userAnswers.get(IsAgentManagingTrustPage) map {
     x =>
       AnswerRow(
         HtmlFormat.escape(messages("isAgentManagingTrust.checkYourAnswersLabel")),

@@ -22,6 +22,8 @@ import play.api.test.Helpers._
 
 class FallbackFailureControllerSpec extends SpecBase {
 
+  val claimed = true
+
   def onFailureRoute = controllers.trusts.routes.FallbackFailureController.onPageLoad().url
 
   "FallbackFailure Controller" must {

@@ -21,7 +21,7 @@ import connectors.TrustsStoreConnector
 import controllers.actions._
 import javax.inject.Inject
 import models.TrustsStoreRequest
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
@@ -42,23 +42,29 @@ class BeforeYouContinueController @Inject()(
                                      )(implicit ec: ExecutionContext,
                                        config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage) map { utr =>
+      (for {
+        utr <- request.userAnswers.get(UtrPage)
+        claimed <- request.userAnswers.get(IsClaimedPage)
+       } yield {
+
         def body = {
-            Future.successful(Ok(view(utr)))
+            Future.successful(Ok(view(utr, claimed)))
         }
+
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
             Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+
+      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
-  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       (for {

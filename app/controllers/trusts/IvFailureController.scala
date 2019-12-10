@@ -64,7 +64,7 @@ class IvFailureController @Inject()(
     }
   }
 
-  def onTrustIvFailure: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onTrustIvFailure(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(UtrPage) match {
@@ -84,7 +84,7 @@ class IvFailureController @Inject()(
       }
   }
 
-  def trustLocked : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustLocked() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       (for {
         utr <- request.userAnswers.get(UtrPage)
@@ -96,7 +96,7 @@ class IvFailureController @Inject()(
       }) getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
 
-  def trustNotFound : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustNotFound() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>
@@ -104,7 +104,7 @@ class IvFailureController @Inject()(
       } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
 
-  def trustStillProcessing : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustStillProcessing() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>

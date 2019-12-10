@@ -37,6 +37,8 @@ class IvFailureControllerSpec extends SpecBase {
 
   lazy val connector: RelationshipEstablishmentConnector = mock[RelationshipEstablishmentConnector]
 
+  private val claimed: Boolean = true
+
   "IvFailure Controller" must {
 
     "callback-failure route" when {
