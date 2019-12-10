@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import controllers.trusts.routes.SessionExpiredController
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.AnswerSection
@@ -54,7 +55,7 @@ class CheckYourAnswersControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

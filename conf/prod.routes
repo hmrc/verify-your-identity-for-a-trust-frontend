@@ -1,5 +1,7 @@
 # Add all the application routes to the app.routes file
-->         /claim-a-trust                    app.Routes
+->         /claim-a-trust                               app.Routes
+->         /verify-your-identity-for-a-trust            verify.Routes
+
 ->         /                          health.Routes
 ->     	   /template                  template.Routes
 

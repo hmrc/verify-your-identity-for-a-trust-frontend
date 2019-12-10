@@ -18,6 +18,7 @@ package controllers
 
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.trusts.routes.SessionExpiredController
 import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
@@ -92,7 +93,7 @@ class IvFailureController @Inject()(
         connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = true)) map { _ =>
           Ok(lockedView(utr))
         }
-      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
 
   def trustNotFound : Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -100,7 +101,7 @@ class IvFailureController @Inject()(
       request.userAnswers.get(UtrPage) map {
         utr =>
           Future.successful(Ok(notFoundView(utr)))
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
 
   def trustStillProcessing : Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -108,6 +109,6 @@ class IvFailureController @Inject()(
       request.userAnswers.get(UtrPage) map {
         utr =>
           Future.successful(Ok(stillProcessingView(utr)))
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
 }

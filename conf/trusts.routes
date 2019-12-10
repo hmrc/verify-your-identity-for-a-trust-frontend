@@ -1,0 +1,8 @@
+
+GET        /this-service-has-been-reset                 controllers.trusts.SessionExpiredController.onPageLoad
+
+GET        /language/:lang                              controllers.trusts.LanguageSwitchController.switchToLanguage(lang: String)
+
+GET        /unauthorised                                controllers.trusts.UnauthorisedController.onPageLoad
+
+GET        /home                                            controllers.trusts.IndexController.onPageLoad

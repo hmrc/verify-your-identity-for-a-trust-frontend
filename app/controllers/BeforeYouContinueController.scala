@@ -55,7 +55,7 @@ class BeforeYouContinueController @Inject()(
           case RelationshipNotFound =>
             body
         }
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(controllers.trusts.routes.SessionExpiredController.onPageLoad()))
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -90,6 +90,6 @@ class BeforeYouContinueController @Inject()(
           case RelationshipNotFound =>
             onRelationshipNotFound
         }
-      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse Future.successful(Redirect(controllers.trusts.routes.SessionExpiredController.onPageLoad()))
   }
 }

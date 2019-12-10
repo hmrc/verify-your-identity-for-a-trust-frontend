@@ -17,10 +17,10 @@
 package controllers.actions
 
 import base.SpecBase
-import controllers.routes
 import play.api.mvc.{BodyParsers, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
+import controllers.trusts.routes.UnauthorisedController
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -82,7 +82,7 @@ class AuthActionSpec extends SpecBase {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(UnauthorisedController.onPageLoad().url)
       }
     }
 
@@ -100,7 +100,7 @@ class AuthActionSpec extends SpecBase {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(UnauthorisedController.onPageLoad().url)
       }
     }
 
@@ -118,7 +118,7 @@ class AuthActionSpec extends SpecBase {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(UnauthorisedController.onPageLoad().url)
       }
     }
 
@@ -136,7 +136,7 @@ class AuthActionSpec extends SpecBase {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(UnauthorisedController.onPageLoad().url)
       }
     }
 
@@ -154,7 +154,7 @@ class AuthActionSpec extends SpecBase {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(UnauthorisedController.onPageLoad().url)
       }
     }
   }

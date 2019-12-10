@@ -28,6 +28,7 @@ import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IsAgentManagingTrustView
+import controllers.trusts.routes.SessionExpiredController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -67,7 +68,7 @@ class IsAgentManagingTrustController @Inject()(
             body
         }
 
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
 
   }
 
@@ -78,7 +79,7 @@ class IsAgentManagingTrustController @Inject()(
         formWithErrors =>
           request.userAnswers.get(UtrPage) map { utr =>
             Future.successful(BadRequest(view(formWithErrors, mode, utr)))
-          } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+          } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
         ,
         value =>
           for {

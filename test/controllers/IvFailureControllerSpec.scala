@@ -17,32 +17,19 @@
 package controllers
 
 import base.SpecBase
-import connectors.RelationshipEstablishmentConnector
-import pages.UtrPage
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
-import pages.{IsAgentManagingTrustPage, UtrPage}
-import connectors.RelationshipEstablishmentConnector
-import pages.UtrPage
-import uk.gov.hmrc.http.HttpResponse
 import org.scalatestplus.mockito.MockitoSugar.mock
-import org.mockito.Mockito._
-import org.mockito.Matchers.{eq => eqTo, _}
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.inject.bind
 import play.api.mvc.Call
-import play.api.libs.json.{JsValue, Json, Writes}
-
-import scala.concurrent.Future
-import org.mockito.Matchers._
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar.mock
-import play.api.libs.json.Json
-import play.api.inject.bind
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
+import controllers.trusts.routes.SessionExpiredController
 
 import scala.concurrent.Future
 
@@ -256,7 +243,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
         application.stop()
       }

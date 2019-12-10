@@ -30,6 +30,7 @@ import play.api.test.Helpers._
 import services.{RelationshipEstablishment, RelationshipFound}
 import uk.gov.hmrc.http.BadRequestException
 import views.html.IvSuccessView
+import controllers.trusts.routes.SessionExpiredController
 
 import scala.concurrent.Future
 
@@ -126,15 +127,15 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       "no existing data is found" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        lazy val application = applicationBuilder(userAnswers = None).build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        lazy val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
-        val result = route(application, request).value
+        lazy val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.trusts.routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
 

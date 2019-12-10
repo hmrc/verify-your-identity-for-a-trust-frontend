@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.trusts
 
 import base.SpecBase
+import controllers.trusts.routes.IndexController
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.IndexView
@@ -29,7 +30,7 @@ class IndexControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
+      val request = FakeRequest(GET, IndexController.onPageLoad().url)
 
       val result = route(application, request).value
 
