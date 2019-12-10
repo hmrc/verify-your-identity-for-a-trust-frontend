@@ -1,5 +1,5 @@
 
-->         /trusts                                            trusts.Routes
+->         /                                            trusts.Routes
 
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
