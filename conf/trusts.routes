@@ -1,6 +1,11 @@
 
 GET        /this-service-has-been-reset                 controllers.trusts.SessionExpiredController.onPageLoad
 
+GET        /before-you-continue                         controllers.trusts.BeforeYouContinueController.onPageLoad()
+POST       /before-you-continue                         controllers.trusts.BeforeYouContinueController.onSubmit()
+
+GET        /check-your-answers                          controllers.trusts.CheckYourAnswersController.onPageLoad
+
 GET        /language/:lang                              controllers.trusts.LanguageSwitchController.switchToLanguage(lang: String)
 
 GET        /unauthorised                                controllers.trusts.UnauthorisedController.onPageLoad

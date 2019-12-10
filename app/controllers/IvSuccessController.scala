@@ -19,7 +19,6 @@ package controllers
 import config.FrontendAppConfig
 import connectors.TaxEnrolmentsConnector
 import controllers.actions._
-import controllers.trusts.routes.SessionExpiredController
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{NormalMode, TaxEnrolmentsRequest}
@@ -30,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IvSuccessView
+import controllers.trusts.routes.SessionExpiredController
 
 import scala.concurrent.{ExecutionContext, Future}
 

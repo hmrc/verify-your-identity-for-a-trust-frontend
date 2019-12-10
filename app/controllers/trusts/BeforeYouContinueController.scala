@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.trusts
 
 import config.FrontendAppConfig
 import connectors.TrustsStoreConnector
@@ -51,11 +51,11 @@ class BeforeYouContinueController @Inject()(
         }
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }
-      } getOrElse Future.successful(Redirect(controllers.trusts.routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -86,7 +86,7 @@ class BeforeYouContinueController @Inject()(
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             onRelationshipNotFound
         }

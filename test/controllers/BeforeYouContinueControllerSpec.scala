@@ -50,7 +50,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
-      val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.trusts.routes.BeforeYouContinueController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -82,7 +82,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
         .overrides(bind[Navigator].toInstance(fakeNavigator))
         .build()
 
-      val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
+      val request = FakeRequest(POST, controllers.trusts.routes.BeforeYouContinueController.onSubmit().url)
 
       val result = route(application, request).value
 

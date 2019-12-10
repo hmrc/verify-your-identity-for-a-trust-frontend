@@ -13,11 +13,6 @@ GET        /something-went-wrong                        controllers.FallbackFail
 
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
-GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
-
-GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad()
-POST       /before-you-continue                         controllers.BeforeYouContinueController.onSubmit()
-
 GET        /managed-by-agent                               controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
 POST       /managed-by-agent                               controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
 GET        /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
@@ -25,6 +20,6 @@ POST       /change/managed-by-agent                        controllers.IsAgentMa
 
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
-GET        /save/:utr                                        controllers.SaveUTRController.save(utr: String)
+GET        /save/:utr                                        controllers.SaveUTRController.save(utr: String, claimed: Boolean = true)
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)

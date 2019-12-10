@@ -38,7 +38,7 @@ class NavigatorSpec extends SpecBase {
 
       "go to BeforeYouContinue from IsAgentManagingTrust" in {
 
-        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe routes.BeforeYouContinueController.onPageLoad()
+        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe controllers.trusts.routes.BeforeYouContinueController.onPageLoad()
 
       }
     }
@@ -48,7 +48,7 @@ class NavigatorSpec extends SpecBase {
       "go to CheckYourAnswers from a page that doesn't exist in the edit route map" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad()
+        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe controllers.trusts.routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }
