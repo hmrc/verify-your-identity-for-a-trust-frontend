@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TaxEnrolmentsConnector
 import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError, UserAnswers}
 import org.mockito.Matchers.{eq => eqTo, _}
-import org.mockito.Mockito._
+import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{IsAgentManagingTrustPage, UtrPage}
@@ -30,7 +30,6 @@ import play.api.test.Helpers._
 import services.{RelationshipEstablishment, RelationshipFound}
 import uk.gov.hmrc.http.BadRequestException
 import views.html.IvSuccessView
-import controllers.trusts.routes.SessionExpiredController
 
 import scala.concurrent.Future
 
@@ -55,7 +54,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         )
         .build()
 
-      val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.claim.routes.IvSuccessController.onPageLoad().url)
 
       val view = application.injector.instanceOf[IvSuccessView]
 
@@ -73,8 +72,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       contentAsString(result) mustEqual viewAsString
 
-      verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
-      verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+      verifyMock(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
       reset(connector)
       reset(mockRelationshipEstablishment)
@@ -95,7 +94,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         )
         .build()
 
-      val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.claim.routes.IvSuccessController.onPageLoad().url)
 
       val view = application.injector.instanceOf[IvSuccessView]
 
@@ -113,8 +112,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       contentAsString(result) mustEqual viewAsString
 
-      verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
-      verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+      verifyMock(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
       reset(connector)
       reset(mockRelationshipEstablishment)
@@ -129,13 +128,13 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
         lazy val application = applicationBuilder(userAnswers = None).build()
 
-        lazy val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        lazy val request = FakeRequest(GET, controllers.claim.routes.IvSuccessController.onPageLoad().url)
 
         lazy val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.trusts.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.verify.routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
 
@@ -159,7 +158,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
             )
             .build()
 
-          val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+          val request = FakeRequest(GET, controllers.claim.routes.IvSuccessController.onPageLoad().url)
 
           when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
             .thenReturn(Future.successful(RelationshipFound))
@@ -171,8 +170,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
           status(result) mustEqual INTERNAL_SERVER_ERROR
 
-          verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
-          verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+          verifyMock(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+          verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
           reset(connector)
           reset(mockRelationshipEstablishment)
@@ -194,7 +193,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
             )
             .build()
 
-          val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+          val request = FakeRequest(GET, controllers.claim.routes.IvSuccessController.onPageLoad().url)
 
           when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
             .thenReturn(Future.successful(RelationshipFound))
@@ -206,8 +205,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
           status(result) mustEqual INTERNAL_SERVER_ERROR
 
-          verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
-          verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+          verifyMock(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+          verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
           reset(connector)
           reset(mockRelationshipEstablishment)

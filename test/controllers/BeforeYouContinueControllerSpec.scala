@@ -22,7 +22,7 @@ import models.TrustsStoreRequest
 import navigation.{FakeNavigator, Navigator}
 import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
 import org.scalatestplus.mockito.MockitoSugar.mock
-import org.mockito.Mockito._
+import org.mockito.Mockito.{verify => verifyMock, _}
 import org.mockito.Matchers.{eq => eqTo, _}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -53,7 +53,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
-      val request = FakeRequest(GET, controllers.trusts.routes.BeforeYouContinueController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.verify.routes.BeforeYouContinueController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -85,7 +85,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
         .overrides(bind[Navigator].toInstance(fakeNavigator))
         .build()
 
-      val request = FakeRequest(POST, controllers.trusts.routes.BeforeYouContinueController.onSubmit().url)
+      val request = FakeRequest(POST, controllers.verify.routes.BeforeYouContinueController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -93,7 +93,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       redirectLocation(result).value must include("0987654321")
 
-      verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+      verifyMock(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
 
       application.stop()
 

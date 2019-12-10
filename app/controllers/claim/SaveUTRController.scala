@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.claim
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
@@ -39,20 +39,20 @@ class SaveUTRController @Inject()(
     implicit request =>
 
       lazy val body = {
-          val userAnswers = (request.userAnswers match {
-            case Some(userAnswers) => userAnswers.set(UtrPage, utr)
-            case _ =>
-              UserAnswers(request.internalId).set(UtrPage, utr)
-          }).flatMap(_.set(IsClaimedPage, claimed))
-          for {
-            updatedAnswers <- Future.fromTry(userAnswers)
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(controllers.trusts.routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+        val userAnswers = (request.userAnswers match {
+          case Some(userAnswers) => userAnswers.set(UtrPage, utr)
+          case _ =>
+            UserAnswers(request.internalId).set(UtrPage, utr)
+        }).flatMap(_.set(IsClaimedPage, claimed))
+        for {
+          updatedAnswers <- Future.fromTry(userAnswers)
+          _ <- sessionRepository.set(updatedAnswers)
+        } yield Redirect(controllers.claim.routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
       }
 
       relationship.check(request.internalId, utr) flatMap {
         case RelationshipFound =>
-          Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
+          Future.successful(Redirect(controllers.claim.routes.IvSuccessController.onPageLoad()))
         case RelationshipNotFound =>
           body
       }

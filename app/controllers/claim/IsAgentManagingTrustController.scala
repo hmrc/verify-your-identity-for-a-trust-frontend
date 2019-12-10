@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.trusts
+package controllers.claim
 
 import controllers.actions._
-import controllers.trusts.routes.SessionExpiredController
+import controllers.claim.routes.SessionExpiredController
 import forms.IsAgentManagingTrustFormProvider
 import javax.inject.Inject
 import models.Mode
@@ -33,17 +33,17 @@ import views.html.IsAgentManagingTrustView
 import scala.concurrent.{ExecutionContext, Future}
 
 class IsAgentManagingTrustController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: IsAgentManagingTrustFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: IsAgentManagingTrustView,
-                                         relationship: RelationshipEstablishment
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                override val messagesApi: MessagesApi,
+                                                sessionRepository: SessionRepository,
+                                                navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: IsAgentManagingTrustFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: IsAgentManagingTrustView,
+                                                relationship: RelationshipEstablishment
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
@@ -56,17 +56,17 @@ class IsAgentManagingTrustController @Inject()(
       } yield {
 
         lazy val body = {
-            val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
-              case None => form
-              case Some(value) => form.fill(value)
-            }
+          val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
+            case None => form
+            case Some(value) => form.fill(value)
+          }
 
-            Future.successful(Ok(view(preparedForm, mode, utr, claimed)))
+          Future.successful(Ok(view(preparedForm, mode, utr, claimed)))
         }
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(controllers.claim.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }
@@ -90,7 +90,7 @@ class IsAgentManagingTrustController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IsAgentManagingTrustPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(IsAgentManagingTrustPage, mode, updatedAnswers))
       )
   }

@@ -24,7 +24,7 @@ class FallbackFailureControllerSpec extends SpecBase {
 
   val claimed = true
 
-  def onFailureRoute = controllers.trusts.routes.FallbackFailureController.onPageLoad().url
+  def onFailureRoute = controllers.verify.routes.FallbackFailureController.onPageLoad().url
 
   "FallbackFailure Controller" must {
 

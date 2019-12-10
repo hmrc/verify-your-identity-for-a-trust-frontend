@@ -31,7 +31,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       AnswerRow(
         HtmlFormat.escape(messages("isAgentManagingTrust.checkYourAnswersLabel")),
         yesOrNo(x),
-        controllers.trusts.routes.IsAgentManagingTrustController.onPageLoad(CheckMode).url
+        controllers.verify.routes.IsAgentManagingTrustController.onPageLoad(CheckMode).url
       )
   }
 

@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package controllers.trusts
+package controllers
 
 import base.SpecBase
-import controllers.trusts.routes.SessionExpiredController
+import controllers.verify.routes.UnauthorisedController
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.SessionExpiredView
+import views.html.UnauthorisedView
 
-class SessionExpiredControllerSpec extends SpecBase {
+class UnauthorisedControllerSpec extends SpecBase {
 
-  "SessionExpired Controller" must {
+  "Unauthorised Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, SessionExpiredController.onPageLoad().url)
+      val request = FakeRequest(GET, UnauthorisedController.onPageLoad().url)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SessionExpiredView]
+      val view = application.injector.instanceOf[UnauthorisedView]
 
       status(result) mustEqual OK
 

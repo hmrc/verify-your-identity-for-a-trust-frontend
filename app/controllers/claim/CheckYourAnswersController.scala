@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trusts
+package controllers.claim
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}

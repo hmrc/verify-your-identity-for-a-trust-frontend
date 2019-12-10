@@ -17,7 +17,7 @@
 package navigation
 
 import base.SpecBase
-import controllers.trusts.routes.IndexController
+import controllers.verify.routes.IndexController
 import models._
 import pages._
 
@@ -39,7 +39,7 @@ class NavigatorSpec extends SpecBase {
 
       "go to BeforeYouContinue from IsAgentManagingTrust" in {
 
-        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe controllers.trusts.routes.BeforeYouContinueController.onPageLoad()
+        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe controllers.verify.routes.BeforeYouContinueController.onPageLoad()
 
       }
     }
@@ -49,7 +49,7 @@ class NavigatorSpec extends SpecBase {
       "go to CheckYourAnswers from a page that doesn't exist in the edit route map" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe controllers.trusts.routes.CheckYourAnswersController.onPageLoad()
+        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe controllers.verify.routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

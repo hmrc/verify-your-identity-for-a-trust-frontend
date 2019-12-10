@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.verify
 
 import config.FrontendAppConfig
 import connectors.TaxEnrolmentsConnector
 import controllers.actions._
+import controllers.verify.routes.SessionExpiredController
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{NormalMode, TaxEnrolmentsRequest}
@@ -29,7 +30,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IvSuccessView
-import controllers.trusts.routes.SessionExpiredController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -70,7 +70,7 @@ class IvSuccessController @Inject()(
           }
         }
 
-        lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.trusts.routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
+        lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.verify.routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
 
         relationshipEstablishment.check(request.internalId, utr) flatMap {
           case RelationshipFound =>

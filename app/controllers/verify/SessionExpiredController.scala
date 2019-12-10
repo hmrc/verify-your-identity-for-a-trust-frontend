@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trusts
+package controllers.verify
 
 import javax.inject.Inject
 import play.api.i18n.I18nSupport

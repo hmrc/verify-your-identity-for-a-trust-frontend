@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.trusts
+package controllers.claim
 
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.trusts.routes.SessionExpiredController
+import controllers.claim.routes.SessionExpiredController
 import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
@@ -44,7 +44,7 @@ class IvFailureController @Inject()(
                                      connector: TrustsStoreConnector
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def renderFailureReason(utr: String, journeyId: String)(implicit hc : HeaderCarrier) = {
+  private def renderFailureReason(utr: String, journeyId: String)(implicit hc: HeaderCarrier) = {
     relationshipEstablishmentConnector.journeyId(journeyId) map {
       case RelationshipEstablishmentStatus.Locked =>
         Logger.info(s"[IvFailure][status] $utr is locked")
@@ -57,10 +57,10 @@ class IvFailureController @Inject()(
         Redirect(routes.IvFailureController.trustStillProcessing())
       case UnsupportedRelationshipStatus(reason) =>
         Logger.warn(s"[IvFailure][status] Unsupported IV failure reason: $reason")
-        Redirect(controllers.trusts.routes.FallbackFailureController.onPageLoad())
+        Redirect(controllers.claim.routes.FallbackFailureController.onPageLoad())
       case UpstreamRelationshipError(response) =>
         Logger.warn(s"[IvFailure][status] HTTP response: $response")
-        Redirect(controllers.trusts.routes.FallbackFailureController.onPageLoad())
+        Redirect(controllers.claim.routes.FallbackFailureController.onPageLoad())
     }
   }
 
@@ -71,20 +71,20 @@ class IvFailureController @Inject()(
         case Some(utr) =>
           val queryString = request.getQueryString("journeyId")
 
-          queryString.fold{
+          queryString.fold {
             Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a journeyId to determine the reason")
-            Future.successful(Redirect(controllers.trusts.routes.FallbackFailureController.onPageLoad()))
-          }{
+            Future.successful(Redirect(controllers.claim.routes.FallbackFailureController.onPageLoad()))
+          } {
             journeyId =>
               renderFailureReason(utr, journeyId)
           }
         case None =>
           Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a UTR")
-          Future.successful(Redirect(controllers.trusts.routes.FallbackFailureController.onPageLoad()))
+          Future.successful(Redirect(controllers.claim.routes.FallbackFailureController.onPageLoad()))
       }
   }
 
-  def trustLocked() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustLocked(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       (for {
         utr <- request.userAnswers.get(UtrPage)
@@ -96,7 +96,7 @@ class IvFailureController @Inject()(
       }) getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
 
-  def trustNotFound() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustNotFound(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>
@@ -104,7 +104,7 @@ class IvFailureController @Inject()(
       } getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))
   }
 
-  def trustStillProcessing() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustStillProcessing(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trusts
+package controllers.claim
 
 import config.FrontendAppConfig
 import connectors.TrustsStoreConnector
@@ -31,16 +31,16 @@ import views.html.BeforeYouContinueView
 import scala.concurrent.{ExecutionContext, Future}
 
 class BeforeYouContinueController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       relationship: RelationshipEstablishment,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: BeforeYouContinueView,
-                                       connector: TrustsStoreConnector
-                                     )(implicit ec: ExecutionContext,
-                                       config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
+                                             override val messagesApi: MessagesApi,
+                                             identify: IdentifierAction,
+                                             relationship: RelationshipEstablishment,
+                                             getData: DataRetrievalAction,
+                                             requireData: DataRequiredAction,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             view: BeforeYouContinueView,
+                                             connector: TrustsStoreConnector
+                                           )(implicit ec: ExecutionContext,
+                                             config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
@@ -48,20 +48,20 @@ class BeforeYouContinueController @Inject()(
       (for {
         utr <- request.userAnswers.get(UtrPage)
         claimed <- request.userAnswers.get(IsClaimedPage)
-       } yield {
+      } yield {
 
         def body = {
-            Future.successful(Ok(view(utr, claimed)))
+          Future.successful(Ok(view(utr, claimed)))
         }
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(controllers.claim.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }
 
-      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse Future.successful(Redirect(controllers.claim.routes.SessionExpiredController.onPageLoad()))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -72,7 +72,7 @@ class BeforeYouContinueController @Inject()(
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
 
-        def onRelationshipNotFound =  {
+        def onRelationshipNotFound = {
 
           val successRedirect = config.successUrl
           val failureRedirect = config.failureUrl
@@ -92,10 +92,10 @@ class BeforeYouContinueController @Inject()(
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(controllers.claim.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             onRelationshipNotFound
         }
-      }) getOrElse Future.successful(Redirect(controllers.trusts.routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse Future.successful(Redirect(controllers.claim.routes.SessionExpiredController.onPageLoad()))
   }
 }

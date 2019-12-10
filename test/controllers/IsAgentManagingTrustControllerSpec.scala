@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
 import views.html.IsAgentManagingTrustView
-import controllers.trusts.routes.SessionExpiredController
+import controllers.verify.routes.SessionExpiredController
 
 import scala.concurrent.Future
 
@@ -44,7 +44,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
   val utr = "0987654321"
   val claimed = true
 
-  lazy val isAgentManagingTrustRoute = controllers.trusts.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+  lazy val isAgentManagingTrustRoute = controllers.verify.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 

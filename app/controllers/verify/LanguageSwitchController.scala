@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.trusts
+package controllers.verify
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
@@ -30,7 +30,7 @@ class LanguageSwitchController @Inject()(
                                           val controllerComponents: MessagesControllerComponents
                                         ) extends FrontendBaseController with I18nSupport {
 
-  private def fallbackURL: String = controllers.trusts.routes.IndexController.onPageLoad().url
+  private def fallbackURL: String = controllers.verify.routes.IndexController.onPageLoad().url
 
   private def languageMap: Map[String, Lang] = appConfig.languageMap
 

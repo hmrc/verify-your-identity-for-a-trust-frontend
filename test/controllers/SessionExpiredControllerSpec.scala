@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package controllers.trusts
+package controllers
 
 import base.SpecBase
-import controllers.trusts.routes.IndexController
+import controllers.verify.routes.SessionExpiredController
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.IndexView
+import views.html.SessionExpiredView
 
-class IndexControllerSpec extends SpecBase {
+class SessionExpiredControllerSpec extends SpecBase {
 
-  "Index Controller" must {
+  "SessionExpired Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, IndexController.onPageLoad().url)
+      val request = FakeRequest(GET, SessionExpiredController.onPageLoad().url)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[IndexView]
+      val view = application.injector.instanceOf[SessionExpiredView]
 
       status(result) mustEqual OK
 

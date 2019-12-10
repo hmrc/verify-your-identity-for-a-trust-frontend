@@ -99,5 +99,5 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   )
 
   def routeToSwitchLanguage: String => Call =
-    (lang: String) => controllers.trusts.routes.LanguageSwitchController.switchToLanguage(lang)
+    (lang: String) => controllers.verify.routes.LanguageSwitchController.switchToLanguage(lang)
 }

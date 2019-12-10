@@ -27,12 +27,12 @@ import models._
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case IsAgentManagingTrustPage => _ => controllers.trusts.routes.BeforeYouContinueController.onPageLoad()
-    case _ => _ => controllers.trusts.routes.IndexController.onPageLoad()
+    case IsAgentManagingTrustPage => _ => controllers.verify.routes.BeforeYouContinueController.onPageLoad()
+    case _ => _ => controllers.verify.routes.IndexController.onPageLoad()
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => controllers.trusts.routes.CheckYourAnswersController.onPageLoad()
+    case _ => _ => controllers.verify.routes.CheckYourAnswersController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
