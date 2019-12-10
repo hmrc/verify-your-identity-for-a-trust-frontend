@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.trusts
 
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.trusts.routes.SessionExpiredController
 import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
@@ -28,7 +29,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.{TrustLocked, TrustNotFound, TrustStillProcessing}
-import controllers.trusts.routes.SessionExpiredController
 
 import scala.concurrent.{ExecutionContext, Future}
 

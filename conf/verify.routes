@@ -1,16 +1,6 @@
 
 ->         /trusts                                            trusts.Routes
 
-GET        /callback-failure                            controllers.IvFailureController.onTrustIvFailure
-
-GET        /locked                                      controllers.IvFailureController.trustLocked
-
-GET        /still-processing                            controllers.IvFailureController.trustStillProcessing
-
-GET        /not-found                                   controllers.IvFailureController.trustNotFound
-
-GET        /claimed                                     controllers.IvSuccessController.onPageLoad
-
 GET        /verified                                     controllers.IvSuccessController.onPageLoad
 
 GET        /save/:utr                                        controllers.SaveUTRController.save(utr: String, claimed: Boolean = false)
