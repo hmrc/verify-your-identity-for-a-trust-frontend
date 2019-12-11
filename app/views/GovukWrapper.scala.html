@@ -103,7 +103,7 @@
     @if(appConfig.languageTranslationEnabled) {
         @language_selection(
             appConfig.languageMap,
-            appConfig.routeToSwitchLanguage(claim),
+            "languageSwitch",
             Some("translate u-align--right"))
     }
 

@@ -97,11 +97,4 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
   )
-
-  def routeToSwitchLanguage(claim: Boolean): String => Call =
-    (lang: String) => if(claim){
-      controllers.claim.routes.LanguageSwitchController.switchToLanguage(lang)
-    } else {
-      controllers.verify.routes.LanguageSwitchController.switchToLanguage(lang)
-    }
 }

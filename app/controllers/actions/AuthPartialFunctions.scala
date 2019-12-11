@@ -17,7 +17,7 @@
 package controllers.actions
 
 import config.FrontendAppConfig
-import controllers.verify.routes
+import controllers.returning.routes
 import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect

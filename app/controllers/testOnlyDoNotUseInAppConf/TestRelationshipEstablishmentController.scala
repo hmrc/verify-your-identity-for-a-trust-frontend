@@ -94,12 +94,12 @@ class TestRelationshipEstablishmentController @Inject()(
         case utr @ succeedRegex(_) =>
           relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, utr) map {
             _ =>
-              Redirect(controllers.verify.routes.IvSuccessController.onPageLoad())
+              Redirect(controllers.returning.routes.IvSuccessController.onPageLoad())
           }
         case failRegex(_) =>
-          Future.successful(Redirect(controllers.verify.routes.IvFailureController.onTrustIvFailure()))
+          Future.successful(Redirect(controllers.returning.routes.IvFailureController.onTrustIvFailure()))
         case _ =>
-          Future.successful(Redirect(controllers.verify.routes.IvFailureController.onTrustIvFailure()))
+          Future.successful(Redirect(controllers.returning.routes.IvFailureController.onTrustIvFailure()))
       }
   }
 

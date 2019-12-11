@@ -20,7 +20,7 @@ import base.SpecBase
 import play.api.mvc.{BodyParsers, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
-import controllers.verify.routes.UnauthorisedController
+import controllers.returning.routes.UnauthorisedController
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

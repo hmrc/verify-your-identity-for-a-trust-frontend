@@ -18,10 +18,10 @@
     main_template: MainTemplate
 )
 
-@(claim: Boolean)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("unauthorised.title"), claim = claim
+    title = messages("unauthorised.title")
     ) {
 
     @components.heading("unauthorised.heading")
