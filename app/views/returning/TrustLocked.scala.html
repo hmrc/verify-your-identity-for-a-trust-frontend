@@ -21,7 +21,7 @@ main_template: MainTemplate
 @(utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("locked.title")
+    title = messages("locked.title"), serviceNameKey = "site.returning.service_name"
 ) {
 
     <span class="govuk-caption-xl">@messages("locked.subheading", utr)</span>
@@ -29,6 +29,5 @@ main_template: MainTemplate
 
     <p>@messages("locked.p1")</p>
     <p>@messages("locked.p2")</p>
-    <p>@messages("locked.p3")</p>
     <p>@messages("locked.p4") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("locked.link1")</a>.</p>
 }

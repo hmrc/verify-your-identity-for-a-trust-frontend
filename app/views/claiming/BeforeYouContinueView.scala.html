@@ -24,7 +24,7 @@
 @(utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("beforeYouContinue.title")
+    title = messages("beforeYouContinue.title"), serviceNameKey = "site.claiming.service_name"
     ) {
 
     @formHelper(action = claiming.routes.BeforeYouContinueController.onSubmit(), 'autoComplete -> "off") {

@@ -25,7 +25,7 @@
 @(form: Form[_], mode: Mode, utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("isAgentManagingTrust.title")}"
+    title = s"${errorPrefix(form)} ${messages("isAgentManagingTrust.title")}", serviceNameKey = "site.claiming.service_name"
     ) {
 
     @formHelper(action = claiming.routes.IsAgentManagingTrustController.onSubmit(mode), 'autoComplete -> "off") {

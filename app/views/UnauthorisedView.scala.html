@@ -21,7 +21,7 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("unauthorised.title")
+    title = messages("unauthorised.title"), serviceNameKey = "site.returning.service_name"
     ) {
 
     @components.heading("unauthorised.heading")

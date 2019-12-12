@@ -54,7 +54,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         )
         .build()
 
-      val request = FakeRequest(GET, controllers.claiming.routes.IvSuccessController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.returning.routes.IvSuccessController.onPageLoad().url)
 
       val view = application.injector.instanceOf[returning.IvSuccessView]
 
@@ -94,7 +94,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         )
         .build()
 
-      val request = FakeRequest(GET, controllers.claiming.routes.IvSuccessController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.returning.routes.IvSuccessController.onPageLoad().url)
 
       val view = application.injector.instanceOf[returning.IvSuccessView]
 
@@ -128,7 +128,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
         lazy val application = applicationBuilder(userAnswers = None).build()
 
-        lazy val request = FakeRequest(GET, controllers.claiming.routes.IvSuccessController.onPageLoad().url)
+        lazy val request = FakeRequest(GET, controllers.returning.routes.IvSuccessController.onPageLoad().url)
 
         lazy val result = route(application, request).value
 
@@ -158,7 +158,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
             )
             .build()
 
-          val request = FakeRequest(GET, controllers.claiming.routes.IvSuccessController.onPageLoad().url)
+          val request = FakeRequest(GET, controllers.returning.routes.IvSuccessController.onPageLoad().url)
 
           when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
             .thenReturn(Future.successful(RelationshipFound))
@@ -193,7 +193,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
             )
             .build()
 
-          val request = FakeRequest(GET, controllers.claiming.routes.IvSuccessController.onPageLoad().url)
+          val request = FakeRequest(GET, controllers.returning.routes.IvSuccessController.onPageLoad().url)
 
           when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
             .thenReturn(Future.successful(RelationshipFound))

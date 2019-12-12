@@ -24,6 +24,7 @@
 )
 
 @(title: String,
+  serviceNameKey: String,
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -42,6 +43,7 @@
 
 @govuk_wrapper(appConfig = appConfig,
                title = title,
+               serviceNameKey = serviceNameKey,
                mainClass = mainClass,
                bodyClasses = bodyClasses,
                sidebar = sidebarContent,

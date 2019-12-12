@@ -21,7 +21,7 @@ main_template: MainTemplate
 @(utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("stillProcessing.title")
+title = messages("stillProcessing.title"), serviceNameKey = "site.claiming.service_name"
 ) {
 
 <span class="govuk-caption-xl">@messages("stillProcessing.subheading", utr)</span>

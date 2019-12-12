@@ -21,7 +21,7 @@ main_template: MainTemplate
 @(utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("notFound.title")
+title = messages("notFound.title"), serviceNameKey = "site.returning.service_name"
 ) {
 
 @components.heading("notFound.heading", headingSize = "heading-large")

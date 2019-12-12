@@ -24,7 +24,7 @@
 @(isAgent: Boolean, utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
- title = if(isAgent) {messages("ivSuccess.agent.title")} else {messages("ivSuccess.no.agent.title")}
+ title = if(isAgent) {messages("ivSuccess.agent.title")} else {messages("ivSuccess.no.agent.title")}, serviceNameKey = "site.claiming.service_name"
 ) {
 
     <span class="govuk-caption-xl">@messages("ivSuccess.subheading", utr)</span>

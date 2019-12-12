@@ -32,6 +32,7 @@
 
 @(appConfig: config.FrontendAppConfig,
   title: String,
+  serviceNameKey: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -59,7 +60,7 @@
     <!-- End Google Tag Manager (noscript) -->
 
     @header_nav(
-      navTitle = Some(messages("site.service_name")),
+      navTitle = Some(messages(serviceNameKey)),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = None)

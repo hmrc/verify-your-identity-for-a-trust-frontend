@@ -24,7 +24,7 @@
 @(utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("beforeYouContinue.title")
+    title = messages("beforeYouContinue.title"), serviceNameKey = "site.returning.service_name"
     ) {
 
     @formHelper(action = returning.routes.BeforeYouContinueController.onSubmit(), 'autoComplete -> "off") {
@@ -34,9 +34,9 @@
         <span class="govuk-caption-xl">@messages("beforeYouContinue.subheading", utr)</span>
         @components.heading("beforeYouContinue.heading", headingSize = "heading-large govuk-fieldset__heading")
 
-        <p>@messages("beforeYouContinue.p1")</p>
-        <p>@messages("beforeYouContinue.p2")</p>
-        <p>@messages("beforeYouContinue.p3")</p>
+        <p>@messages("beforeYouContinue.returning.p1")</p>
+        <p>@messages("beforeYouContinue.returning.p2")</p>
+        <p>@messages("beforeYouContinue.returning.p3")</p>
         <p>
             @messages("beforeYouContinue.p4")
             <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("beforeYouContinue.a")</a>.

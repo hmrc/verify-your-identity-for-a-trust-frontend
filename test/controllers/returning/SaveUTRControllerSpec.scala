@@ -55,12 +55,12 @@ class SaveUTRControllerSpec extends SpecBase {
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
-        val request = FakeRequest(GET, controllers.claiming.routes.SaveUTRController.save(utr).url)
+        val request = FakeRequest(GET, controllers.returning.routes.SaveUTRController.save(utr).url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustBe controllers.claiming.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustBe controllers.returning.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
         captor.getValue.get(UtrPage).value mustBe utr
 
@@ -78,12 +78,12 @@ class SaveUTRControllerSpec extends SpecBase {
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
-        val request = FakeRequest(GET, controllers.claiming.routes.SaveUTRController.save(utr).url)
+        val request = FakeRequest(GET, controllers.returning.routes.SaveUTRController.save(utr).url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustBe controllers.claiming.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustBe controllers.returning.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
         captor.getValue.get(UtrPage).value mustBe utr
 

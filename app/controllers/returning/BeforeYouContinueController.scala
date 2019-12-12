@@ -71,14 +71,14 @@ class BeforeYouContinueController @Inject()(
 
         def onRelationshipNotFound =  {
 
-          val successRedirect = config.successUrl
-          val failureRedirect = config.failureUrl
+          val returningSuccessRedirect = config.returningSuccessUrl
+          val returningFailureRedirect = config.returningFailureUrl
 
           val host = config.relationshipEstablishmentFrontendtUrl(utr)
 
           val queryString: Map[String, Seq[String]] = Map(
-            "success" -> Seq(successRedirect),
-            "failure" -> Seq(failureRedirect)
+            "success" -> Seq(returningSuccessRedirect),
+            "failure" -> Seq(returningFailureRedirect)
           )
 
           connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = false)) map { _ =>
