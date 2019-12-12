@@ -19,7 +19,7 @@ package controllers.claiming
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
-import pages.{IsClaimedPage, UtrPage}
+import pages.UtrPage
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}

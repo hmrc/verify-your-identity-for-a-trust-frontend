@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.claiming
+package controllers
 
 import base.SpecBase
 import play.api.test.FakeRequest
@@ -29,7 +29,7 @@ class UnauthorisedControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, UnauthorisedController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.routes.UnauthorisedController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -38,7 +38,7 @@ class UnauthorisedControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(true)(fakeRequest, messages).toString
+        view()(fakeRequest, messages).toString
 
       application.stop()
     }

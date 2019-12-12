@@ -21,7 +21,7 @@ import connectors.TrustsStoreConnector
 import controllers.actions._
 import javax.inject.Inject
 import models.TrustsStoreRequest
-import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
@@ -58,7 +58,7 @@ class BeforeYouContinueController @Inject()(
             body
         }
 
-      } getOrElse Future.successful(Redirect(controllers.returning.routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -93,6 +93,6 @@ class BeforeYouContinueController @Inject()(
           case RelationshipNotFound =>
             onRelationshipNotFound
         }
-      }) getOrElse Future.successful(Redirect(controllers.returning.routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
   }
 }

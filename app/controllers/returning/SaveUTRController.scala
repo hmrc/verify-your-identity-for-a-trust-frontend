@@ -19,7 +19,7 @@ package controllers.returning
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
-import pages.{IsClaimedPage, UtrPage}
+import pages.UtrPage
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
@@ -35,7 +35,7 @@ class SaveUTRController @Inject()(
                                    relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends BackendController(cc) {
 
-  def save(utr: String, claimed: Boolean): Action[AnyContent] = (identify andThen getData).async {
+  def save(utr: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       lazy val body = {

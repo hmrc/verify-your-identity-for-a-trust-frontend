@@ -19,7 +19,7 @@ package controllers.returning
 import base.SpecBase
 import connectors.TrustsStoreConnector
 import models.TrustsStoreRequest
-import navigation.{FakeNavigator, Navigator}
+import navigation.{ClaimingNavigator, FakeNavigator}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
 import uk.gov.hmrc.http.HttpResponse
-import views.html.BeforeYouContinueView
+import views.html.returning
 
 import scala.concurrent.Future
 
@@ -57,12 +57,12 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[BeforeYouContinueView]
+      val view = application.injector.instanceOf[returning.BeforeYouContinueView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(utr, claimed)(fakeRequest, messages).toString
+        view(utr)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -82,7 +82,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing)
         .overrides(bind[TrustsStoreConnector].toInstance(connector))
-        .overrides(bind[Navigator].toInstance(fakeNavigator))
+        .overrides(bind[ClaimingNavigator].toInstance(fakeNavigator))
         .build()
 
       val request = FakeRequest(POST, controllers.returning.routes.BeforeYouContinueController.onSubmit().url)

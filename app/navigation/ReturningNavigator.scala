@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package views.claiming
+package navigation
 
-import views.behaviours.ViewBehaviours
-import views.html.SessionExpiredView
+import javax.inject.{Inject, Singleton}
+import models._
+import pages._
+import play.api.mvc.Call
 
-class SessionExpiredViewSpec extends ViewBehaviours {
+@Singleton
+class ReturningNavigator @Inject()() {
 
-  "Session Expired view" must {
+  private val normalRoutes: Page => UserAnswers => Call = {
+    case IsAgentManagingTrustPage => _ => controllers.returning.routes.BeforeYouContinueController.onPageLoad()
+  }
 
-    val application = applicationBuilder().build()
-
-    val view = application.injector.instanceOf[SessionExpiredView]
-
-    val applyView = view.apply()(fakeRequest, messages)
-
-    behave like normalPage(applyView, "session_expired", "guidance")
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
+    case NormalMode =>
+      normalRoutes(page)(userAnswers)
   }
 }

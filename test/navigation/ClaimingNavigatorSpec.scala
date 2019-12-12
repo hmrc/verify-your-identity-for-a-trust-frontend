@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package views.claiming
+package navigation
 
-import views.behaviours.ViewBehaviours
-import views.html.SessionExpiredView
+import base.SpecBase
+import models._
+import pages._
 
-class SessionExpiredViewSpec extends ViewBehaviours {
+class ClaimingNavigatorSpec extends SpecBase {
 
-  "Session Expired view" must {
+  val navigator = new ClaimingNavigator
 
-    val application = applicationBuilder().build()
+  "Navigator" when {
 
-    val view = application.injector.instanceOf[SessionExpiredView]
+    "in Normal mode" must {
 
-    val applyView = view.apply()(fakeRequest, messages)
 
-    behave like normalPage(applyView, "session_expired", "guidance")
+      "go to BeforeYouContinue from IsAgentManagingTrust" in {
+
+        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe controllers.claiming.routes.BeforeYouContinueController.onPageLoad()
+
+      }
+    }
+
   }
 }
+

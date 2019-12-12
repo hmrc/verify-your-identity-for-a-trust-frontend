@@ -17,7 +17,7 @@
 package views.claiming
 
 import views.behaviours.ViewBehaviours
-import views.html.TrustStillProcessing
+import views.html.claiming
 
 class TrustStillProcessingViewSpec extends ViewBehaviours {
 
@@ -25,9 +25,9 @@ class TrustStillProcessingViewSpec extends ViewBehaviours {
 
   "TrustStillProcessing view" must {
 
-    val view = viewFor[TrustStillProcessing](Some(emptyUserAnswers))
+    val view = viewFor[claiming.TrustStillProcessing](Some(emptyUserAnswers))
 
-    val applyView = view.apply(utr, true)(fakeRequest, messages)
+    val applyView = view.apply(utr)(fakeRequest, messages)
 
     behave like normalPage(applyView, "stillProcessing","p1", "p2","p3",
       "link1", "p4", "link2")

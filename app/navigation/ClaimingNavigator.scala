@@ -24,21 +24,14 @@ import pages._
 import models._
 
 @Singleton
-class Navigator @Inject()() {
+class ClaimingNavigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case IsAgentManagingTrustPage => _ => controllers.returning.routes.BeforeYouContinueController.onPageLoad()
-    case _ => _ => controllers.returning.routes.IndexController.onPageLoad()
-  }
-
-  private val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => controllers.returning.routes.CheckYourAnswersController.onPageLoad()
+    case IsAgentManagingTrustPage => _ => controllers.claiming.routes.BeforeYouContinueController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
       normalRoutes(page)(userAnswers)
-    case CheckMode =>
-      checkRouteMap(page)(userAnswers)
   }
 }

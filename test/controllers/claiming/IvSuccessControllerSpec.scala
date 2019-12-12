@@ -29,7 +29,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{RelationshipEstablishment, RelationshipFound}
 import uk.gov.hmrc.http.BadRequestException
-import views.html.IvSuccessView
+import views.html.claiming
 
 import scala.concurrent.Future
 
@@ -56,9 +56,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val request = FakeRequest(GET, controllers.claiming.routes.IvSuccessController.onPageLoad().url)
 
-      val view = application.injector.instanceOf[IvSuccessView]
+      val view = application.injector.instanceOf[claiming.IvSuccessView]
 
-      val viewAsString = view(isAgent = false, utr, true)(fakeRequest, messages).toString
+      val viewAsString = view(isAgent = false, utr)(fakeRequest, messages).toString
 
       when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
         .thenReturn(Future.successful(RelationshipFound))
@@ -96,9 +96,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val request = FakeRequest(GET, controllers.claiming.routes.IvSuccessController.onPageLoad().url)
 
-      val view = application.injector.instanceOf[IvSuccessView]
+      val view = application.injector.instanceOf[claiming.IvSuccessView]
 
-      val viewAsString = view(isAgent = true, utr, true)(fakeRequest, messages).toString
+      val viewAsString = view(isAgent = true, utr)(fakeRequest, messages).toString
 
       when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
         .thenReturn(Future.successful(RelationshipFound))
@@ -134,7 +134,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.returning.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
 

@@ -28,7 +28,7 @@
     title = s"${errorPrefix(form)} ${messages("isAgentManagingTrust.title")}"
     ) {
 
-    @formHelper(action = claiming.IsAgentManagingTrustController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = claiming.routes.IsAgentManagingTrustController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 

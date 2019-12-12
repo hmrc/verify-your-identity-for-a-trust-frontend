@@ -17,12 +17,12 @@
 package controllers.claiming
 
 import controllers.actions._
-import controllers.claiming.routes.SessionExpiredController
+import controllers.routes.SessionExpiredController
 import forms.IsAgentManagingTrustFormProvider
 import javax.inject.Inject
 import models.Mode
-import navigation.Navigator
-import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
+import navigation.ClaimingNavigator
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IsAgentManagingTrustController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 sessionRepository: SessionRepository,
-                                                navigator: Navigator,
+                                                navigator: ClaimingNavigator,
                                                 identify: IdentifierAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
@@ -79,7 +79,6 @@ class IsAgentManagingTrustController @Inject()(
         formWithErrors =>
           (for {
             utr <- request.userAnswers.get(UtrPage)
-            claimed <- request.userAnswers.get(IsClaimedPage)
           } yield {
             Future.successful(BadRequest(view(formWithErrors, mode, utr)))
           }) getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))

@@ -21,7 +21,7 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.IsAgentManagingTrustView
+import views.html.returning
 
 class IsAgentManagingTrustViewSpec extends YesNoViewBehaviours {
 
@@ -35,10 +35,10 @@ class IsAgentManagingTrustViewSpec extends YesNoViewBehaviours {
 
   "IsAgentManagingTrust view" must {
 
-    val view = viewFor[IsAgentManagingTrustView](Some(emptyUserAnswers))
+    val view = viewFor[returning.IsAgentManagingTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, utr, claimed)(fakeRequest, messages)
+      view.apply(form, NormalMode, utr)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

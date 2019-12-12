@@ -19,7 +19,7 @@ package controllers.returning
 import base.SpecBase
 import forms.IsAgentManagingTrustFormProvider
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{ClaimingNavigator, FakeNavigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
-import views.html.IsAgentManagingTrustView
+import views.html.returning
 
 import scala.concurrent.Future
 
@@ -41,7 +41,6 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new IsAgentManagingTrustFormProvider()
   val form = formProvider()
   val utr = "0987654321"
-  val claimed = true
 
   lazy val isAgentManagingTrustRoute = controllers.returning.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
@@ -67,12 +66,12 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[IsAgentManagingTrustView]
+      val view = application.injector.instanceOf[returning.IsAgentManagingTrustView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, utr, claimed)(fakeRequest, messages).toString
+        view(form, NormalMode, utr)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -93,14 +92,14 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
-      val view = application.injector.instanceOf[IsAgentManagingTrustView]
+      val view = application.injector.instanceOf[returning.IsAgentManagingTrustView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, utr, claimed)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode, utr)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -114,7 +113,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), relationshipEstablishment = fakeEstablishmentServiceFailing)
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind[ClaimingNavigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
@@ -152,14 +151,14 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[IsAgentManagingTrustView]
+      val view = application.injector.instanceOf[returning.IsAgentManagingTrustView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, utr, claimed)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, utr)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -174,7 +173,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -191,7 +190,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

@@ -18,7 +18,7 @@ package controllers.returning
 
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import controllers.returning.routes.SessionExpiredController
+import controllers.routes.SessionExpiredController
 import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}

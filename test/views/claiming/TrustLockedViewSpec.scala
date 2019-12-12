@@ -17,7 +17,7 @@
 package views.claiming
 
 import views.behaviours.ViewBehaviours
-import views.html.TrustLocked
+import views.html.claiming
 
 class TrustLockedViewSpec extends ViewBehaviours {
 
@@ -25,9 +25,9 @@ class TrustLockedViewSpec extends ViewBehaviours {
 
   "TrustLocked view" must {
 
-    val view = viewFor[TrustLocked](Some(emptyUserAnswers))
+    val view = viewFor[claiming.TrustLocked](Some(emptyUserAnswers))
 
-    val applyView = view.apply(utr, true)(fakeRequest, messages)
+    val applyView = view.apply(utr)(fakeRequest, messages)
 
     behave like normalPage(applyView, "locked","p1", "p2", "p3", "p4", "link1")
 

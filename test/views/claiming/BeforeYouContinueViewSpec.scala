@@ -17,7 +17,7 @@
 package views.claiming
 
 import views.behaviours.ViewBehaviours
-import views.html.BeforeYouContinueView
+import views.html.claiming
 
 class BeforeYouContinueViewSpec extends ViewBehaviours {
 
@@ -25,9 +25,9 @@ class BeforeYouContinueViewSpec extends ViewBehaviours {
 
   "BeforeYouContinue view" must {
 
-    val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
+    val view = viewFor[claiming.BeforeYouContinueView](Some(emptyUserAnswers))
 
-    val applyView = view("0987654321", claimed)(fakeRequest, messages)
+    val applyView = view("0987654321")(fakeRequest, messages)
 
     behave like normalPage(applyView, "beforeYouContinue")
 

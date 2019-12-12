@@ -17,7 +17,7 @@
 package views.returning
 
 import views.behaviours.ViewBehaviours
-import views.html.IvSuccessView
+import views.html.returning
 
 class IvSuccessViewSpec extends ViewBehaviours {
 
@@ -31,9 +31,9 @@ class IvSuccessViewSpec extends ViewBehaviours {
         .configure("microservice.services.features.playback.enabled" -> true)
         .build()
 
-      val view = application.injector.instanceOf[IvSuccessView]
+      val view = application.injector.instanceOf[returning.IvSuccessView]
 
-      val applyView = view.apply(isAgent = true, utr, true)(fakeRequest, messages)
+      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
       behave like normalPage(applyView, "ivSuccess.agent", "paragraph1", "paragraph2", "paragraph3",
         "paragraph4", "paragraph5")
@@ -41,9 +41,9 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
     "display the correct subheading" in {
 
-      val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
+      val view = viewFor[returning.IvSuccessView](Some(emptyUserAnswers))
 
-      val applyView = view.apply(isAgent = true, utr, true)(fakeRequest, messages)
+      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
       val doc = asDocument(applyView)
       assertContainsText(doc, messages("ivSuccess.subheading", utr))
@@ -55,9 +55,9 @@ class IvSuccessViewSpec extends ViewBehaviours {
         .configure("microservice.services.features.playback.enabled" -> false)
         .build()
 
-      val view = application.injector.instanceOf[IvSuccessView]
+      val view = application.injector.instanceOf[returning.IvSuccessView]
 
-      val applyView = view.apply(isAgent = true, utr, true)(fakeRequest, messages)
+      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
       behave like normalPage(applyView, "ivSuccess.agent","paragraph1", "paragraph2","paragraph3",
         "paragraph5")
@@ -67,9 +67,9 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
   "IvSuccess view with no Agent" must {
 
-    val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
+    val view = viewFor[returning.IvSuccessView](Some(emptyUserAnswers))
 
-    val applyView = view.apply(isAgent = false, utr, true)(fakeRequest, messages)
+    val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
 
     behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2","paragraph3",
       "paragraph4")

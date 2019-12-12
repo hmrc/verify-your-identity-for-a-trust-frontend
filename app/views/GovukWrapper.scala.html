@@ -32,7 +32,6 @@
 
 @(appConfig: config.FrontendAppConfig,
   title: String,
-  claim: Boolean,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -99,13 +98,6 @@
 }
 
 @mainContentHeader = {
-
-    @if(appConfig.languageTranslationEnabled) {
-        @language_selection(
-            appConfig.languageMap,
-            "languageSwitch",
-            Some("translate u-align--right"))
-    }
 
     @if(contentHeader.isDefined) {
         @main_content_header(contentHeader = contentHeader.get)

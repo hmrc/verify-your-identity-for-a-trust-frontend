@@ -17,12 +17,12 @@
 package controllers.returning
 
 import controllers.actions._
-import controllers.returning.routes.SessionExpiredController
+import controllers.routes.SessionExpiredController
 import forms.IsAgentManagingTrustFormProvider
 import javax.inject.Inject
 import models.Mode
-import navigation.Navigator
-import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
+import navigation.ClaimingNavigator
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -33,16 +33,16 @@ import views.html.returning
 import scala.concurrent.{ExecutionContext, Future}
 
 class IsAgentManagingTrustController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: IsAgentManagingTrustFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: returning.IsAgentManagingTrustView,
-                                         relationship: RelationshipEstablishment
+                                                override val messagesApi: MessagesApi,
+                                                sessionRepository: SessionRepository,
+                                                navigator: ClaimingNavigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: IsAgentManagingTrustFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: returning.IsAgentManagingTrustView,
+                                                relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
@@ -79,7 +79,6 @@ class IsAgentManagingTrustController @Inject()(
         formWithErrors =>
           (for {
             utr <- request.userAnswers.get(UtrPage)
-            claimed <- request.userAnswers.get(IsClaimedPage)
           } yield {
             Future.successful(BadRequest(view(formWithErrors, mode, utr)))
           }) getOrElse Future.successful(Redirect(SessionExpiredController.onPageLoad()))

@@ -19,12 +19,10 @@ package controllers.returning
 import config.FrontendAppConfig
 import connectors.TaxEnrolmentsConnector
 import controllers.actions._
-import controllers.claiming.routes.SessionExpiredController
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{NormalMode, TaxEnrolmentsRequest}
+import models.NormalMode
 import pages.{IsAgentManagingTrustPage, UtrPage}
-import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
@@ -75,7 +73,7 @@ class IvSuccessController @Inject()(
             onRelationshipNotFound
         }
         
-      } getOrElse Future.successful(Redirect(controllers.returning.routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
 
   }
 }

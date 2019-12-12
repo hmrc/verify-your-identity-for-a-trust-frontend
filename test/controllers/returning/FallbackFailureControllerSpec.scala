@@ -17,11 +17,11 @@
 package controllers.returning
 
 import base.SpecBase
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class FallbackFailureControllerSpec extends SpecBase {
 
-  val claimed = true
 
   def onFailureRoute = controllers.returning.routes.FallbackFailureController.onPageLoad().url
 

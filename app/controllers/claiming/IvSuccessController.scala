@@ -19,7 +19,7 @@ package controllers.claiming
 import config.FrontendAppConfig
 import connectors.TaxEnrolmentsConnector
 import controllers.actions._
-import controllers.claiming.routes.SessionExpiredController
+import controllers.routes.SessionExpiredController
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{NormalMode, TaxEnrolmentsRequest}

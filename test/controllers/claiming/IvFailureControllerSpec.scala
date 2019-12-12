@@ -19,7 +19,7 @@ package controllers.claiming
 import base.SpecBase
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
-import navigation.{FakeNavigator, Navigator}
+import navigation.{FakeNavigator, ClaimingNavigator}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{when, verify => verifyMock}
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -36,7 +36,6 @@ class IvFailureControllerSpec extends SpecBase {
 
   lazy val connector: RelationshipEstablishmentConnector = mock[RelationshipEstablishmentConnector]
 
-  private val claimed: Boolean = true
 
   "IvFailure Controller" must {
 
@@ -52,7 +51,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .overrides(bind[ClaimingNavigator].toInstance(fakeNavigator))
           .build()
 
         val onIvFailureRoute = controllers.returning.routes.IvFailureController.onTrustIvFailure().url
@@ -80,7 +79,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .overrides(bind[ClaimingNavigator].toInstance(fakeNavigator))
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
@@ -176,7 +175,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsStoreConnector].toInstance(connector))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .overrides(bind[ClaimingNavigator].toInstance(fakeNavigator))
           .build()
 
         val request = FakeRequest(GET, onLockedRoute)
@@ -236,7 +235,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val onLockedRoute = controllers.returning.routes.IvFailureController.trustLocked().url
+        val onLockedRoute = controllers.claiming.routes.IvFailureController.trustLocked().url
 
         val request = FakeRequest(GET, onLockedRoute)
 
@@ -244,7 +243,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
       }
