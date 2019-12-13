@@ -24,14 +24,16 @@
 @(isAgent: Boolean, utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
- title = if(isAgent) {messages("ivSuccess.returning.agent.title")} else {messages("ivSuccess.returning.agent.title")}
+ title = if(isAgent) {messages("ivSuccess.agent.title")} else {messages("ivSuccess.no.agent.title")}
 ) {
 
     <span class="govuk-caption-xl">@messages("ivSuccess.subheading", utr)</span>
     @if(isAgent) {
-        @components.heading("ivSuccess.returning.agent.heading", headingSize = "heading-large govuk-fieldset__heading")
+        @components.heading("ivSuccess.agent.heading", headingSize = "heading-large govuk-fieldset__heading")
 
-            <p>@messages("ivSuccess.returning.agent.paragraph1")</p>
+            <p>@messages("ivSuccess.agent.paragraph1")</p>
+            <p>@messages("ivSuccess.agent.paragraph2")</p>
+            <p>@messages("ivSuccess.agent.paragraph3")</p>
 
             @if(config.playbackEnabled) {
                 <p>@messages("ivSuccess.agent.paragraph4") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a>.</p>
