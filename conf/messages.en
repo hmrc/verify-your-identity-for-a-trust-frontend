@@ -58,9 +58,6 @@ ivSuccess.agent.paragraph4 = If you want to view the register or do not have an 
 ivSuccess.agent.continueLink =  you can continue into the service
 ivSuccess.agent.paragraph5 = If you need help using the service
 
-ivSuccess.returning.agent.paragraph1 = If you need to authorise your agent to manage the trust, you need to contact them and ask for an authorisation link to be sent to you. You need to use this Government Gateway account to approve the link.
-
-
 ivSuccess.no.agent.title = You have successfully answered the trust’s security questions
 ivSuccess.no.agent.heading = You have successfully answered the trust’s security questions
 ivSuccess.no.agent.paragraph1 = You are now able to change the information HMRC holds about the settlors, trustees and beneficiaries.
@@ -68,8 +65,21 @@ ivSuccess.no.agent.paragraph2 = You need to declare every year through this serv
 ivSuccess.no.agent.paragraph3 = If you have an agent, they will need to send you an authorisation link for you to approve so they can maintain the trust online.
 ivSuccess.no.agent.paragraph4 = If you need help using the service
 
+
+ivSuccess.returning.agent.title = You have successfully answered the trust’s security questions
+ivSuccess.returning.agent.heading = You have successfully answered the trust’s security questions
+ivSuccess.returning.agent.paragraph1 = If you need to authorise your agent to manage the trust, you need to contact them and ask for an authorisation link to be sent to you. You need to use this Government Gateway account to approve the link.
+ivSuccess.returning.agent.continueLink.a = You can
+ivSuccess.returning.agent.continueLink.b = if you want to view the register or do not have an agent
+ivSuccess.returning.agent.paragraph2 = If you need help using the service
+
+ivSuccess.returning.no.agent.title = You have successfully answered the trust’s security questions
+ivSuccess.returning.no.agent.heading = You have successfully answered the trust’s security questions
 ivSuccess.returning.no.agent.paragraph1 = You are now able to change the information HMRC holds about the settlors, trustees and beneficiaries.
 ivSuccess.returning.no.agent.paragraph2 = If the trust has a tax liability, you need to declare every year through this service and Self Assessment for Trusts that the information we have is up to date.
+ivSuccess.returning.no.agent.paragraph3 = If you need help using the service
+
+
 
 beforeYouContinue.title = Before you continue
 beforeYouContinue.heading = Before you continue
