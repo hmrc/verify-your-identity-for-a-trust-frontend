@@ -1,9 +1,8 @@
 # Add all the application routes to the app.routes file
 
-->         /claim-a-trust                               claiming.Routes
-->         /verify-your-identity-for-a-trust            returning.Routes
+->         /verify-your-identity-for-a-trust            app.Routes
+->         /                                            health.Routes
+->     	   /template                                    template.Routes
 
-->         /                          health.Routes
-->     	   /template                  template.Routes
+GET        /admin/metrics                               @com.kenshoo.play.metrics.MetricsController.metrics
 
-GET        /admin/metrics             @com.kenshoo.play.metrics.MetricsController.metrics

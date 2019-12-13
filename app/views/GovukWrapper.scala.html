@@ -15,7 +15,6 @@
  *@
 
 @import play.twirl.api.HtmlFormat
-@import views.html.components.language_selection
 @import views.html.layouts.GovUkTemplate
 
 @this(
@@ -27,12 +26,12 @@
     footer_links: FooterLinks,
     main_content: MainContent,
     reportAProblemLink: ReportAProblemLink,
-    hmrcGovUkTemplate: GovUkTemplate
+    hmrcGovUkTemplate: GovUkTemplate,
+    betaBanner: BetaBanner
 )
 
 @(appConfig: config.FrontendAppConfig,
   title: String,
-  serviceNameKey: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -60,7 +59,7 @@
     <!-- End Google Tag Manager (noscript) -->
 
     @header_nav(
-      navTitle = Some(messages(serviceNameKey)),
+      navTitle = Some(messages("site.service_name")),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = None)

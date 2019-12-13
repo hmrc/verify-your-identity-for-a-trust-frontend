@@ -33,8 +33,7 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.claiming.service_name = Claim a trust
-site.returning.service_name = Trusts registration service
+site.service_name = Trusts registration service
 site.textarea.char_limit = (Limit is {0} characters)
 
 unauthorised.title = You can’t access this service with this account

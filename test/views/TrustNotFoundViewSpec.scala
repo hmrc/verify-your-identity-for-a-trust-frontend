@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,31 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate
-)
+package views
 
-@()(implicit request: Request[_], messages: Messages)
+import views.behaviours.ViewBehaviours
+import views.html.TrustNotFound
 
-@main_template(
-    title = messages("session_expired.title")
-    ) {
+class TrustNotFoundViewSpec extends ViewBehaviours {
 
-    @components.heading("session_expired.heading")
+  val utr = "0987654321"
 
-    <p>@messages("session_expired.guidance")</p>
+  "TrustNotFound view" must {
+
+    val view = viewFor[TrustNotFound](Some(emptyUserAnswers))
+
+    val applyView = view.apply(utr)(fakeRequest, messages)
+
+    behave like normalPage(applyView, "notFound","p1", "p2","p3",
+      "p4", "link1", "p5", "link2", "link3")
+
+    "display the correct heading" in {
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("notFound.heading", utr))
+    }
+
+  }
+
 }

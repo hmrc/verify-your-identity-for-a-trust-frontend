@@ -19,7 +19,6 @@ package models
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object RelationshipEstablishmentStatus {
-
   sealed trait RelationshipEstablishmentStatus
 
   case object Locked extends RelationshipEstablishmentStatus
@@ -39,6 +38,7 @@ object RelationshipEstablishmentStatus {
             case Some("UTR_NOT_FOUND")      => NotFound
             case Some("UTR_IN_PROCESSING")  => InProcessing
             case Some(unsupported)          => UnsupportedRelationshipStatus(unsupported)
+            case None                       => UnsupportedRelationshipStatus("None")
           }
         case status => UpstreamRelationshipError(s"Unexpected HTTP response code $status")
       }

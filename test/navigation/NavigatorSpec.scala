@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,30 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate
-)
+package navigation
 
-@()(implicit request: Request[_], messages: Messages)
+import base.SpecBase
+import models._
+import pages._
 
-@main_template(
-    title = messages("session_expired.title")
-    ) {
+class NavigatorSpec extends SpecBase {
 
-    @components.heading("session_expired.heading")
+  val navigator = new Navigator
 
-    <p>@messages("session_expired.guidance")</p>
+  "Navigator" when {
+
+    "in Normal mode" must {
+
+
+      "go to BeforeYouContinue from IsAgentManagingTrust" in {
+
+        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe controllers.routes.BeforeYouContinueController.onPageLoad()
+
+      }
+    }
+
+  }
 }
+

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    main_template: MainTemplate
-)
+package navigation
 
-@()(implicit request: Request[_], messages: Messages)
+import javax.inject.{Inject, Singleton}
 
-@main_template(
-    title = messages("session_expired.title")
-    ) {
+import play.api.mvc.Call
+import controllers.routes
+import pages._
+import models._
 
-    @components.heading("session_expired.heading")
+@Singleton
+class Navigator @Inject()() {
 
-    <p>@messages("session_expired.guidance")</p>
+  private val normalRoutes: Page => UserAnswers => Call = {
+    case IsAgentManagingTrustPage => _ => controllers.routes.BeforeYouContinueController.onPageLoad()
+  }
+
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
+    case NormalMode =>
+      normalRoutes(page)(userAnswers)
+  }
 }

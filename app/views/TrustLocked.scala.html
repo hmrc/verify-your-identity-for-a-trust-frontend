@@ -15,16 +15,19 @@
  *@
 
 @this(
-    main_template: MainTemplate
+main_template: MainTemplate
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("session_expired.title")
-    ) {
+    title = messages("locked.title")
+) {
 
-    @components.heading("session_expired.heading")
+    <span class="govuk-caption-xl">@messages("locked.subheading", utr)</span>
+    @components.heading("locked.heading", headingSize = "heading-large govuk-fieldset__heading")
 
-    <p>@messages("session_expired.guidance")</p>
+    <p>@messages("locked.p1")</p>
+    <p>@messages("locked.p2")</p>
+    <p>@messages("locked.p4") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("locked.link1")</a>.</p>
 }
