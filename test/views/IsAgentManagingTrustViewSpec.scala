@@ -31,8 +31,6 @@ class IsAgentManagingTrustViewSpec extends YesNoViewBehaviours {
 
   val utr = "0987654321"
 
-  val claimed = true
-
   "IsAgentManagingTrust view" must {
 
     val view = viewFor[IsAgentManagingTrustView](Some(emptyUserAnswers))

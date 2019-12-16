@@ -21,8 +21,6 @@ import views.html.BeforeYouContinueView
 
 class BeforeYouContinueViewSpec extends ViewBehaviours {
 
-  val claimed = true
-
   "BeforeYouContinue view" must {
 
     val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))

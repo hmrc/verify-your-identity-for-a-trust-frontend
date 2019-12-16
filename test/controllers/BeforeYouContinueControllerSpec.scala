@@ -39,7 +39,6 @@ class BeforeYouContinueControllerSpec extends SpecBase {
   val utr = "0987654321"
   val managedByAgent = true
   val trustLocked = false
-  val claimed = false
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 

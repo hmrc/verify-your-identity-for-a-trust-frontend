@@ -34,8 +34,6 @@ class SaveUTRControllerSpec extends SpecBase {
 
   val utr = "0987654321"
 
-  val claimed = false
-
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
   "SaveUTRController" must {
