@@ -6,11 +6,11 @@ echo "Applying migration IsAgentManagingTrust"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /isAgentManagingTrust                        controllers.trusts.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /isAgentManagingTrust                        controllers.trusts.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /isAgentManagingTrust                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /isAgentManagingTrust                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
-echo "GET        /changeIsAgentManagingTrust                  controllers.trusts.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changeIsAgentManagingTrust                  controllers.trusts.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /changeIsAgentManagingTrust                  controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "POST       /changeIsAgentManagingTrust                  controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
