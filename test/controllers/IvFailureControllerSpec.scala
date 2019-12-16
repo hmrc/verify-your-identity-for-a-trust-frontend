@@ -17,32 +17,18 @@
 package controllers
 
 import base.SpecBase
-import connectors.RelationshipEstablishmentConnector
-import pages.UtrPage
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{verify, when}
-import pages.{IsAgentManagingTrustPage, UtrPage}
-import connectors.RelationshipEstablishmentConnector
-import pages.UtrPage
-import uk.gov.hmrc.http.HttpResponse
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.{when, verify => verifyMock}
 import org.scalatestplus.mockito.MockitoSugar.mock
-import org.mockito.Mockito._
-import org.mockito.Matchers.{eq => eqTo, _}
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.inject.bind
 import play.api.mvc.Call
-import play.api.libs.json.{JsValue, Json, Writes}
-
-import scala.concurrent.Future
-import org.mockito.Matchers._
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar.mock
-import play.api.libs.json.Json
-import play.api.inject.bind
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -67,7 +53,7 @@ class IvFailureControllerSpec extends SpecBase {
           .overrides(bind[Navigator].toInstance(fakeNavigator))
           .build()
 
-        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
+        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
 
         val request = FakeRequest(GET, s"$onIvFailureRoute")
 
@@ -75,7 +61,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.FallbackFailureController.onPageLoad().url
 
         application.stop()
       }
@@ -88,7 +74,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
-        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
+        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
@@ -104,7 +90,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.IvFailureController.trustLocked().url
+        redirectLocation(result).value mustEqual controllers.routes.IvFailureController.trustLocked().url
 
         application.stop()
       }
@@ -124,7 +110,7 @@ class IvFailureControllerSpec extends SpecBase {
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotFound))
 
-        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
+        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
 
         val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
@@ -132,7 +118,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.IvFailureController.trustNotFound().url
+        redirectLocation(result).value mustEqual controllers.routes.IvFailureController.trustNotFound().url
 
         application.stop()
       }
@@ -152,7 +138,7 @@ class IvFailureControllerSpec extends SpecBase {
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.InProcessing))
 
-        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
+        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
 
         val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
@@ -160,7 +146,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.IvFailureController.trustStillProcessing().url
+        redirectLocation(result).value mustEqual controllers.routes.IvFailureController.trustStillProcessing().url
 
         application.stop()
       }
@@ -172,7 +158,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
-        val onLockedRoute = routes.IvFailureController.trustLocked().url
+        val onLockedRoute = controllers.routes.IvFailureController.trustLocked().url
         val utr = "3000000001"
         val managedByAgent = true
         val trustLocked = true
@@ -199,14 +185,14 @@ class IvFailureControllerSpec extends SpecBase {
 
         contentAsString(result) must include("As you have had 3 unsuccessful tries at accessing this trust you will need to try again in 30 minutes.")
 
-        verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        verifyMock(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
 
         application.stop()
       }
 
       "return OK and the correct view for a GET for not found route" in {
 
-        val onLockedRoute = routes.IvFailureController.trustNotFound().url
+        val onLockedRoute = controllers.routes.IvFailureController.trustNotFound().url
 
         val answers = emptyUserAnswers
           .set(UtrPage, "1234567890").success.value
@@ -226,7 +212,7 @@ class IvFailureControllerSpec extends SpecBase {
 
       "return OK and the correct view for a GET for still processing route" in {
 
-        val onLockedRoute = routes.IvFailureController.trustStillProcessing().url
+        val onLockedRoute = controllers.routes.IvFailureController.trustStillProcessing().url
 
         val answers = emptyUserAnswers
           .set(UtrPage, "1234567891").success.value
@@ -248,7 +234,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val onLockedRoute = routes.IvFailureController.trustLocked().url
+        val onLockedRoute = controllers.routes.IvFailureController.trustLocked().url
 
         val request = FakeRequest(GET, onLockedRoute)
 
@@ -256,7 +242,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
       }

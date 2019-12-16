@@ -42,23 +42,26 @@ class BeforeYouContinueController @Inject()(
                                      )(implicit ec: ExecutionContext,
                                        config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage) map { utr =>
+        request.userAnswers.get(UtrPage) map { utr =>
+
         def body = {
             Future.successful(Ok(view(utr)))
         }
+
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+
+      } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
   }
 
-  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       (for {
@@ -68,14 +71,14 @@ class BeforeYouContinueController @Inject()(
 
         def onRelationshipNotFound =  {
 
-          val successRedirect = config.successUrl
-          val failureRedirect = config.failureUrl
+          val returningSuccessRedirect = config.relationshipEstablishmentSuccessUrl
+          val returningFailureRedirect = config.relationshipEstablishmentFailureUrl
 
           val host = config.relationshipEstablishmentFrontendtUrl(utr)
 
           val queryString: Map[String, Seq[String]] = Map(
-            "success" -> Seq(successRedirect),
-            "failure" -> Seq(failureRedirect)
+            "success" -> Seq(returningSuccessRedirect),
+            "failure" -> Seq(returningFailureRedirect)
           )
 
           connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = false)) map { _ =>
@@ -86,10 +89,10 @@ class BeforeYouContinueController @Inject()(
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             onRelationshipNotFound
         }
-      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
   }
 }

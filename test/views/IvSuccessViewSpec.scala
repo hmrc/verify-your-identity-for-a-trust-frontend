@@ -16,17 +16,14 @@
 
 package views
 
-import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import views.behaviours.ViewBehaviours
 import views.html.IvSuccessView
-import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 
 class IvSuccessViewSpec extends ViewBehaviours {
 
   val utr = "0987654321"
 
-  "IvSuccess view with Agent" must {
+  "Returning IvSuccess view with Agent" must {
 
     "display the register link when config.playbackEnabled is true" when {
 
@@ -62,8 +59,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
-      behave like normalPage(applyView, "ivSuccess.agent","paragraph1", "paragraph2","paragraph3",
-        "paragraph5")
+      behave like normalPage(applyView, "ivSuccess.agent","paragraph1", "paragraph2", "paragraph3", "paragraph5")
     }
 
   }
@@ -74,8 +70,8 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
     val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2","paragraph3",
-      "paragraph4")
+    behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2",
+      "paragraph3", "paragraph4")
 
     "display the correct subheading" in {
       val doc = asDocument(applyView)

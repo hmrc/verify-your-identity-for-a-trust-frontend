@@ -17,7 +17,6 @@
 package controllers.actions
 
 import config.FrontendAppConfig
-import controllers.routes
 import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
@@ -33,7 +32,7 @@ trait AuthPartialFunctions {
       Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
     case _: AuthorisationException =>
       Logger.info(s"[AuthenticatedIdentifierAction] exception thrown when authorising")
-      Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+      Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
   }
 
 }

@@ -32,16 +32,16 @@ import views.html.IsAgentManagingTrustView
 import scala.concurrent.{ExecutionContext, Future}
 
 class IsAgentManagingTrustController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         navigator: Navigator,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: IsAgentManagingTrustFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: IsAgentManagingTrustView,
-                                         relationship: RelationshipEstablishment
+                                                override val messagesApi: MessagesApi,
+                                                sessionRepository: SessionRepository,
+                                                navigator: Navigator,
+                                                identify: IdentifierAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: IsAgentManagingTrustFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: IsAgentManagingTrustView,
+                                                relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
@@ -62,12 +62,12 @@ class IsAgentManagingTrustController @Inject()(
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }
 
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
 
   }
 
@@ -76,9 +76,11 @@ class IsAgentManagingTrustController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          request.userAnswers.get(UtrPage) map { utr =>
+          (for {
+            utr <- request.userAnswers.get(UtrPage)
+          } yield {
             Future.successful(BadRequest(view(formWithErrors, mode, utr)))
-          } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+          }) getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
         ,
         value =>
           for {

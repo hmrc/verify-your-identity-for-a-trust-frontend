@@ -21,9 +21,8 @@ import connectors.TaxEnrolmentsConnector
 import controllers.actions._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{NormalMode, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError}
+import models.NormalMode
 import pages.{IsAgentManagingTrustPage, UtrPage}
-import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
@@ -53,23 +52,19 @@ class IvSuccessController @Inject()(
       request.userAnswers.get(UtrPage).map { utr =>
 
         def onRelationshipFound = {
-          taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
+
 
             val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
               case None => false
               case Some(value) => value
             }
 
-            Ok(view(isAgentManagingTrust, utr))
+            Future.successful(Ok(view(isAgentManagingTrust, utr)))
 
-          } recover {
-            case _ =>
-              Logger.error(s"[TaxEnrolments][error] failed to create enrolment for ${request.internalId} $utr")
-              InternalServerError(errorHandler.internalServerErrorTemplate)
-          }
+
         }
 
-        lazy val onRelationshipNotFound = Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
+        lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
 
         relationshipEstablishment.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
@@ -78,7 +73,7 @@ class IvSuccessController @Inject()(
             onRelationshipNotFound
         }
         
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
 
   }
 }

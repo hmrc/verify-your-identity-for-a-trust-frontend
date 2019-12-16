@@ -16,7 +16,6 @@
 
 package views
 
-import controllers.routes
 import forms.IsAgentManagingTrustFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -43,6 +42,6 @@ class IsAgentManagingTrustViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, routes.IsAgentManagingTrustController.onSubmit(NormalMode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, controllers.routes.IsAgentManagingTrustController.onSubmit(NormalMode).url)
   }
 }

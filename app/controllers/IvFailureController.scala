@@ -56,14 +56,14 @@ class IvFailureController @Inject()(
         Redirect(routes.IvFailureController.trustStillProcessing())
       case UnsupportedRelationshipStatus(reason) =>
         Logger.warn(s"[IvFailure][status] Unsupported IV failure reason: $reason")
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(controllers.routes.FallbackFailureController.onPageLoad())
       case UpstreamRelationshipError(response) =>
         Logger.warn(s"[IvFailure][status] HTTP response: $response")
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(controllers.routes.FallbackFailureController.onPageLoad())
     }
   }
 
-  def onTrustIvFailure: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onTrustIvFailure(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(UtrPage) match {
@@ -72,18 +72,18 @@ class IvFailureController @Inject()(
 
           queryString.fold{
             Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a journeyId to determine the reason")
-            Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
           }{
             journeyId =>
               renderFailureReason(utr, journeyId)
           }
         case None =>
           Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a UTR")
-          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+          Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
       }
   }
 
-  def trustLocked : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustLocked() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       (for {
         utr <- request.userAnswers.get(UtrPage)
@@ -92,22 +92,22 @@ class IvFailureController @Inject()(
         connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = true)) map { _ =>
           Ok(lockedView(utr))
         }
-      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
   }
 
-  def trustNotFound : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustNotFound() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>
           Future.successful(Ok(notFoundView(utr)))
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
   }
 
-  def trustStillProcessing : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustStillProcessing() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>
           Future.successful(Ok(stillProcessingView(utr)))
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
   }
 }

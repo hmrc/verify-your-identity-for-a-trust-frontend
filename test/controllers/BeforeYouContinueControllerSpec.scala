@@ -20,14 +20,14 @@ import base.SpecBase
 import connectors.TrustsStoreConnector
 import models.TrustsStoreRequest
 import navigation.{FakeNavigator, Navigator}
-import pages.{IsAgentManagingTrustPage, UtrPage}
-import org.scalatestplus.mockito.MockitoSugar.mock
-import org.mockito.Mockito._
 import org.mockito.Matchers.{eq => eqTo, _}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import org.mockito.Mockito.{verify => verifyMock, _}
+import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.inject.bind
 import play.api.mvc.Call
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
 import uk.gov.hmrc.http.HttpResponse
 import views.html.BeforeYouContinueView
@@ -46,11 +46,12 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val answers = emptyUserAnswers.set(UtrPage, utr).success.value
+      val answers = emptyUserAnswers
+        .set(UtrPage, utr).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
-      val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.routes.BeforeYouContinueController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -82,7 +83,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
         .overrides(bind[Navigator].toInstance(fakeNavigator))
         .build()
 
-      val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
+      val request = FakeRequest(POST, controllers.routes.BeforeYouContinueController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -90,7 +91,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       redirectLocation(result).value must include("0987654321")
 
-      verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+      verifyMock(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
 
       application.stop()
 
