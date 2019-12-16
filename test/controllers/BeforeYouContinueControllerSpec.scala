@@ -23,7 +23,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -49,7 +49,6 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val answers = emptyUserAnswers
         .set(UtrPage, utr).success.value
-        .set(IsClaimedPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 

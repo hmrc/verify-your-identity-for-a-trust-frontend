@@ -23,7 +23,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{IsAgentManagingTrustPage, IsClaimedPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -54,9 +54,6 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
         .set(UtrPage, utr)
         .success
         .value
-        .set(IsClaimedPage, true)
-        .success
-        .value
 
       val application = applicationBuilder(
         userAnswers = Some(userAnswers),
@@ -82,8 +79,6 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
         .set(IsAgentManagingTrustPage, true)
         .success.value
         .set(UtrPage, utr)
-        .success.value
-        .set(IsClaimedPage, true)
         .success.value
 
       val application = applicationBuilder(
@@ -135,9 +130,6 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
       val userAnswers = emptyUserAnswers
         .set(UtrPage, utr)
-        .success
-        .value
-        .set(IsClaimedPage, true)
         .success
         .value
 
