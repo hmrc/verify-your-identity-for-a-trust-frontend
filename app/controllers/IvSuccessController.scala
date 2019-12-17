@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.IvSuccessView
+import views.html.{IvSuccessView, IvSuccessWithoutPlaybackView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,7 +39,8 @@ class IvSuccessController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
                                      relationshipEstablishment: RelationshipEstablishment,
                                      taxEnrolmentsConnector: TaxEnrolmentsConnector,
-                                     view: IvSuccessView,
+                                     withPlaybackView: IvSuccessView,
+                                     withoutPlaybackView: IvSuccessWithoutPlaybackView,
                                      errorHandler: ErrorHandler
                                    )(implicit ec: ExecutionContext,
                                      val config: FrontendAppConfig)
@@ -59,9 +60,12 @@ class IvSuccessController @Inject()(
               case Some(value) => value
             }
 
-            Future.successful(Ok(view(isAgentManagingTrust, utr)))
 
-
+            if (config.playbackEnabled) {
+              Future.successful(Ok(withPlaybackView(isAgentManagingTrust, utr)))
+            } else {
+              Future.successful(Ok(withoutPlaybackView(isAgentManagingTrust, utr)))
+            }
         }
 
         lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))

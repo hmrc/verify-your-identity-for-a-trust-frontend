@@ -35,8 +35,8 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
-      behave like normalPage(applyView, "ivSuccess.agent", "paragraph1", "paragraph2", "paragraph3",
-        "paragraph4", "paragraph5")
+      behave like normalPage(applyView, "ivSuccess.agent", "paragraph5", "paragraph6", "paragraph7",
+        "paragraph8")
     }
 
     "display the correct subheading" in {
@@ -49,18 +49,21 @@ class IvSuccessViewSpec extends ViewBehaviours {
       assertContainsText(doc, messages("ivSuccess.subheading", utr))
     }
 
-    "do not display the register link when config.playbackEnabled is false" when {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .configure("microservice.services.features.playback.enabled" -> false)
-        .build()
-
-      val view = application.injector.instanceOf[IvSuccessView]
-
-      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
-
-      behave like normalPage(applyView, "ivSuccess.agent","paragraph1", "paragraph2", "paragraph3", "paragraph5")
-    }
+//    "do not display the register link when config.playbackEnabled is false" when {
+//
+//      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+//        .configure("microservice.services.features.playback.enabled" -> false)
+//        .build()
+//
+//      val view = application.injector.instanceOf[IvSuccessView]
+//
+//      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
+//
+//      behave like normalPage(applyView, "ivSuccess.withoutplayback",
+//        "paragraph1",
+//        "paragraph2",
+//        "paragraph3")
+//    }
 
   }
 
@@ -71,7 +74,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
     val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
 
     behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2",
-      "paragraph3", "paragraph4")
+      "paragraph3")
 
     "display the correct subheading" in {
       val doc = asDocument(applyView)
