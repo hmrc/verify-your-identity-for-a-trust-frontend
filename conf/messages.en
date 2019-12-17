@@ -55,23 +55,11 @@ ivSuccess.contactLink =  contact the trusts helpline (opens in a new window or t
 
 ivSuccess.agent.title = You have successfully answered the trust’s security questions
 ivSuccess.agent.heading = You have successfully answered the trust’s security questions
-
-ivSuccess.agent.paragraph1 = You will need to tell your agent you have claimed the trust and passed the security questions
-ivSuccess.agent.paragraph2 = Your agent then needs to send you an authorisation link to approve so they can maintain the trust online.
-ivSuccess.agent.paragraph3 = The Government Gateway organisation account used to claim this trust must be used to log in and approve this link. An agent cannot access the trust’s register until you complete this step.
-ivSuccess.agent.paragraph4 = If you want to view the register or do not have an agent,
+ivSuccess.agent.paragraph1 = If you need to authorise your agent to manage the trust, you need to contact them and ask for an authorisation link to be sent to you. You need to use this Government Gateway account to approve the link.
+ivSuccess.agent.paragraph2 = You can
 ivSuccess.agent.continueLink = continue into the service
-ivSuccess.agent.paragraph5 = If you need help using the service
-ivSuccess.agent.paragraph6 = If you need to authorise your agent to manage the trust, you need to contact them and ask for an authorisation link to be sent to you. You need to use this Government Gateway account to approve the link. 
-ivSuccess.agent.paragraph7 = You can 
-ivSuccess.agent.paragraph8 = if you want to view the register or do not have an agent.
-
-ivSuccess.withoutplayback.title = Sorry, you cannot maintain this trust online
-ivSuccess.withoutplayback.heading = Sorry, you cannot maintain this trust online
-ivSuccess.withoutplayback.paragraph1 = We are currently updating the service so you can view the registered information about the trust.
-ivSuccess.withoutplayback.paragraph2 = This will be available in January 2020.
-ivSuccess.withoutplayback.paragraph3 = If you need to authorise your agent to manage the trust, you need to contact them and ask for an authorisation link to be sent to you.
-
+ivSuccess.agent.paragraph3 = if you want to view the register or do not have an agent.
+ivSuccess.agent.paragraph4 = If you need help using the service
 
 
 ivSuccess.no.agent.title = You have successfully answered the trust’s security questions
@@ -79,6 +67,15 @@ ivSuccess.no.agent.heading = You have successfully answered the trust’s securi
 ivSuccess.no.agent.paragraph1 = You are now able to change the information HMRC holds about the settlors, trustees and beneficiaries.
 ivSuccess.no.agent.paragraph2 = If the trust has a tax liability, you need to declare every year through this service and Self Assessment for Trusts that the information we have is up to date.
 ivSuccess.no.agent.paragraph3 = If you need help using the service
+ivSuccess.no.agent.contactLink =  contact the trusts helpline (opens in a new window or tab)
+
+ivSuccess.withoutplayback.title = Sorry, you cannot maintain this trust online
+ivSuccess.withoutplayback.heading = Sorry, you cannot maintain this trust online
+ivSuccess.withoutplayback.paragraph1 = We are currently updating the service so you can view the registered information about the trust.
+ivSuccess.withoutplayback.paragraph2 = This will be available in January 2020.
+ivSuccess.withoutplayback.paragraph3 = If you need to authorise your agent to manage the trust, you need to contact them and ask for an authorisation link to be sent to you.
+ivSuccess.withoutplayback.ifYouNeedHelp = If you need help using the service
+ivSuccess.withoutplayback.contactLink =  contact the trusts helpline (opens in a new window or tab)
 
 beforeYouContinue.title = Before you continue
 beforeYouContinue.heading = Before you continue

@@ -30,9 +30,9 @@
     <span class="govuk-caption-xl">@messages("ivSuccess.subheading", utr)</span>
     @if(isAgent) {
             @components.heading("ivSuccess.agent.heading", headingSize = "heading-large govuk-fieldset__heading")
-            <p>@messages("ivSuccess.agent.paragraph6")</p>
-            <p>@messages("ivSuccess.agent.paragraph7") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a> @messages("ivSuccess.agent.paragraph8")</p>
-            <p>@messages("ivSuccess.agent.paragraph5") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
+            <p>@messages("ivSuccess.agent.paragraph1")</p>
+            <p>@messages("ivSuccess.agent.paragraph2") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a> @messages("ivSuccess.agent.paragraph3")</p>
+            <p>@messages("ivSuccess.agent.paragraph4") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
     } else {
             @components.heading("ivSuccess.no.agent.heading", headingSize = "heading-large govuk-fieldset__heading")
 
