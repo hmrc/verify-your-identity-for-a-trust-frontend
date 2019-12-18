@@ -17,31 +17,31 @@
 package views
 
 import views.behaviours.ViewBehaviours
-import views.html.IvSuccessView
+import views.html.{IvSuccessWithoutPlaybackView}
 
-class IvSuccessViewSpec extends ViewBehaviours {
+class IvSuccessWithoutPlaybackViewSpec extends ViewBehaviours {
 
   val utr = "0987654321"
 
-  "Returning IvSuccess view with Agent" must {
+  "Returning IvSuccess view" must {
 
-    "display the register link when config.playbackEnabled is true" when {
+    "display the register link when config.playbackEnabled is false" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .configure("microservice.services.features.playback.enabled" -> true)
+        .configure("microservice.services.features.playback.enabled" -> false)
         .build()
 
-      val view = application.injector.instanceOf[IvSuccessView]
+      val view = application.injector.instanceOf[IvSuccessWithoutPlaybackView]
 
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
-      behave like normalPage(applyView, "ivSuccess.agent", "paragraph1", "paragraph2", "continueLink",
-        "paragraph3", "paragraph4")
+      behave like normalPage(applyView, "ivSuccess.withoutplayback", "paragraph1", "paragraph2", "paragraph3",
+        "ifYouNeedHelp", "contactLink")
     }
 
     "display the correct subheading" in {
 
-      val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
+      val view = viewFor[IvSuccessWithoutPlaybackView](Some(emptyUserAnswers))
 
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
@@ -49,21 +49,4 @@ class IvSuccessViewSpec extends ViewBehaviours {
       assertContainsText(doc, messages("ivSuccess.subheading", utr))
     }
   }
-
-  "IvSuccess view with no Agent" must {
-
-    val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
-
-    val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
-
-    behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2",
-      "paragraph3", "contactLink")
-
-    "display the correct subheading" in {
-      val doc = asDocument(applyView)
-      assertContainsText(doc, messages("ivSuccess.subheading", utr))
-    }
-
-  }
-
 }
