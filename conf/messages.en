@@ -21,8 +21,8 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = claim-a-trust-frontend
-index.heading = claim-a-trust-frontend
+index.title = verify-your-identity-for-a-trust-frontend
+index.heading = verify-your-identity-for-a-trust-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 session_expired.title = For your security, this service has been reset
@@ -90,7 +90,7 @@ locked.title = Your answers do not match the details we hold about this trust
 locked.heading = Your answers do not match the details we hold about this trust
 locked.subheading = This trust’s UTR: {0}
 locked.p1 = As you have had 3 unsuccessful tries at accessing this trust you will need to try again in 30 minutes.
-locked.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online. 
+locked.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
 locked.p3 = If you need help using the service,
 locked.link1 =  contact the trusts helpline (opens in a new window or tab)
 
