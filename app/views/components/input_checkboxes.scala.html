@@ -70,7 +70,7 @@
                     name="@field(s"[$index]").name"
                     value="@value"
                         @if(answers.contains(value)) {checked="checked"}
-                        @if(trackGa) {data-journey-click="claim-a-trust-frontend:click:@field(s"[$index]").id"}
+                        @if(trackGa) {data-journey-click="verify-your-identity-for-a-trust-frontend:click:@field(s"[$index]").id"}
                     />
                     <label for="@field(s"[$index]").id">
                     @messages(messageKey)
