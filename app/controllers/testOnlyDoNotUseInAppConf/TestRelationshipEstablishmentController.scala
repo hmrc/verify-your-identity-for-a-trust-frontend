@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ package controllers.testOnlyDoNotUseInAppConf
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
+import models.requests.IdentifierRequest
 import play.api.Logger
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -91,11 +92,10 @@ class TestRelationshipEstablishmentController @Inject()(
       val failRegex = "(2\\d{9})".r
 
       utr match {
-        case utr @ succeedRegex(_) =>
-          relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, utr) map {
-            _ =>
-              Redirect(controllers.routes.IvSuccessController.onPageLoad())
-          }
+        case "4381028111" =>
+          establishRelationshipForUtr(request, utr)
+        case succeedRegex(_) =>
+          establishRelationshipForUtr(request, utr)
         case failRegex(_) =>
           Future.successful(Redirect(controllers.routes.IvFailureController.onTrustIvFailure()))
         case _ =>
@@ -103,4 +103,10 @@ class TestRelationshipEstablishmentController @Inject()(
       }
   }
 
+  private def establishRelationshipForUtr(request: IdentifierRequest[AnyContent], utr: String)(implicit hc: HeaderCarrier) = {
+    relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, utr) map {
+      _ =>
+        Redirect(controllers.routes.IvSuccessController.onPageLoad())
+    }
+  }
 }
