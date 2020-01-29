@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "verify-your-identity-for-a-trust-frontend"
+  private val contactFormServiceIdentifier = "trusts"
 
   lazy val serviceName: String = configuration.get[String]("serviceName")
 
