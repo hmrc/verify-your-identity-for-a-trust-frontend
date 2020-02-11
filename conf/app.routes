@@ -4,6 +4,8 @@ POST       /before-you-continue                         controllers.BeforeYouCon
 
 GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad()
 
+GET        /logout                                       controllers.LogoutController.logout()
+
 GET        /managed-by-agent                               controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
 POST       /managed-by-agent                               controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
 GET        /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)

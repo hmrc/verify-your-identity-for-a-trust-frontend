@@ -50,8 +50,13 @@
     <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/verifyyouridentityforatrust-app.css")' />
 }
 
-@headerNavLinks = {}
-
+@headerNavLinks = {
+    <li>
+        <a id="logOut" href="@controllers.routes.LogoutController.logout" data-target="link - click:@title:@Messages("site.sign_out")">
+        @Messages("site.sign_out")
+        </a>
+    </li>
+}
 @insideHeader = {
 
     <!-- Google Tag Manager (noscript) -->
@@ -62,7 +67,8 @@
       navTitle = Some(messages("site.service_name")),
       navTitleLink = None,
       showBetaLink = false,
-      navLinks = None)
+      navLinks = Some(headerNavLinks)
+    )
 }
 
 @afterHeader = {}
