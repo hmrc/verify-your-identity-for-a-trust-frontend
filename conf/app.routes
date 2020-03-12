@@ -6,6 +6,9 @@ GET        /this-service-has-been-reset                 controllers.SessionExpir
 
 GET        /logout                                       controllers.LogoutController.logout()
 
+GET        /keep-alive                                   controllers.SessionTimeoutController.keepAlive
+GET        /timeout                                      controllers.SessionTimeoutController.timeout
+
 GET        /managed-by-agent                               controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
 POST       /managed-by-agent                               controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
 GET        /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
