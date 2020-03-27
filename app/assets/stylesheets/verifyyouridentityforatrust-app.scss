@@ -127,3 +127,6 @@
 .clearfix {
     @include govuk-clearfix;
 }
+
+.heading-large, .heading-36, h1, .h1-heading {margin-top:0}
+.heading-large, .heading-medium {margin-top:0;}
