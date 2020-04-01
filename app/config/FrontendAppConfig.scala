@@ -103,4 +103,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
   )
+
+  lazy val accessibilityLinkUrl: String = configuration.get[String]("urls.accessibility")
 }
