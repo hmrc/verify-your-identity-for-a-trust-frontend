@@ -92,7 +92,7 @@ class TestRelationshipEstablishmentController @Inject()(
       val failRegex = "(2\\d{9})".r
 
       utr match {
-        case "4381028111" =>
+        case "4381028111" | "5000000000" =>
           establishRelationshipForUtr(request, utr)
         case succeedRegex(_) =>
           establishRelationshipForUtr(request, utr)
