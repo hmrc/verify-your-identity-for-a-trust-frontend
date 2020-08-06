@@ -40,7 +40,7 @@
         name="@{field.name}"
         value="@{field.value}"
         @if(hint.nonEmpty || field.hasErrors) {
-            aria-describedby="@{if(hint.nonEmpty){s"${field.id}_hint"}} @{if(field.hasErrors){s"error-message-${field.id}-input"}}"
+            aria-describedby="@if(field.hasErrors){error-message-@{field.id}-input}@if(field.hasErrors && hint.nonEmpty){ }@if(hint.nonEmpty){@{field.id}_hint}"
         }
         />
     </div>
