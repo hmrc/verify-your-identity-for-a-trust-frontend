@@ -17,11 +17,9 @@
 package navigation
 
 import javax.inject.{Inject, Singleton}
-
-import play.api.mvc.Call
-import controllers.routes
-import pages._
 import models._
+import pages._
+import play.api.mvc.Call
 
 @Singleton
 class Navigator @Inject()() {
@@ -31,7 +29,7 @@ class Navigator @Inject()() {
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case NormalMode =>
+    case _ =>
       normalRoutes(page)(userAnswers)
   }
 }

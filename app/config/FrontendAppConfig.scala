@@ -17,11 +17,11 @@
 package config
 
 import java.net.{URI, URLEncoder}
+
 import com.google.inject.{Inject, Singleton}
-import controllers.routes
 import play.api.Configuration
 import play.api.i18n.Lang
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Request
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
