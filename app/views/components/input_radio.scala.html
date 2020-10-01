@@ -26,11 +26,15 @@
 )(implicit messages: Messages)
 
 <div class="form-group @if(field.hasErrors){form-group-error}">
-    <fieldset id="@{field.id}">
+    <fieldset id="@{field.id}"
+        @if(hint.nonEmpty || field.hasErrors) {
+            aria-describedby="@if(hint.nonEmpty){form-hint}@if(hint.nonEmpty && field.hasErrors){ }@if(field.hasErrors){error-message-@{field.id}-input}"
+        }
+    >
         <legend>
             <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
             @if(hint.nonEmpty){
-                <span class="form-hint">@{hint.get}</span>
+                <span id="form-hint" class="form-hint">@{hint.get}</span>
             }
             @field.errors.map { error =>
                 <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>

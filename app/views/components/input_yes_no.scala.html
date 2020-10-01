@@ -27,7 +27,11 @@
 
 
 <div class="form-group @if(field.hasErrors){form-group-error}">
-    <fieldset class="inline" id="@{field.id}">
+    <fieldset class="inline" id="@{field.id}"
+        @if(hint.nonEmpty || field.hasErrors) {
+            aria-describedby="@if(hint.nonEmpty){hint-@{field.id}}@if(hint.nonEmpty && field.hasErrors){ }@if(field.hasErrors){error-message-@{field.id}-input}"
+        }
+    >
 
         <legend id="@{field.id}-legend">
             @if(legendAsHeading){<h1 id="@{field.id}-id" class="legend-as-heading heading-large">}
