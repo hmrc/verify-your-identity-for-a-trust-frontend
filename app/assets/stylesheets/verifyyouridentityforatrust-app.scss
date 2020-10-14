@@ -4,6 +4,10 @@
 @import 'conditionals';
 @import 'colours/palette';
 
+// Autocomplete country lookup
+ @import 'location-autocomplete.min';
+ @import 'patterns/autocomplete';
+
 // WCGA 2.1 https://design-system.service.gov.uk/styles/colour/
 @import 'govuk-colours-override';
 
@@ -24,7 +28,7 @@
 @import 'patterns/add-to-a-list';
 @import 'patterns/symbol-input';
 
-@import 'location-autocomplete.min';
+
 @import 'partials/_modal';
 
 .field-error {
