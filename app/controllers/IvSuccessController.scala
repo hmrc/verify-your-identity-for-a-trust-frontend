@@ -39,11 +39,12 @@ class IvSuccessController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
                                      relationshipEstablishment: RelationshipEstablishment,
                                      withPlaybackView: IvSuccessView,
-                                     withoutPlaybackView: IvSuccessWithoutPlaybackView,
+                                     withoutPlaybackView: IvSuccessWithoutPlaybackView
                                    )(implicit ec: ExecutionContext,
                                      val config: FrontendAppConfig)
-  extends FrontendBaseController with I18nSupport
-                                    with AuthPartialFunctions {
+  extends FrontendBaseController
+    with I18nSupport
+    with AuthPartialFunctions {
 
   private val logger = Logger(getClass)
 
@@ -71,11 +72,13 @@ class IvSuccessController @Inject()(
         lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
 
         relationshipEstablishment.check(request.internalId, utr) flatMap {
-          case RelationshipFound =>
+          case RelationshipFound => {
             onRelationshipFound
-          case RelationshipNotFound =>
+          }
+          case RelationshipNotFound => {
             logger.warn(s"[Verifying][Session ID: ${Session.id(hc)}] no relationship found in Trust IV, cannot continue with maintaing the trust, sending user back to the start of Trust IV")
             onRelationshipNotFound
+          }
         }
         
       } getOrElse {
