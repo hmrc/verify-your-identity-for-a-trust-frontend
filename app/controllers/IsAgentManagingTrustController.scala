@@ -76,7 +76,6 @@ class IsAgentManagingTrustController @Inject()(
         logger.error(s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve utr from user answers")
         Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
       }
-
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
