@@ -19,7 +19,6 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.requests.IdentifierRequest
-import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -44,11 +43,8 @@ class AuthenticatedIdentifierAction @Inject()(
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    Logger.info(s"[AuthenticatedIdentifierAction] identifying user")
-
     authorised().retrieve(Retrievals.internalId and Retrievals.credentials) {
       case Some(internalId) ~ Some(credentials) =>
-          Logger.info(s"[AuthenticatedIdentifierAction] user authenticated and retrieved internalId")
           block(IdentifierRequest(request, internalId, credentials))
       case _ =>
         throw new UnauthorizedException("Unable to retrieve internal Id")
