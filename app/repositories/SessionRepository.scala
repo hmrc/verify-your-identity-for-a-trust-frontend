@@ -20,8 +20,8 @@ import java.time.LocalDateTime
 
 import javax.inject.Inject
 import models.UserAnswers
+import play.api.Configuration
 import play.api.libs.json._
-import play.api.{Configuration, Logger}
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.BSONDocument
@@ -57,13 +57,11 @@ class DefaultSessionRepository @Inject()(
       newlyCreated =>
         // false if the index already exists
         if (!newlyCreated) {
-          Logger.info(s"Recreating time to live index, ttl: $cacheTtl")
           for {
             _ <- collection.indexesManager.drop(lastUpdatedIndexName)
             _ <- collection.indexesManager.ensure(lastUpdatedIndex)
           } yield ()
         } else {
-          Logger.info(s"Time to live index created")
           Future.successful(())
         }
     }
