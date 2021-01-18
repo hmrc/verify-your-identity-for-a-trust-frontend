@@ -20,24 +20,26 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
 import pages.UtrPage
-import play.api.Logger
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.Logging
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveUTRController @Inject()(
                                    identify: IdentifierAction,
-                                   val cc: ControllerComponents,
+                                   override val controllerComponents: MessagesControllerComponents,
                                    getData: DataRetrievalAction,
                                    sessionRepository: SessionRepository,
                                    relationship: RelationshipEstablishment
-                                 )(implicit ec: ExecutionContext) extends BackendController(cc) {
-
-  private val logger = Logger(getClass)
+                                 )(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   def save(utr: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
@@ -59,7 +61,9 @@ class SaveUTRController @Inject()(
 
       relationship.check(request.internalId, utr) flatMap {
         case RelationshipFound =>
-          logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] relationship is already established in Trust IV for utr $utr sending user to successfully verified")
+          logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] " +
+            s"relationship is already established in Trust IV for utr $utr sending user to successfully verified")
+
           Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
         case RelationshipNotFound =>
           body

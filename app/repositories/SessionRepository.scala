@@ -31,12 +31,13 @@ import reactivemongo.play.json.collection.JSONCollection
 import scala.concurrent.{ExecutionContext, Future}
 
 class DefaultSessionRepository @Inject()(
-                                          mongo: ReactiveMongoApi,
-                                          config: Configuration
-                                        )(implicit ec: ExecutionContext) extends SessionRepository {
+                                          val mongo: ReactiveMongoApi,
+                                          val config: Configuration
+                                        )(implicit val ec: ExecutionContext)
+  extends SessionRepository
+    with IndexManager {
 
-
-  private val collectionName: String = "user-answers"
+  override val collectionName: String = "user-answers"
 
   private val lastUpdatedIndexKey = "lastUpdated"
   private val lastUpdatedIndexName = "user-answers-last-updated-index"

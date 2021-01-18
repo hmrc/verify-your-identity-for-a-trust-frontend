@@ -22,11 +22,11 @@ import controllers.actions._
 import javax.inject.Inject
 import models.TrustsStoreRequest
 import pages.{IsAgentManagingTrustPage, UtrPage}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.BeforeYouContinueView
 
@@ -42,9 +42,11 @@ class BeforeYouContinueController @Inject()(
                                        view: BeforeYouContinueView,
                                        connector: TrustsStoreConnector
                                      )(implicit ec: ExecutionContext,
-                                       config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
-
-  private val logger = Logger(getClass)
+                                       config: FrontendAppConfig)
+  extends FrontendBaseController
+    with I18nSupport
+    with AuthPartialFunctions
+    with Logging {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
@@ -57,14 +59,18 @@ class BeforeYouContinueController @Inject()(
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] relationship is already established in IV for utr $utr sending user to successfully verified")
+            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+              s" relationship is already established in IV for utr $utr sending user to successfully verified")
+
             Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }
 
       } getOrElse {
-          logger.error(s"[Verifying][Session ID: ${Session.id(hc)}] no utr available in user answers, cannot continue with verifying the user")
+          logger.error(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+            s" no utr available in user answers, cannot continue with verifying the user")
+
           Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
         }
   }
@@ -90,7 +96,10 @@ class BeforeYouContinueController @Inject()(
           )
 
           connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = false)) map { _ =>
-            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] saved users utr $utr in trusts-store so they can be identified when they return from Trust IV. Sending the user into Trust IV to answer questions")
+            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+              s" saved users utr $utr in trusts-store so they can be identified when they return from Trust IV." +
+              s" Sending the user into Trust IV to answer questions")
+
             Redirect(host, queryString)
           }
 
@@ -98,13 +107,17 @@ class BeforeYouContinueController @Inject()(
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] relationship is already established in IV for utr $utr sending user to successfully verified")
+            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+              s" relationship is already established in IV for utr $utr sending user to successfully verified")
+
             Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             onRelationshipNotFound
         }
       }) getOrElse {
-        logger.error(s"[Verifying][Session ID: ${Session.id(hc)}] no utr available in user answers, cannot continue with verifying the user")
+        logger.error(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+          s" no utr available in user answers, cannot continue with verifying the user")
+
         Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
       }
   }

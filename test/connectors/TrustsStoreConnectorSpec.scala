@@ -17,13 +17,13 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.TrustsStoreRequest
+import models.{TrustsStoreRequest, UserAnswersCached}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse, UpstreamErrorResponse}
 import utils.WireMockHelper
 
 class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
@@ -47,15 +47,15 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
 
   val request = TrustsStoreRequest(internalId, utr, managedByAgent, false)
 
-  private def wiremock(payload: String, expectedStatus: Int, expectedResponse: String) =
+  private def wiremock(payload: String, status: Int, response: String) =
     server.stubFor(
       post(urlEqualTo(url))
         .withHeader(CONTENT_TYPE, containing("application/json"))
         .withRequestBody(equalTo(payload))
         .willReturn(
           aResponse()
-            .withStatus(expectedStatus)
-            .withBody(expectedResponse)
+            .withStatus(status)
+            .withBody(response)
         )
     )
 
@@ -76,12 +76,12 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
 
         wiremock(
           payload = json,
-          expectedStatus = Status.CREATED,
-          expectedResponse = response
+          status = Status.CREATED,
+          response = response
         )
 
         connector.claim(request) map { response =>
-          response.status mustBe CREATED
+          response mustBe UserAnswersCached
         }
 
       }
@@ -98,11 +98,11 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
 
         wiremock(
           payload = json,
-          expectedStatus = Status.BAD_REQUEST,
-          expectedResponse = response
+          status = Status.BAD_REQUEST,
+          response = response
         )
 
-        recoverToSucceededIf[BadRequestException](connector.claim(request))
+        recoverToSucceededIf[UpstreamErrorResponse](connector.claim(request))
 
       }
       "returns 500 INTERNAL_SERVER_ERROR" in {
@@ -117,11 +117,11 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
 
         wiremock(
           payload = json,
-          expectedStatus = Status.INTERNAL_SERVER_ERROR,
-          expectedResponse = response
+          status = Status.INTERNAL_SERVER_ERROR,
+          response = response
         )
 
-        recoverToSucceededIf[Upstream5xxResponse](connector.claim(request))
+        recoverToSucceededIf[UpstreamErrorResponse](connector.claim(request))
 
       }
 
