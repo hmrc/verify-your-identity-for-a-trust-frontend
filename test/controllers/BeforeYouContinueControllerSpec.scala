@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.TrustsStoreConnector
-import models.TrustsStoreRequest
+import models.{TrustsStoreRequest, UserAnswersCached}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito.{verify => verifyMock, _}
@@ -72,7 +72,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       val connector = mock[TrustsStoreConnector]
 
       when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
-        .thenReturn(Future.successful(HttpResponse(CREATED)))
+        .thenReturn(Future.successful(UserAnswersCached))
 
       val answers = emptyUserAnswers
         .set(UtrPage, "0987654321").success.value

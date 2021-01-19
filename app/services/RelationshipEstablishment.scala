@@ -18,7 +18,7 @@ package services
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,9 +39,8 @@ class RelationshipEstablishmentService @Inject()(
                                                   implicit val config: FrontendAppConfig,
                                                   implicit val executionContext: ExecutionContext
                                                 )
-  extends RelationshipEstablishment {
-
-  private val logger = Logger(getClass)
+  extends RelationshipEstablishment
+    with Logging {
 
   def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
 
@@ -50,15 +49,22 @@ class RelationshipEstablishmentService @Inject()(
     def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
         // relationship does not exist
-        logger.warn(s"[Verifying][Session ID: ${Session.id(hc)}] Relationship does not exist in Trust IV for user and utr $utr due to error $msg")
+        logger.warn(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+          s" Relationship does not exist in Trust IV for user and utr $utr due to error $msg")
+
         Future.successful(RelationshipNotFound)
       case e : Throwable =>
-        logger.error(s"[Verifying][Session ID: ${Session.id(hc)}] Service was unable to determine if an IV relationship existed in Trust IV. Cannot continue with the journey")
+        logger.error(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+          s" Service was unable to determine if an IV relationship existed in Trust IV." +
+          s" Cannot continue with the journey")
+
         throw RelationshipError(e.getMessage)
     }
 
     authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
-      logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] Relationship established in Trust IV for user and utr $utr")
+      logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+        s" Relationship established in Trust IV for user and utr $utr")
+
       Future.successful(RelationshipFound)
     } recoverWith {
       failedRelationshipPF

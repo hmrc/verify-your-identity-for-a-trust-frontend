@@ -21,11 +21,11 @@ import controllers.actions._
 import javax.inject.Inject
 import models.NormalMode
 import pages.{IsAgentManagingTrustPage, UtrPage}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.{IvSuccessView, IvSuccessWithoutPlaybackView}
 
@@ -44,9 +44,8 @@ class IvSuccessController @Inject()(
                                      val config: FrontendAppConfig)
   extends FrontendBaseController
     with I18nSupport
+    with Logging
     with AuthPartialFunctions {
-
-  private val logger = Logger(getClass)
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
@@ -60,7 +59,8 @@ class IvSuccessController @Inject()(
               case Some(value) => value
             }
 
-            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] user successfully passed Trust IV questions for utr $utr, user can contiue to maintain the trust")
+            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+              s" user successfully passed Trust IV questions for utr $utr, user can contiue to maintain the trust")
 
             if (config.playbackEnabled) {
               Future.successful(Ok(withPlaybackView(isAgentManagingTrust, utr)))
@@ -76,7 +76,8 @@ class IvSuccessController @Inject()(
             onRelationshipFound
           }
           case RelationshipNotFound => {
-            logger.warn(s"[Verifying][Session ID: ${Session.id(hc)}] no relationship found in Trust IV, cannot continue with maintaing the trust, sending user back to the start of Trust IV")
+            logger.warn(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+              s" no relationship found in Trust IV, cannot continue with maintaing the trust, sending user back to the start of Trust IV")
             onRelationshipNotFound
           }
         }

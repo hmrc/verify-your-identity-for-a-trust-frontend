@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
-import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
+import models.{RelationshipEstablishmentStatus, TrustsStoreRequest, UserAnswersCached}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{when, verify => verifyMock}
@@ -166,7 +166,7 @@ class IvFailureControllerSpec extends SpecBase {
         val connector = mock[TrustsStoreConnector]
 
         when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
-          .thenReturn(Future.successful(HttpResponse(CREATED)))
+          .thenReturn(Future.successful(UserAnswersCached))
 
         val answers = emptyUserAnswers
           .set(UtrPage, utr).success.value

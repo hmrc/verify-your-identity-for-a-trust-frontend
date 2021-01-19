@@ -16,21 +16,19 @@
 
 package models
 
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{HttpReads, HttpResponse, UpstreamErrorResponse}
 
-sealed trait EnrolmentResponse
-case object EnrolmentCreated extends EnrolmentResponse
+sealed trait TrustsStoreResponse
+case object UserAnswersCached extends TrustsStoreResponse
 
-final case class UpstreamTaxEnrolmentsError(message : String) extends Exception(message) with EnrolmentResponse
-
-object EnrolmentResponse {
+object TrustsStoreResponse {
 
   import play.api.http.Status._
 
-  implicit lazy val httpReads : HttpReads[EnrolmentResponse] = (_: String, _: String, response: HttpResponse) => {
+  implicit lazy val httpReads : HttpReads[TrustsStoreResponse] = (_: String, _: String, response: HttpResponse) => {
     response.status match {
-      case NO_CONTENT => EnrolmentCreated
-      case _ => throw UpstreamTaxEnrolmentsError(s"HTTP response ${response.status} ${response.body}")
+      case CREATED => UserAnswersCached
+      case _ => throw UpstreamErrorResponse.apply(s"HTTP response ${response.status} ${response.body}", response.status)
     }
   }
 

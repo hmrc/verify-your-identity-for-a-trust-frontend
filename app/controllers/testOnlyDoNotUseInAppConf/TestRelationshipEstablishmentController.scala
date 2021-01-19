@@ -20,13 +20,12 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
 import models.requests.IdentifierRequest
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,32 +40,25 @@ case class Relationship(relationshipName: String, businessKeys: Set[BusinessKey]
 object Relationship {
   implicit val format = Json.format[Relationship]
 }
-case class RelationshipJson(relationship: Relationship, ttlSeconds:Int =1440)
+case class RelationshipJson(relationship: Relationship, ttlSeconds: Int = 1440)
 
 object RelationshipJson {
   implicit val format = Json.format[RelationshipJson]
 }
 
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,config: FrontendAppConfig)
+class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient, config: FrontendAppConfig)
                                                   (implicit val ec : ExecutionContext) {
 
+  import uk.gov.hmrc.http.HttpReads.{Implicits => HttpImplicits}
+  implicit val legacyRawReads: HttpReads[HttpResponse] = HttpImplicits.throwOnFailure(HttpImplicits.readEitherOf)
+
   private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
-
-  private def relationshipEstablishmentGetUrl(credId :String): String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/$credId"
-
-  private def relationshipEstablishmentDeleteUrl(credId: String): String = s"${config.relationshipEstablishmentBaseUrl}/test/relationship/$credId"
 
   private def newRelationship(credId: String, utr: String): Relationship =
     Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
 
   def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.POST[RelationshipJson,HttpResponse](relationshipEstablishmentPostUrl,RelationshipJson(newRelationship(credId, utr)))
-
-  def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.GET(relationshipEstablishmentGetUrl(credId))
-
-  def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.DELETE(relationshipEstablishmentDeleteUrl(credId))
+    httpClient.POST[RelationshipJson, HttpResponse](relationshipEstablishmentPostUrl, RelationshipJson(newRelationship(credId, utr)))
 
 }
 
@@ -78,12 +70,10 @@ class TestRelationshipEstablishmentController @Inject()(
                                                          override val messagesApi: MessagesApi,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
-                                                         identify: IdentifierAction
-                                                       )
+                                                         identify: IdentifierAction)
                                                        (implicit ec : ExecutionContext)
-  extends FrontendBaseController {
-
-  private val logger = Logger(getClass)
+  extends FrontendBaseController
+    with Logging {
 
   def check(utr: String) = identify.async {
     implicit request =>
