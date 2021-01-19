@@ -33,7 +33,8 @@ object AppDependencies {
     "com.typesafe.akka" %% "akka-protobuf" % akkaVersion,
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-    "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion
+    "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
+    "commons-codec"     % "commons-codec"   % "1.12"
   )
 
   def apply(): Seq[ModuleID] = compile ++ test
