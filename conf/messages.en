@@ -42,6 +42,7 @@ site.continue = Continue
 site.service_name = Register and Maintain a Trust
 site.textarea.char_limit = (Limit is {0} characters)
 site.sign_out = Sign out
+site.sign_in = Sign in
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
