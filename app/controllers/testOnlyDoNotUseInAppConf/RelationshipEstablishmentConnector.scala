@@ -18,15 +18,12 @@ package controllers.testOnlyDoNotUseInAppConf
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.concurrent.ExecutionContext
 
 class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient, config: FrontendAppConfig)
                                                   (implicit val ec : ExecutionContext) {
-
-  import uk.gov.hmrc.http.HttpReads.{Implicits => HttpImplicits}
-  implicit val legacyRawReads: HttpReads[HttpResponse] = HttpImplicits.throwOnFailure(HttpImplicits.readEitherOf)
 
   import RelationshipHttpReads.httpReads
 
