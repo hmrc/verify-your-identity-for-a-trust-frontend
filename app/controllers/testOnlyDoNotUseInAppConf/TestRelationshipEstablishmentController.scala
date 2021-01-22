@@ -17,50 +17,15 @@
 package controllers.testOnlyDoNotUseInAppConf
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
 import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
-
-case class BusinessKey(name: String,value: String)
-
-object BusinessKey {
-  implicit val format = Json.format[BusinessKey]
-}
-
-case class Relationship(relationshipName: String, businessKeys: Set[BusinessKey], credId: String)
-
-object Relationship {
-  implicit val format = Json.format[Relationship]
-}
-case class RelationshipJson(relationship: Relationship, ttlSeconds: Int = 1440)
-
-object RelationshipJson {
-  implicit val format = Json.format[RelationshipJson]
-}
-
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient, config: FrontendAppConfig)
-                                                  (implicit val ec : ExecutionContext) {
-
-  import uk.gov.hmrc.http.HttpReads.{Implicits => HttpImplicits}
-  implicit val legacyRawReads: HttpReads[HttpResponse] = HttpImplicits.throwOnFailure(HttpImplicits.readEitherOf)
-
-  private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
-
-  private def newRelationship(credId: String, utr: String): Relationship =
-    Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
-
-  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.POST[RelationshipJson, HttpResponse](relationshipEstablishmentPostUrl, RelationshipJson(newRelationship(credId, utr)))
-
-}
 
 /**
  * Test controller and connector to relationship-establishment to set a relationship for a given UTR.
