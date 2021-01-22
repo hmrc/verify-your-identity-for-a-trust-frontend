@@ -22,7 +22,8 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import scala.concurrent.ExecutionContext
 
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient, config: FrontendAppConfig)
+class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
+                                                   config: FrontendAppConfig)
                                                   (implicit val ec : ExecutionContext) {
 
   import RelationshipHttpReads.httpReads
@@ -32,10 +33,12 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient, c
   private def newRelationship(credId: String, utr: String): Relationship =
     Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
 
-  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) =
+  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) = {
+    val ttl = config.relationshipTTL
     httpClient.POST[RelationshipJson, RelationshipResponse](
       relationshipEstablishmentPostUrl,
-      RelationshipJson(newRelationship(credId, utr), ttlSeconds = 1440)
+      RelationshipJson(newRelationship(credId, utr), ttlSeconds = ttl)
     )
+  }
 
 }

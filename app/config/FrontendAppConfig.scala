@@ -78,6 +78,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   private def stubbedRelationshipEstablishmentFrontendHost : String =
     configuration.get[String]("microservice.services.test.relationship-establishment-frontend.host")
 
+  lazy val relationshipTTL: Int =
+    configuration.get[Int]("microservice.services.test.relationship-establishment-frontend.mongo.ttl")
+
   lazy val relationshipEstablishmentStubbed: Boolean =
     configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
 
