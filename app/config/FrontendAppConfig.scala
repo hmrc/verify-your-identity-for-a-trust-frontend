@@ -44,6 +44,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
 
+  lazy val logoutAudit: Boolean =
+    configuration.get[Boolean]("microservice.services.features.auditing.logout")
+
   lazy val trustsContinueUrl: String = {
     configuration.get[String]("urls.maintainContinue")
   }
