@@ -46,21 +46,25 @@ class LogoutController @Inject()(appConfig: FrontendAppConfig,
 
       logger.info(s"[Session ID: ${utils.Session.id(hc)}] user signed out from the service, asking for feedback")
 
-      val auditData = Map(
-        "sessionId" -> Session.id(hc),
-        "event" -> "signout",
-        "service" -> "verify-your-identity-for-a-trust-frontend",
-        "userGroup" -> request.affinityGroup.toString
-      )
+      if(appConfig.logoutAudit) {
 
-      val auditDataWithUtr = request.userAnswers.get(UtrPage).fold(auditData) { utr =>
-        auditData ++ Map("utr" -> utr)
+        val auditData = Map(
+          "sessionId" -> Session.id(hc),
+          "event" -> "signout",
+          "service" -> "verify-your-identity-for-a-trust-frontend",
+          "userGroup" -> request.affinityGroup.toString
+        )
+
+        val auditDataWithUtr = request.userAnswers.get(UtrPage).fold(auditData) { utr =>
+          auditData ++ Map("utr" -> utr)
+        }
+
+        auditConnector.sendExplicitAudit(
+          "trusts",
+          auditDataWithUtr
+        )
+
       }
-
-      auditConnector.sendExplicitAudit(
-        "trusts",
-        auditDataWithUtr
-      )
 
       Redirect(appConfig.logoutUrl).withSession(session = ("feedbackId", Session.id(hc)))
   }
