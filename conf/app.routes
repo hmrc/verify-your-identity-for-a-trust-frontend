@@ -2,6 +2,8 @@
 GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad()
 POST       /before-you-continue                         controllers.BeforeYouContinueController.onSubmit()
 
+GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+
 GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad()
 
 GET        /logout                                       controllers.LogoutController.logout()
