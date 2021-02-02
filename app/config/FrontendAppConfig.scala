@@ -16,16 +16,20 @@
 
 package config
 
-import java.net.{URI, URLEncoder}
-
 import com.google.inject.{Inject, Singleton}
+import controllers.routes
 import play.api.Configuration
 import play.api.i18n.Lang
-import play.api.mvc.Request
+import play.api.mvc.{Call, Request}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import java.net.{URI, URLEncoder}
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
+
+  final val ENGLISH = "en"
+  final val WELSH = "cy"
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
@@ -107,9 +111,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val timeoutLength: String = configuration.get[String]("timeout.length")
 
   def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
+    "english" -> Lang(ENGLISH),
+    "cymraeg" -> Lang(WELSH)
   )
+
+  def routeToSwitchLanguage: String => Call =
+    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   private lazy val accessibilityBaseLinkUrl: String = configuration.get[String]("urls.accessibility")
 
