@@ -23,12 +23,12 @@ import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{RelationshipEstablishment, RelationshipFound}
-import views.html.{IvSuccessView, IvSuccessWithoutPlaybackView}
+import views.html.IvSuccessView
 
 import scala.concurrent.Future
 
@@ -50,48 +50,12 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
       val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
         .overrides(
           bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
-        ).configure("microservice.services.features.playback.enabled" -> true)
+        )
         .build()
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
 
       val view = application.injector.instanceOf[IvSuccessView]
-
-      val viewAsString = view(isAgent = false, utr)(request, messages).toString
-
-      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-        .thenReturn(Future.successful(RelationshipFound))
-
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual viewAsString
-
-      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
-
-      reset(connector)
-      reset(mockRelationshipEstablishment)
-
-      application.stop()
-
-    }
-
-    "return OK and the correct view for a GET when playback is disabled" in {
-
-      val userAnswers = UserAnswers(userAnswersId)
-        .set(IsAgentManagingTrustPage, false).success.value
-        .set(IdentifierPage, utr).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
-        ).configure("microservice.services.features.playback.enabled" -> false)
-        .build()
-
-      val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
-
-      val view = application.injector.instanceOf[IvSuccessWithoutPlaybackView]
 
       val viewAsString = view(isAgent = false, utr)(request, messages).toString
 
@@ -122,7 +86,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
       val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
         .overrides(
           bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
-        ).configure("microservice.services.features.playback.enabled" -> true)
+        )
         .build()
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
@@ -166,8 +130,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         application.stop()
 
       }
-
-
 
     }
 
