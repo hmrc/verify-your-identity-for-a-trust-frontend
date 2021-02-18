@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit
 
 import base.SpecBase
 import controllers.actions.{FakeAuthConnector, FakeFailingAuthConnector}
+import models.RelationshipForIdentifier
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.auth.core.{FailedRelationship, MissingBearerToken}
 
@@ -30,6 +31,9 @@ import scala.concurrent.{Await, Future}
 class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
   val utr = "1234567890"
+  val urn = "ABTRUST12345678"
+
+  val relationshipForIdentifier = injector.instanceOf[RelationshipForIdentifier]
 
   "RelationshipEstablishment" when {
 
@@ -39,7 +43,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
         val auth = new FakeFailingAuthConnector(new MissingBearerToken)
 
-        val service = new RelationshipEstablishmentService(auth)
+        val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
         intercept[RelationshipError] {
           Await.result(service.check(fakeInternalId, utr), Duration(5, TimeUnit.SECONDS))
@@ -47,7 +51,9 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
       }
     }
 
-    "the user has logged in" when {
+    "given a utr" must {
+
+      "the user has logged in" when {
 
         "where no relationship exists" must {
 
@@ -55,7 +61,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val auth = new FakeFailingAuthConnector(FailedRelationship())
 
-            val service = new RelationshipEstablishmentService(auth)
+            val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
             val result = service.check(fakeInternalId, utr)
 
@@ -67,25 +73,70 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
         }
 
-      "where a relationship exists" must {
+        "where a relationship exists" must {
 
-        "return RelationshipFound" in {
+          "return RelationshipFound" in {
 
-          val auth = new FakeAuthConnector(Future.successful(()))
+            val auth = new FakeAuthConnector(Future.successful(()))
 
-          val service = new RelationshipEstablishmentService(auth)
+            val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
-          val result = service.check(fakeInternalId, utr)
+            val result = service.check(fakeInternalId, utr)
 
-          whenReady(result) {
-            s =>
-              s mustBe RelationshipFound
+            whenReady(result) {
+              s =>
+                s mustBe RelationshipFound
+            }
+
           }
 
         }
 
       }
+    }
 
+    "given a urn" must {
+
+      "the user has logged in" when {
+
+        "where no relationship exists" must {
+
+          "return RelationshipNotFound" in {
+
+            val auth = new FakeFailingAuthConnector(FailedRelationship())
+
+            val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
+
+            val result = service.check(fakeInternalId, urn)
+
+            whenReady(result) {
+              s =>
+                s mustBe RelationshipNotFound
+            }
+          }
+
+        }
+
+        "where a relationship exists" must {
+
+          "return RelationshipFound" in {
+
+            val auth = new FakeAuthConnector(Future.successful(()))
+
+            val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
+
+            val result = service.check(fakeInternalId, urn)
+
+            whenReady(result) {
+              s =>
+                s mustBe RelationshipFound
+            }
+
+          }
+
+        }
+
+      }
     }
 
   }

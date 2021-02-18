@@ -31,7 +31,7 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
   private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
 
   private def newRelationship(credId: String, utr: String): Relationship =
-    Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
+    Relationship(config.relationshipName, Set(BusinessKey(config.relationshipTaxableIdentifier, utr)), credId)
 
   def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) = {
     val ttl = config.relationshipTTL

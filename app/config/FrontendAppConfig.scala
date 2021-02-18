@@ -70,17 +70,20 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val relationshipName : String =
     configuration.get[String]("microservice.services.self.relationship-establishment.name")
 
-  lazy val relationshipIdentifier : String =
-    configuration.get[String]("microservice.services.self.relationship-establishment.identifier")
+  lazy val relationshipTaxableIdentifier : String =
+    configuration.get[String]("microservice.services.self.relationship-establishment.taxable.identifier")
 
-  private def relationshipEstablishmentFrontendPath(utr: String) : String =
-    s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$utr"
+  lazy val relationshipNonTaxableIdentifier : String =
+    configuration.get[String]("microservice.services.self.relationship-establishment.nonTaxable.identifier")
+
+  private def relationshipEstablishmentFrontendPath(identifier: String) : String =
+    s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$identifier"
 
   private def relationshipEstablishmentFrontendHost : String =
     configuration.get[String]("microservice.services.relationship-establishment-frontend.host")
 
-  private def stubbedRelationshipEstablishmentFrontendPath(utr: String) : String =
-    s"${configuration.get[String]("microservice.services.test.relationship-establishment-frontend.path")}/$utr"
+  private def stubbedRelationshipEstablishmentFrontendPath(identifier: String) : String =
+    s"${configuration.get[String]("microservice.services.test.relationship-establishment-frontend.path")}/$identifier"
 
   private def stubbedRelationshipEstablishmentFrontendHost : String =
     configuration.get[String]("microservice.services.test.relationship-establishment-frontend.host")
@@ -91,11 +94,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val relationshipEstablishmentStubbed: Boolean =
     configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
 
-  def relationshipEstablishmentFrontendtUrl(utr: String) : String = {
+  def relationshipEstablishmentFrontendtUrl(identifier: String) : String = {
     if(relationshipEstablishmentStubbed) {
-      s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(utr)}"
+      s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(identifier)}"
     } else {
-      s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(utr)}"
+      s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(identifier)}"
     }
   }
 

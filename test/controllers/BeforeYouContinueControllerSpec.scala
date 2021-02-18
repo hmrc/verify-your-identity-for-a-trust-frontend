@@ -23,13 +23,12 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
-import uk.gov.hmrc.http.HttpResponse
 import views.html.BeforeYouContinueView
 
 import scala.concurrent.Future
