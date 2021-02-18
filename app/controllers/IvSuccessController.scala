@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
 import models.NormalMode
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +50,7 @@ class IvSuccessController @Inject()(
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage).map { utr =>
+      request.userAnswers.get(IdentifierPage).map { utr =>
 
         def onRelationshipFound = {
 

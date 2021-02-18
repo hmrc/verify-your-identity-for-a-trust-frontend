@@ -21,7 +21,7 @@ import connectors.TrustsStoreConnector
 import controllers.actions._
 import javax.inject.Inject
 import models.TrustsStoreRequest
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -51,7 +51,7 @@ class BeforeYouContinueController @Inject()(
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-        request.userAnswers.get(UtrPage) map { utr =>
+        request.userAnswers.get(IdentifierPage) map { utr =>
 
         def body = {
             Future.successful(Ok(view(utr)))
@@ -79,7 +79,7 @@ class BeforeYouContinueController @Inject()(
     implicit request =>
 
       (for {
-        utr <- request.userAnswers.get(UtrPage)
+        utr <- request.userAnswers.get(IdentifierPage)
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
 

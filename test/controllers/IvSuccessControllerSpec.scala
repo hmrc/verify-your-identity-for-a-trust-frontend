@@ -23,7 +23,7 @@ import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -45,7 +45,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val userAnswers = UserAnswers(userAnswersId)
         .set(IsAgentManagingTrustPage, false).success.value
-        .set(UtrPage, utr).success.value
+        .set(IdentifierPage, utr).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
         .overrides(
@@ -81,7 +81,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val userAnswers = UserAnswers(userAnswersId)
         .set(IsAgentManagingTrustPage, false).success.value
-        .set(UtrPage, utr).success.value
+        .set(IdentifierPage, utr).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
         .overrides(
@@ -117,7 +117,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val userAnswers = UserAnswers(userAnswersId)
         .set(IsAgentManagingTrustPage, true).success.value
-        .set(UtrPage, utr).success.value
+        .set(IdentifierPage, utr).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
         .overrides(

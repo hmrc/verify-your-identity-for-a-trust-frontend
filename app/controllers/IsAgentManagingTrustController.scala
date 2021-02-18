@@ -21,7 +21,7 @@ import forms.IsAgentManagingTrustFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +54,7 @@ class IsAgentManagingTrustController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage) map { utr =>
+      request.userAnswers.get(IdentifierPage) map { utr =>
 
         lazy val body = {
             val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
@@ -89,7 +89,7 @@ class IsAgentManagingTrustController @Inject()(
       form.bindFromRequest().fold(
         formWithErrors =>
           (for {
-            utr <- request.userAnswers.get(UtrPage)
+            utr <- request.userAnswers.get(IdentifierPage)
           } yield {
             Future.successful(BadRequest(view(formWithErrors, mode, utr)))
           }) getOrElse {

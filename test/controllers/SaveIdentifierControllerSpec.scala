@@ -21,7 +21,7 @@ import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.UtrPage
+import pages.IdentifierPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -83,7 +83,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
-          captor.getValue.get(UtrPage).value mustBe utr
+          captor.getValue.get(IdentifierPage).value mustBe utr
 
         }
 
@@ -107,7 +107,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
-          captor.getValue.get(UtrPage).value mustBe utr
+          captor.getValue.get(IdentifierPage).value mustBe utr
 
         }
       }
@@ -137,7 +137,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
-          captor.getValue.get(UtrPage).value mustBe urn
+          captor.getValue.get(IdentifierPage).value mustBe urn
 
         }
 
@@ -161,7 +161,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
-          captor.getValue.get(UtrPage).value mustBe urn
+          captor.getValue.get(IdentifierPage).value mustBe urn
 
         }
       }

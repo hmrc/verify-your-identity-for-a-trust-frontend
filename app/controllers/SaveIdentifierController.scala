@@ -20,7 +20,7 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.requests.OptionalDataRequest
 import models.{NormalMode, UserAnswers}
-import pages.UtrPage
+import pages.IdentifierPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -70,9 +70,9 @@ class SaveIdentifierController @Inject()(
   private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
     val userAnswers = request.userAnswers match {
       case Some(userAnswers) =>
-        userAnswers.set(UtrPage, identifier)
+        userAnswers.set(IdentifierPage, identifier)
       case _ =>
-        UserAnswers(request.internalId).set(UtrPage, identifier)
+        UserAnswers(request.internalId).set(IdentifierPage, identifier)
     }
     for {
       updatedAnswers <- Future.fromTry(userAnswers)
