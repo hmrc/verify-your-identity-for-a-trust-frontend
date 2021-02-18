@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import connectors.TaxEnrolmentsConnector
 import models.UserAnswers
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito.{verify => verifyMock, _}
