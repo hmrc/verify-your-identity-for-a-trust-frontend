@@ -19,6 +19,7 @@ package controllers
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.IsUTR
 import pages.IdentifierPage
 import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,8 +56,11 @@ class LogoutController @Inject()(appConfig: FrontendAppConfig,
           "userGroup" -> request.affinityGroup.toString
         )
 
-        val auditDataWithUtr = request.userAnswers.get(IdentifierPage).fold(auditData) { utr =>
-          auditData ++ Map("utr" -> utr)
+
+        val auditDataWithUtr = request.userAnswers.get(IdentifierPage).fold(auditData) { identifier =>
+          val key = if(IsUTR(identifier)) "utr" else "urn"
+
+          auditData ++ Map(key -> identifier)
         }
 
         auditConnector.sendExplicitAudit(
