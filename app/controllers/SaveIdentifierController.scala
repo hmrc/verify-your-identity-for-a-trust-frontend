@@ -1,0 +1,85 @@
+/*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers
+
+import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import javax.inject.Inject
+import models.requests.OptionalDataRequest
+import models.{NormalMode, UserAnswers}
+import pages.UtrPage
+import play.api.Logging
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import repositories.SessionRepository
+import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.{Regex, Session}
+
+import scala.concurrent.{ExecutionContext, Future}
+
+class SaveIdentifierController @Inject()(
+                                   identify: IdentifierAction,
+                                   override val controllerComponents: MessagesControllerComponents,
+                                   getData: DataRetrievalAction,
+                                   sessionRepository: SessionRepository,
+                                   relationship: RelationshipEstablishment
+                                 )(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with Logging {
+
+  def save(identifier: String): Action[AnyContent] = (identify andThen getData).async {
+    implicit request =>
+
+      identifier match {
+        case Regex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
+        case Regex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
+        case _ =>
+          logger.error(s"[Verifying][Session ID: ${Session.id(hc)}] " +
+            s"Identifier provided is not a valid URN or UTR")
+          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+      }
+  }
+
+  private def checkIfAlreadyHaveIvRelationship(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+    relationship.check(request.internalId, identifier) flatMap {
+      case RelationshipFound =>
+        logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] " +
+          s"relationship is already established in IV for $identifier sending user to successfully verified")
+
+        Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+      case RelationshipNotFound =>
+        saveAndContinue(identifier)
+    }
+  }
+
+  private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+    val userAnswers = request.userAnswers match {
+      case Some(userAnswers) =>
+        userAnswers.set(UtrPage, identifier)
+      case _ =>
+        UserAnswers(request.internalId).set(UtrPage, identifier)
+    }
+    for {
+      updatedAnswers <- Future.fromTry(userAnswers)
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield {
+      logger.info(s"[Verifying][Session ID: ${Session.id(hc(request))}] user has started the verifying a trust journey for $identifier")
+      Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+    }
+  }
+}

@@ -25,7 +25,7 @@ GET        /something-went-wrong                        controllers.FallbackFail
 
 GET        /verified                                     controllers.IvSuccessController.onPageLoad()
 
-GET        /save/:utr                                   controllers.SaveUTRController.save(utr: String)
+GET        /save/:identifier                            controllers.SaveIdentifierController.save(identifier: String)
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad()
