@@ -23,7 +23,6 @@ import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{RelationshipEstablishment, RelationshipFound}
@@ -35,7 +34,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
   private val utr = "0987654321"
 
-  private val connector = mock[TaxEnrolmentsConnector]
   private val mockRelationshipEstablishment = mock[RelationshipEstablishment]
 
   "Returning IvSuccess Controller" must {
@@ -47,9 +45,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         .set(IdentifierPage, utr).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
-        )
         .build()
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
@@ -69,7 +64,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
-      reset(connector)
       reset(mockRelationshipEstablishment)
 
       application.stop()
@@ -83,9 +77,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         .set(IdentifierPage, utr).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
-        )
         .build()
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
@@ -105,7 +96,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
-      reset(connector)
       reset(mockRelationshipEstablishment)
 
       application.stop()
