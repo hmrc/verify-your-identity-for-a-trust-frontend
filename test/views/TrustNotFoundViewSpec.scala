@@ -21,7 +21,7 @@ import views.html.TrustNotFound
 
 class TrustNotFoundViewSpec extends ViewBehaviours {
 
-  val utr = "0987654321"
+  val utr = "1234567890"
 
   "TrustNotFound view" must {
 

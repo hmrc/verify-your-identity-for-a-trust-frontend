@@ -21,13 +21,13 @@
  config: FrontendAppConfig
 )
 
-@(isAgent: Boolean, utr: String)(implicit request: Request[_], messages: Messages)
+@(isAgent: Boolean, identifier: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
  title = messages("ivSuccess.agent.title")
 ) {
 
-    <span class="govuk-caption-xl">@messages("ivSuccess.subheading", utr)</span>
+    <span class="govuk-caption-xl">@subheading(identifier)</span>
     @if(isAgent) {
             @components.heading("ivSuccess.agent.heading", headingSize = "heading-large govuk-fieldset__heading")
             <p>@messages("ivSuccess.agent.paragraph1")</p>

@@ -21,11 +21,11 @@ import views.html.IvSuccessView
 
 class IvSuccessViewSpec extends ViewBehaviours {
 
-  val utr = "0987654321"
+  val utr = "1234567890"
 
-  "Returning IvSuccess view with Agent" must {
+  "IvSuccess view with Agent" must {
 
-    "display the register link when config.playbackEnabled is true" when {
+    "display the register link" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .configure("microservice.services.features.playback.enabled" -> true)
@@ -46,7 +46,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
       val doc = asDocument(applyView)
-      assertContainsText(doc, messages("ivSuccess.subheading", utr))
+      assertContainsText(doc, messages("utr.subheading", utr))
     }
   }
 
@@ -61,7 +61,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
     "display the correct subheading" in {
       val doc = asDocument(applyView)
-      assertContainsText(doc, messages("ivSuccess.subheading", utr))
+      assertContainsText(doc, messages("utr.subheading", utr))
     }
 
   }

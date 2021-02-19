@@ -18,13 +18,13 @@
 main_template: MainTemplate
 )
 
-@(utr: String)(implicit request: Request[_], messages: Messages)
+@(identifier: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
 title = messages("stillProcessing.title")
 ) {
 
-<span class="govuk-caption-xl">@messages("stillProcessing.subheading", utr)</span>
+<span class="govuk-caption-xl">@subheading(identifier)</span>
 @components.heading("stillProcessing.heading", headingSize = "heading-large govuk-fieldset__heading")
 
 <p>@messages("stillProcessing.p1")</p>
