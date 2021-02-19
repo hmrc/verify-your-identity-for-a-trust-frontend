@@ -78,14 +78,6 @@ ivSuccess.no.agent.paragraph2 = If the trust has a tax liability, you need to de
 ivSuccess.no.agent.paragraph3 = If you need help using the service
 ivSuccess.no.agent.contactLink =  contact the trusts helpline (opens in a new window or tab)
 
-ivSuccess.withoutplayback.title = Sorry, you cannot maintain this trust online
-ivSuccess.withoutplayback.heading = Sorry, you cannot maintain this trust online
-ivSuccess.withoutplayback.paragraph1 = We are currently updating the service so you can view the registered information about the trust.
-ivSuccess.withoutplayback.paragraph2 = This will be available in January 2020.
-ivSuccess.withoutplayback.paragraph3 = If you need to authorise your agent to manage the trust, you need to contact them and ask for an authorisation link to be sent to you.
-ivSuccess.withoutplayback.ifYouNeedHelp = If you need help using the service
-ivSuccess.withoutplayback.contactLink =  contact the trusts helpline (opens in a new window or tab)
-
 beforeYouContinue.title = Before you continue
 beforeYouContinue.heading = Before you continue
 beforeYouContinue.subheading = This trust’s UTR: {0}
@@ -103,16 +95,11 @@ locked.p2 = Your answers must match the details provided to HMRC when the trust 
 locked.p3 = If you need help using the service,
 locked.link1 =  contact the trusts helpline (opens in a new window or tab)
 
-
-stillProcessing.title = Sorry, you cannot access this trust
-stillProcessing.heading = Sorry, you cannot access this trust
-stillProcessing.p1 = HMRC is still processing changes recently made to this trust.
-stillProcessing.p2 = Try again later.
-stillProcessing.p3 = If you need help with the service
+stillProcessing.title = We are processing the latest changes made to this trust
+stillProcessing.heading = We are processing the latest changes made to this trust
+stillProcessing.p1 = Try again later.
+stillProcessing.p2 = If you need help with the service
 stillProcessing.link1 = contact the trusts helpline (opens in a new window or tab)
-stillProcessing.p4 = You can
-stillProcessing.link2 = return to register and maintain a trust for a client
-stillProcessing.subheading = This trust’s UTR: {0}
 
 notFound.title = Sorry, you cannot access this trust
 notFound.heading = Sorry, you cannot access this trust
