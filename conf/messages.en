@@ -22,9 +22,8 @@ error.required = Please enter a value
 error.summary.title = There is a problem
 site.error = Error:
 
-index.title = verify-your-identity-for-a-trust-frontend
-index.heading = verify-your-identity-for-a-trust-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+utr.subheading = The trust’s UTR: {0}
+urn.subheading = The trust’s URN: {0}
 
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
@@ -54,11 +53,9 @@ timeout.keep-alive-button=Continue application
 
 isAgentManagingTrust.title = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.heading = Is an agent managing the trust’s online register for the trustees?
-isAgentManagingTrust.subheading = This trust’s UTR: {0}
 isAgentManagingTrust.checkYourAnswersLabel = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.error.required = Select yes if an agent is managing the trust’s online register for the trustees
 
-ivSuccess.subheading = The trust’s UTR: {0}
 ivSuccess.ifYouNeedHelp = If you need help using the service
 ivSuccess.contactLink =  contact the trusts helpline (opens in a new window or tab)
 
@@ -80,7 +77,6 @@ ivSuccess.no.agent.contactLink =  contact the trusts helpline (opens in a new wi
 
 beforeYouContinue.title = Before you continue
 beforeYouContinue.heading = Before you continue
-beforeYouContinue.subheading = This trust’s UTR: {0}
 beforeYouContinue.p1 = You will be asked to answer several questions about the trust. This is so we can confirm you are authorised to view and amend the trust’s details.
 beforeYouContinue.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
 beforeYouContinue.p3 = Do not enter any other details when answering these questions, even if someone from the trust wrote to HMRC to change them.
@@ -89,7 +85,6 @@ beforeYouContinue.a = contact the trusts helpline (opens in a new window or tab)
 
 locked.title = Your answers do not match the details we hold about this trust
 locked.heading = Your answers do not match the details we hold about this trust
-locked.subheading = This trust’s UTR: {0}
 locked.p1 = As you have had 3 unsuccessful tries at accessing this trust you will need to try again in 30 minutes.
 locked.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
 locked.p3 = If you need help using the service,
