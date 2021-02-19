@@ -38,7 +38,7 @@ class IvSuccessController @Inject()(
                                      requireData: DataRequiredAction,
                                      val controllerComponents: MessagesControllerComponents,
                                      relationshipEstablishment: RelationshipEstablishment,
-                                     withPlaybackView: IvSuccessView,
+                                     withPlaybackView: IvSuccessView
                                    )(implicit ec: ExecutionContext,
                                      val config: FrontendAppConfig)
   extends FrontendBaseController
