@@ -29,8 +29,9 @@ class TrustNotFoundViewSpec extends ViewBehaviours {
 
     val applyView = view.apply(utr)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "notFound","p1", "p2","p3",
-      "p4", "link1", "p5", "link2", "link3")
+    behave like normalPage(applyView,
+      "notFound",
+      "p1", "p2","p3", "p4", "link1", "register.link", "li.1", "li.2")
 
     "display the correct heading" in {
       val doc = asDocument(applyView)
