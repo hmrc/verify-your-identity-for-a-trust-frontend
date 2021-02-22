@@ -57,10 +57,10 @@ class TestRelationshipEstablishmentController @Inject()(
         case "4381028111" | "5000000000" =>
           createRelationship(identifier)
         case Regex.UrnRegex(urn) =>
-          if (urn.head.toLower == "a".head) {
+          if (urn.toLowerCase.startsWith("nt")) {
             createRelationship(urn)
           } else {
-            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] URN did not start with 'A', failing IV")
+            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] URN did not start with 'NT', failing IV")
             Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
           }
         case _ =>

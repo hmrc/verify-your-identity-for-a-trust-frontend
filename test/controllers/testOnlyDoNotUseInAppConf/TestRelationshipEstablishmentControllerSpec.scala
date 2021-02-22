@@ -23,7 +23,6 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, route, status, _}
-import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -75,7 +74,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "stub IV relationship for a URN starting with A" in {
+    "stub IV relationship for a URN starting with NT" in {
 
       val mockConnector = mock[RelationshipEstablishmentConnector]
 
@@ -86,7 +85,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
         )
         .build()
 
-      val identifier = "ABTRUST12345678"
+      val identifier = "NTTRUST12345678"
 
       when(mockConnector.createRelationship(any(), any())(any())).thenReturn(Future.successful(RelationshipStubbedResponse))
 
@@ -101,7 +100,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "not stub IV relationship for a URN starting with anything but A" in {
+    "not stub IV relationship for a URN starting with anything but NT" in {
       val application = applicationBuilder(
         userAnswers = Some(emptyUserAnswers))
         .build()
