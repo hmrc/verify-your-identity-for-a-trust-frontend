@@ -17,18 +17,16 @@
 package controllers
 
 import base.SpecBase
-import connectors.TaxEnrolmentsConnector
 import models.UserAnswers
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{IsAgentManagingTrustPage, UtrPage}
-import play.api.inject.bind
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{RelationshipEstablishment, RelationshipFound}
-import views.html.{IvSuccessView, IvSuccessWithoutPlaybackView}
+import views.html.IvSuccessView
 
 import scala.concurrent.Future
 
@@ -36,7 +34,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
   private val utr = "0987654321"
 
-  private val connector = mock[TaxEnrolmentsConnector]
   private val mockRelationshipEstablishment = mock[RelationshipEstablishment]
 
   "Returning IvSuccess Controller" must {
@@ -45,12 +42,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val userAnswers = UserAnswers(userAnswersId)
         .set(IsAgentManagingTrustPage, false).success.value
-        .set(UtrPage, utr).success.value
+        .set(IdentifierPage, utr).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
-        ).configure("microservice.services.features.playback.enabled" -> true)
         .build()
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
@@ -70,43 +64,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
-      reset(connector)
-      reset(mockRelationshipEstablishment)
-
-      application.stop()
-
-    }
-
-    "return OK and the correct view for a GET when playback is disabled" in {
-
-      val userAnswers = UserAnswers(userAnswersId)
-        .set(IsAgentManagingTrustPage, false).success.value
-        .set(UtrPage, utr).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
-        ).configure("microservice.services.features.playback.enabled" -> false)
-        .build()
-
-      val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
-
-      val view = application.injector.instanceOf[IvSuccessWithoutPlaybackView]
-
-      val viewAsString = view(isAgent = false, utr)(request, messages).toString
-
-      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-        .thenReturn(Future.successful(RelationshipFound))
-
-      val result = route(application, request).value
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual viewAsString
-
-      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
-
-      reset(connector)
       reset(mockRelationshipEstablishment)
 
       application.stop()
@@ -117,12 +74,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val userAnswers = UserAnswers(userAnswersId)
         .set(IsAgentManagingTrustPage, true).success.value
-        .set(UtrPage, utr).success.value
+        .set(IdentifierPage, utr).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
-        ).configure("microservice.services.features.playback.enabled" -> true)
         .build()
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
@@ -142,7 +96,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
-      reset(connector)
       reset(mockRelationshipEstablishment)
 
       application.stop()
@@ -166,8 +119,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         application.stop()
 
       }
-
-
 
     }
 

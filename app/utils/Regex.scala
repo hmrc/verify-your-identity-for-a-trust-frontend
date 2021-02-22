@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package utils
 
-import controllers.actions.FakeAuthConnector
-import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.auth.core.AuthConnector
+import scala.util.matching.Regex
 
-import scala.concurrent.Future
+object Regex {
 
-class FakeRelationshipEstablishmentService(response: RelationEstablishmentStatus = RelationshipFound) extends RelationshipEstablishment {
-
-  override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful(()))
-
-  override def check(internalId: String, identifier: String)
-                    (implicit request: Request[AnyContent]) = Future.successful(response)
+  val UtrRegex: Regex = "^([0-9]{10})$".r
+  val UrnRegex: Regex = "^((?i)[a-z]{2}trust[0-9]{8})$".r
 
 }

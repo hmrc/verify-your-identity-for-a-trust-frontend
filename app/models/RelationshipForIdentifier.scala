@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package services
+package models
 
-import controllers.actions.FakeAuthConnector
-import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.auth.core.AuthConnector
+import com.google.inject.Inject
+import config.FrontendAppConfig
+import uk.gov.hmrc.auth.core.{BusinessKey, Relationship}
 
-import scala.concurrent.Future
+class RelationshipForIdentifier @Inject()(config: FrontendAppConfig) {
 
-class FakeRelationshipEstablishmentService(response: RelationEstablishmentStatus = RelationshipFound) extends RelationshipEstablishment {
+  def apply(identifier: String): Relationship = {
+    val businessKey = if (IsUTR(identifier)) {
+      config.relationshipTaxableIdentifier
+    } else {
+      config.relationshipNonTaxableIdentifier
+    }
 
-  override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful(()))
-
-  override def check(internalId: String, identifier: String)
-                    (implicit request: Request[AnyContent]) = Future.successful(response)
+    Relationship(config.relationshipName, Set(BusinessKey(businessKey, identifier)))
+  }
 
 }

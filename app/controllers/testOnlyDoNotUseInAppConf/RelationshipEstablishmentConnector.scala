@@ -18,9 +18,10 @@ package controllers.testOnlyDoNotUseInAppConf
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import models.IsUTR
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
                                                    config: FrontendAppConfig)
@@ -30,11 +31,17 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
 
   private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
 
-  private def newRelationship(credId: String, utr: String): Relationship =
-    Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
+  private def newRelationship(credId: String, identifier: String): Relationship = {
+    if(IsUTR(identifier)) {
+      Relationship(config.relationshipName, Set(BusinessKey(config.relationshipTaxableIdentifier, identifier)), credId)
+    } else {
+      Relationship(config.relationshipName, Set(BusinessKey(config.relationshipNonTaxableIdentifier, identifier)), credId)
+    }
+  }
 
-  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) = {
+  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier): Future[RelationshipResponse] = {
     val ttl = config.relationshipTTL
+
     httpClient.POST[RelationshipJson, RelationshipResponse](
       relationshipEstablishmentPostUrl,
       RelationshipJson(newRelationship(credId, utr), ttlSeconds = ttl)

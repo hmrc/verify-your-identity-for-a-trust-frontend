@@ -21,9 +21,10 @@ import controllers.actions.IdentifierAction
 import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.{Regex, Session}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,30 +41,40 @@ class TestRelationshipEstablishmentController @Inject()(
   extends FrontendBaseController
     with Logging {
 
-  def check(utr: String) = identify.async {
+  def check(identifier: String) = identify.async {
     implicit request =>
 
       logger.warn("[TestRelationshipEstablishmentController] TrustIV is using a test route, you don't want this in production.")
 
-      val succeedRegex = "(1\\d{9})".r
-      val failRegex = "(2\\d{9})".r
-
-      utr match {
+      identifier match {
+        case Regex.UtrRegex(utr) =>
+          if (utr.startsWith("1")) {
+            createRelationship(utr)
+          } else {
+            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] UTR did not start with '1', failing IV")
+            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
+          }
         case "4381028111" | "5000000000" =>
-          establishRelationshipForUtr(request, utr)
-        case succeedRegex(_) =>
-          establishRelationshipForUtr(request, utr)
-        case failRegex(_) =>
-          Future.successful(Redirect(controllers.routes.IvFailureController.onTrustIvFailure()))
+          createRelationship(identifier)
+        case Regex.UrnRegex(urn) =>
+          if (urn.toLowerCase.startsWith("nt")) {
+            createRelationship(urn)
+          } else {
+            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] URN did not start with 'NT', failing IV")
+            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
+          }
         case _ =>
-          Future.successful(Redirect(controllers.routes.IvFailureController.onTrustIvFailure()))
+          logger.error(s"[Verifying][Session ID: ${Session.id(hc)}] " +
+            s"Identifier provided is not a valid URN or UTR $identifier")
+          Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
       }
   }
 
-  private def establishRelationshipForUtr(request: IdentifierRequest[AnyContent], utr: String)(implicit hc: HeaderCarrier) = {
-    relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, utr) map {
+  private def createRelationship(identifier: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
+    relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, identifier) map {
       _ =>
+        logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] Stubbed IV relationship for $identifier")
         Redirect(controllers.routes.IvSuccessController.onPageLoad())
     }
-  }
+
 }

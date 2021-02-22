@@ -21,7 +21,7 @@ import views.html.TrustLocked
 
 class TrustLockedViewSpec extends ViewBehaviours {
 
-  val utr = "0987654321"
+  val utr = "1234567890"
 
   "TrustLocked view" must {
 
@@ -33,7 +33,7 @@ class TrustLockedViewSpec extends ViewBehaviours {
 
     "display the correct subheading" in {
       val doc = asDocument(applyView)
-      assertContainsText(doc, messages("locked.subheading", utr))
+      assertContainsText(doc, messages("utr.subheading", utr))
     }
 
   }

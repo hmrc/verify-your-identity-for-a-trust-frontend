@@ -23,7 +23,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -51,7 +51,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
     "return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .set(UtrPage, utr)
+        .set(IdentifierPage, utr)
         .success
         .value
 
@@ -78,7 +78,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       val userAnswers = UserAnswers(userAnswersId)
         .set(IsAgentManagingTrustPage, true)
         .success.value
-        .set(UtrPage, utr)
+        .set(IdentifierPage, utr)
         .success.value
 
       val application = applicationBuilder(
@@ -129,7 +129,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(UtrPage, utr)
+        .set(IdentifierPage, utr)
         .success
         .value
 

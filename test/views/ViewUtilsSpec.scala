@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-package models
+package views
 
-import play.api.libs.json.{Json, Writes}
+class ViewUtilsSpec extends ViewSpecBase {
 
-final case class TaxEnrolmentsRequest(utr: String)
+  "View utils" must {
 
-object TaxEnrolmentsRequest {
+    "render the subheading for a utr" in {
+      val heading = ViewUtils.subheading("1234567890")
+      heading mustBe "The trust’s UTR: 1234567890"
+    }
 
-  implicit val writes: Writes[TaxEnrolmentsRequest] = Writes { request =>
-    Json.obj(
-      "identifiers" -> Json.arr(
-        Json.obj(
-          "key" -> "SAUTR",
-          "value" -> request.utr
-        )),
-      "verifiers" -> Json.arr(
-        Json.obj(
-          "key" -> "SAUTR1",
-          "value" -> request.utr
-        )
-      )
-    )
+    "render the subheading for a urn" in {
+      val heading = ViewUtils.subheading("ABTRUST12345678")
+      heading mustBe "The trust’s URN: ABTRUST12345678"
+    }
+
   }
 
 }

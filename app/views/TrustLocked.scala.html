@@ -18,13 +18,13 @@
 main_template: MainTemplate
 )
 
-@(utr: String)(implicit request: Request[_], messages: Messages)
+@(identifier: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("locked.title")
 ) {
 
-    <span class="govuk-caption-xl">@messages("locked.subheading", utr)</span>
+    <span class="govuk-caption-xl">@subheading(identifier)</span>
     @components.heading("locked.heading", headingSize = "heading-large govuk-fieldset__heading")
 
     <p>@messages("locked.p1")</p>

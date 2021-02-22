@@ -21,7 +21,7 @@ import views.html.TrustStillProcessing
 
 class TrustStillProcessingViewSpec extends ViewBehaviours {
 
-  val utr = "0987654321"
+  val utr = "1234567890"
 
   "TrustStillProcessing view" must {
 
@@ -29,12 +29,15 @@ class TrustStillProcessingViewSpec extends ViewBehaviours {
 
     val applyView = view.apply(utr)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "stillProcessing","p1", "p2","p3",
-      "link1", "p4", "link2")
+    behave like normalPage(
+      applyView,
+      "stillProcessing",
+      "p1","p2", "link1"
+    )
 
     "display the correct subheading" in {
       val doc = asDocument(applyView)
-      assertContainsText(doc, messages("stillProcessing.subheading", utr))
+      assertContainsText(doc, messages("utr.subheading", utr))
     }
 
   }

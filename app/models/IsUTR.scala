@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package services
+package models
 
-import controllers.actions.FakeAuthConnector
-import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.auth.core.AuthConnector
-
-import scala.concurrent.Future
-
-class FakeRelationshipEstablishmentService(response: RelationEstablishmentStatus = RelationshipFound) extends RelationshipEstablishment {
-
-  override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful(()))
-
-  override def check(internalId: String, identifier: String)
-                    (implicit request: Request[AnyContent]) = Future.successful(response)
-
+case object IsUTR {
+  def apply(identifier: String): Boolean = identifier.length == 10
 }

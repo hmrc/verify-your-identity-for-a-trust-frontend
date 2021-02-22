@@ -21,7 +21,7 @@ import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierA
 import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -70,7 +70,7 @@ class IvFailureController @Inject()(
   def onTrustIvFailure(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage) match {
+      request.userAnswers.get(IdentifierPage) match {
         case Some(utr) =>
           val queryString = request.getQueryString("journeyId")
 
@@ -90,7 +90,7 @@ class IvFailureController @Inject()(
   def trustLocked() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       (for {
-        utr <- request.userAnswers.get(UtrPage)
+        utr <- request.userAnswers.get(IdentifierPage)
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
         connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = true)) map { _ =>
@@ -105,7 +105,7 @@ class IvFailureController @Inject()(
 
   def trustNotFound() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(UtrPage) map {
+      request.userAnswers.get(IdentifierPage) map {
         utr =>
           logger.info(s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}] IV was unable to find the trust for utr $utr")
           Future.successful(Ok(notFoundView(utr)))
@@ -117,7 +117,7 @@ class IvFailureController @Inject()(
 
   def trustStillProcessing() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(UtrPage) map {
+      request.userAnswers.get(IdentifierPage) map {
         utr =>
           logger.info(s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}] IV determined the trust utr $utr was still processing")
           Future.successful(Ok(stillProcessingView(utr)))
