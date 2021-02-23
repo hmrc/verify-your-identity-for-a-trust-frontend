@@ -14,6 +14,15 @@
  * limitations under the License.
  *@
 
-@(headingKey: String, headingSize: String = "heading-large")(implicit messages: Messages)
+@(headingKey: String, headingSize: String = "heading-large", subheading: Option[String] = None)(implicit messages: Messages)
 
+@if(subheading.isDefined){
+<header class="hmrc-page-heading">
+ <h1 class="@headingSize">
+  <span class="govuk-caption-xl" id="caption">@subheading</span>
+  @messages(headingKey)
+ </h1>
+</header>
+} else {
 <h1 class="@headingSize">@messages(headingKey)</h1>
+}

@@ -29,9 +29,11 @@ class TrustStillProcessingViewSpec extends ViewBehaviours {
 
     val applyView = view.apply(utr)(fakeRequest, messages)
 
-    behave like normalPage(
+    behave like normalPageWithCaption(
       applyView,
       "stillProcessing",
+      "utr",
+      utr,
       "p1","p2", "link1"
     )
 
