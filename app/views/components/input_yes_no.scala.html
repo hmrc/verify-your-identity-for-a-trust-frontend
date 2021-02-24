@@ -17,6 +17,7 @@
 @(
         field: Field,
         label: String,
+        caption: Option[String] = None,
         secondaryLabel: Option[String] = None,
         inputClass: Option[String] = None,
         hint: Option[String] = None,
@@ -34,7 +35,10 @@
     >
 
         <legend id="@{field.id}-legend">
-            @if(legendAsHeading){<h1 id="@{field.id}-id" class="legend-as-heading heading-large">}
+            @if(legendAsHeading){
+                <h1 id="@{field.id}-id" class="legend-as-heading heading-large">
+                @if(caption.isDefined){<span id="caption" class="govuk-caption-xl">@caption.get</span>}
+            }
             @label
             @if(legendAsHeading){</h1>}
         </legend>

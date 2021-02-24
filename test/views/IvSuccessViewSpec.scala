@@ -35,7 +35,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
-      behave like normalPage(applyView, "ivSuccess.agent", "paragraph1", "paragraph2", "continueLink",
+      behave like normalPageWithCaption(applyView, "ivSuccess.agent", "utr", utr, "paragraph1", "paragraph2", "continueLink",
         "paragraph3", "paragraph4")
     }
 
@@ -56,7 +56,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
     val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2",
+    behave like normalPageWithCaption(applyView, "ivSuccess.no.agent", "utr", utr,"paragraph1", "paragraph2",
       "paragraph3", "contactLink")
 
     "display the correct subheading" in {
