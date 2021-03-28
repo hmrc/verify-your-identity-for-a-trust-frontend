@@ -22,7 +22,6 @@ import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Regex, Session}
 
