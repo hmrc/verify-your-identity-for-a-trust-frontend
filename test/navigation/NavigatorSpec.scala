@@ -17,25 +17,17 @@
 package navigation
 
 import base.SpecBase
-import models._
 import pages._
 
 class NavigatorSpec extends SpecBase {
 
   val navigator = new Navigator
 
-  "Navigator" when {
+  "Navigator" must {
 
-    "in Normal mode" must {
-
-
-      "go to BeforeYouContinue from IsAgentManagingTrust" in {
-
-        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe controllers.routes.BeforeYouContinueController.onPageLoad()
-
-      }
+    "go to BeforeYouContinue from IsAgentManagingTrust" in {
+      navigator.nextPage(IsAgentManagingTrustPage, emptyUserAnswers) mustBe controllers.routes.BeforeYouContinueController.onPageLoad()
     }
-
   }
-}
 
+}

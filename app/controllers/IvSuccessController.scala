@@ -18,9 +18,6 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-
-import javax.inject.Inject
-import models.NormalMode
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,6 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.IvSuccessView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IvSuccessController @Inject()(
@@ -64,7 +62,7 @@ class IvSuccessController @Inject()(
           Future.successful(Ok(withPlaybackView(isAgentManagingTrust, identifier)))
         }
 
-        lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
+        lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad()))
 
         relationshipEstablishment.check(request.internalId, identifier) flatMap {
           case RelationshipFound =>

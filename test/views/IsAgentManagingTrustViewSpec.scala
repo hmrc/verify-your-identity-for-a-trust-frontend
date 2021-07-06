@@ -17,7 +17,6 @@
 package views
 
 import forms.IsAgentManagingTrustFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -36,12 +35,12 @@ class IsAgentManagingTrustViewSpec extends YesNoViewBehaviours {
     val view = viewFor[IsAgentManagingTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, utr)(fakeRequest, messages)
+      view.apply(form, utr)(fakeRequest, messages)
 
     behave like normalPageWithCaption(applyView(form), messageKeyPrefix, "utr", utr)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, controllers.routes.IsAgentManagingTrustController.onSubmit(NormalMode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix)
   }
 }

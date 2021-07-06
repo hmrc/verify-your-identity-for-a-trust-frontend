@@ -15,10 +15,8 @@ GET        /logout                                      controllers.LogoutContro
 GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
 GET        /timeout                                     controllers.SessionTimeoutController.timeout
 
-GET        /managed-by-agent                            controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
-POST       /managed-by-agent                            controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
-GET        /change/managed-by-agent                     controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
-POST       /change/managed-by-agent                     controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
+GET        /managed-by-agent                            controllers.IsAgentManagingTrustController.onPageLoad()
+POST       /managed-by-agent                            controllers.IsAgentManagingTrustController.onSubmit()
 
 GET        /callback-failure                            controllers.IvFailureController.onTrustIvFailure()
 GET        /locked                                      controllers.IvFailureController.trustLocked()

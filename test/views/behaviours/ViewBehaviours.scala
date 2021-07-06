@@ -26,7 +26,6 @@ trait ViewBehaviours extends ViewSpecBase {
                  expectedGuidanceKeys: String*): Unit = {
 
     "behave like a normal page" when {
-
       "rendered" must {
 
         "have the correct banner title" in {
@@ -70,7 +69,6 @@ trait ViewBehaviours extends ViewSpecBase {
                             expectedGuidanceKeys: String*): Unit = {
 
     "behave like a normal page" when {
-
       "rendered" must {
 
         "have the correct banner title" in {
@@ -114,13 +112,10 @@ trait ViewBehaviours extends ViewSpecBase {
 
   def pageWithBackLink(view: HtmlFormat.Appendable): Unit = {
 
-    "behave like a page with a back link" must {
+    "behave like a page with a back link" in {
 
-      "have a back link" in {
-
-        val doc = asDocument(view)
-        assertRenderedById(doc, "back-link")
-      }
+      val doc = asDocument(view)
+      assertRenderedById(doc, "back-link")
     }
   }
 }

@@ -16,10 +16,11 @@
 
 package navigation
 
-import javax.inject.{Inject, Singleton}
 import models._
 import pages._
 import play.api.mvc.Call
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Navigator @Inject()() {
@@ -28,8 +29,6 @@ class Navigator @Inject()() {
     case IsAgentManagingTrustPage => _ => controllers.routes.BeforeYouContinueController.onPageLoad()
   }
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case _ =>
-      normalRoutes(page)(userAnswers)
-  }
+  def nextPage(page: Page, userAnswers: UserAnswers): Call = normalRoutes(page)(userAnswers)
+
 }

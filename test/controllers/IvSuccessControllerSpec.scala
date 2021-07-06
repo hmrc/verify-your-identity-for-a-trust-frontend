@@ -106,11 +106,11 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       "no existing data is found" in {
 
-        lazy val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder(userAnswers = None).build()
 
-        lazy val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
 
-        lazy val result = route(application, request).value
+        val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
@@ -119,6 +119,21 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         application.stop()
 
       }
+    }
+
+    "redirect to next page for a POST" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(POST, controllers.routes.IvSuccessController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual frontendAppConfig.trustsContinueUrl
+
+      application.stop()
 
     }
 

@@ -17,9 +17,8 @@
 package controllers
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import javax.inject.Inject
+import models.UserAnswers
 import models.requests.OptionalDataRequest
-import models.{NormalMode, UserAnswers}
 import pages.IdentifierPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -29,6 +28,7 @@ import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFo
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{IdentifierRegex, Session}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveIdentifierController @Inject()(
@@ -79,7 +79,7 @@ class SaveIdentifierController @Inject()(
       _              <- sessionRepository.set(updatedAnswers)
     } yield {
       logger.info(s"[Verifying][Session ID: ${Session.id(hc(request))}] user has started the verifying a trust journey for $identifier")
-      Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+      Redirect(routes.IsAgentManagingTrustController.onPageLoad())
     }
   }
 }
