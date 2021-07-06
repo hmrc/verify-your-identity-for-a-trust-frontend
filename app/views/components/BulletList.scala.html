@@ -14,15 +14,15 @@
  * limitations under the License.
  *@
 
-@(headingKey: String, headingSize: String = "heading-large", subheading: Option[String] = None)(implicit messages: Messages)
+@this()
 
-@if(subheading.isDefined){
-<header class="hmrc-page-heading">
- <h1 class="@headingSize">
-  <span class="govuk-caption-xl" id="caption">@subheading</span>
-  @messages(headingKey)
- </h1>
-</header>
-} else {
-<h1 class="@headingSize">@messages(headingKey)</h1>
-}
+@(
+    prefix: String,
+    keys: Seq[String]
+)(implicit messages: Messages)
+
+<ul class="govuk-list govuk-list--bullet">
+    @keys.map { key =>
+        <li>@messages(s"$prefix.$key")</li>
+    }
+</ul>

@@ -1,3 +1,5 @@
+service.name = Register and Maintain a Trust
+
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
 checkYourAnswers.guidance = Guidance for check your answers
@@ -38,13 +40,18 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.service_name = Register and Maintain a Trust
 site.textarea.char_limit = (Limit is {0} characters)
 site.sign_out = Sign out
 site.sign_in = Sign in
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+unauthorised.p1 = To use the Trust Registration Service, you need to log in with a Government Gateway Account for an organisation.
+unauthorised.p2 = If you do not have a Government Gateway account for an organisation,
+unauthorised.link = you can create an account online when you register the trust (opens in a new tab or window)
+unauthorised.p3 = To create an account, you’ll need:
+unauthorised.bullet1 = your full name
+unauthorised.bullet2 = an email address
 
 #timeout dialog
 timeout.title=Your application will time out soon

@@ -29,7 +29,7 @@ object RelationshipEstablishmentStatus {
 
   import play.api.http.Status._
 
-  implicit lazy val httpReads : HttpReads[RelationshipEstablishmentStatus] = new HttpReads[RelationshipEstablishmentStatus] {
+  implicit lazy val httpReads: HttpReads[RelationshipEstablishmentStatus] = new HttpReads[RelationshipEstablishmentStatus] {
     override def read(method: String, url: String, response: HttpResponse): RelationshipEstablishmentStatus = {
       response.status match {
         case OK =>

@@ -14,11 +14,18 @@
  * limitations under the License.
  *@
 
-@(
-messageKey: String = "",
-inputType: String = "button"
-)(implicit messages: Messages)
+@this(
+    button: GovukButton,
+)
 
-<div class="section">
-    <input type="@inputType" class="button" value="@messages(messageKey)" />
-</div>
+@(overrideMessage: Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
+
+@button(Button(
+    attributes = Map("id"->"submit"),
+    classes = s"button ${submitClass.getOrElse("")}",
+    content = if(overrideMessage.isEmpty) {
+        Text(messages("site.continue"))
+    } else {
+        Text(messages(overrideMessage.get))
+    }
+))

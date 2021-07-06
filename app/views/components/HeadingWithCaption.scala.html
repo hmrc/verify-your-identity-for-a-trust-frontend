@@ -14,11 +14,13 @@
  * limitations under the License.
  *@
 
-@(
-messageKey: String = "",
-href: String
-)(implicit messages: Messages)
+@this(
+    subHeading: SubHeading
+)
 
-<div class="section">
-    <a href="@href" role="button" class="button">@messages(messageKey)</a>
-</div>
+@(headingPrefix: String, caption: String)(implicit messages: Messages)
+
+<h1 class="govuk-heading-l">
+    @subHeading(caption)
+    @messages(s"$headingPrefix.heading")
+</h1>

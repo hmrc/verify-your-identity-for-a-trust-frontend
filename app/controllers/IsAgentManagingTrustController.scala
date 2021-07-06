@@ -18,11 +18,13 @@ package controllers
 
 import controllers.actions._
 import forms.IsAgentManagingTrustFormProvider
+
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,12 +46,12 @@ class IsAgentManagingTrustController @Inject()(
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: IsAgentManagingTrustView,
                                                 relationship: RelationshipEstablishment
-                                 )(implicit ec: ExecutionContext)
+                                              )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  val form = formProvider()
+  private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
@@ -57,12 +59,12 @@ class IsAgentManagingTrustController @Inject()(
       request.userAnswers.get(IdentifierPage) map { identifier =>
 
         lazy val body = {
-            val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
-              case None => form
-              case Some(value) => form.fill(value)
-            }
+          val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
+            case None => form
+            case Some(value) => form.fill(value)
+          }
 
-            Future.successful(Ok(view(preparedForm, mode, identifier)))
+          Future.successful(Ok(view(preparedForm, mode, identifier)))
         }
 
         relationship.check(request.internalId, identifier) flatMap {

@@ -32,12 +32,13 @@ import utils.Session
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class LogoutController @Inject()(appConfig: FrontendAppConfig,
-                                 val controllerComponents: MessagesControllerComponents,
-                                 identify: IdentifierAction,
-                                 getData: DataRetrievalAction,
-                                 requireData: DataRequiredAction,
-                                 auditConnector: AuditConnector
+class LogoutController @Inject()(
+                                  appConfig: FrontendAppConfig,
+                                  val controllerComponents: MessagesControllerComponents,
+                                  identify: IdentifierAction,
+                                  getData: DataRetrievalAction,
+                                  requireData: DataRequiredAction,
+                                  auditConnector: AuditConnector
                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with Logging {
 
   def logout: Action[AnyContent] = (identify andThen getData andThen requireData) {

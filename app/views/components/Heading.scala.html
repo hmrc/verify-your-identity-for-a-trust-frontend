@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+@this()
 
-import scala.util.matching.Regex
+@(headingKey: String, optionalParam: Option[String] = None, headingSize: String = "govuk-heading-l")(implicit messages: Messages)
 
-object Regex {
-
-  val UtrRegex: Regex = "^([0-9]{10})$".r
-  val UrnRegex: Regex = "^((?i)[a-z]{2}trust[0-9]{8})$".r
-
-}
+<h1 class="@headingSize">@messages(headingKey, optionalParam.getOrElse(""))</h1>

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import viewmodels.AnswerRow
+package utils
 
-@(row: AnswerRow)(implicit messages: Messages)
+import scala.util.matching.Regex
 
-<li>
-    <div class="cya-question">@row.label</div>
-    <div class="cya-answer">@row.answer</div>
-    <div class="cya-change">
-        <a href='@row.changeUrl'>
-            <span aria-hidden="true">@messages("site.edit")</span>
-            <span class="visually-hidden">@messages("site.hidden-edit", row.label)</span>
-        </a>
-    </div>
-</li>
+object IdentifierRegex {
+
+  val UtrRegex: Regex = "^([0-9]{10})$".r
+  val UrnRegex: Regex = "^((?i)[a-z]{2}trust[0-9]{8})$".r
+
+}

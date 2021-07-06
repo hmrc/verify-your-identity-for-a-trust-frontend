@@ -15,32 +15,37 @@
  *@
 
 @import config.FrontendAppConfig
+@import views.html.components.{HeadingWithCaption, SubmitButton}
 
 @this(
- main_template: MainTemplate,
- config: FrontendAppConfig
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    config: FrontendAppConfig,
+    heading: HeadingWithCaption,
+    submitButton: SubmitButton
 )
 
 @(isAgent: Boolean, identifier: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
- title = messages("ivSuccess.agent.title")
+@mainTemplate(
+    title = messages("ivSuccess.agent.title")
 ) {
 
     @if(isAgent) {
-            @components.heading("ivSuccess.agent.heading", headingSize = "heading-large", subheading = Some(subheading(identifier)))
-            <p>@messages("ivSuccess.agent.paragraph1")</p>
-            <p>@messages("ivSuccess.agent.paragraph2") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a> @messages("ivSuccess.agent.paragraph3")</p>
-            <p>@messages("ivSuccess.agent.paragraph4") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
+        @heading("ivSuccess.agent", subheading(identifier))
+        <p>@messages("ivSuccess.agent.paragraph1")</p>
+        <p>@messages("ivSuccess.agent.paragraph2") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a> @messages("ivSuccess.agent.paragraph3")</p>
+        <p>@messages("ivSuccess.agent.paragraph4") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
     } else {
-            @components.heading("ivSuccess.no.agent.heading", headingSize = "heading-large", subheading = Some(subheading(identifier)))
+        @heading("ivSuccess.no.agent", subheading(identifier))
 
-            <p>@messages("ivSuccess.no.agent.paragraph1")</p>
-            <p>@messages("ivSuccess.no.agent.paragraph2")</p>
-            <p>@messages("ivSuccess.no.agent.paragraph3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
+        <p>@messages("ivSuccess.no.agent.paragraph1")</p>
+        <p>@messages("ivSuccess.no.agent.paragraph2")</p>
+        <p>@messages("ivSuccess.no.agent.paragraph3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
 
-            @components.button_link(messages("site.continue"), config.trustsContinueUrl)
+        @formHelper(action = IvSuccessController.onSubmit(), 'autoComplete -> "off") {
+            @submitButton()
+        }
     }
 
 }
-
