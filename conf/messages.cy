@@ -18,7 +18,6 @@ error.non_numeric=Rhowch werth gan ddefnyddio rhifau yn unig
 error.number=Nodwch rif dilys
 error.required=Nodwch werth
 error.summary.title=Mae problem wedi codi
-site.error=Gwall:
 utr.subheading=UTR yr ymddiriedolaeth: {0}
 urn.subheading=URN yr ymddiriedolaeth: {0}
 session_expired.title=Er eich diogelwch, gwnaethom eich allgofnodi
