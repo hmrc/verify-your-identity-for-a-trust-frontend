@@ -16,9 +16,9 @@ body:not(.js-enabled) {
 // ----------------
 
 p {
-  @extend .govuk-body;
+    @extend .govuk-body;
 }
 
-h2 {
- @extend .govuk-heading-m
+a {
+    @extend .govuk-link;
 }
