@@ -51,7 +51,8 @@ lazy val root = (project in file("."))
       "javascripts/verifyyouridentityforatrust-app.js" ->
         group(Seq("javascripts/show-hide-content.js",
           "javascripts/verifyyouridentityforatrust.js",
-          "javascripts/iebacklink.js"
+          "javascripts/iebacklink.js",
+          "javascripts/print.js"
         ))
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
