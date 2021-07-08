@@ -17,7 +17,7 @@
 package views
 
 import models.IsUTR
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.Messages
 
 object ViewUtils {
@@ -27,10 +27,14 @@ object ViewUtils {
   }
 
   def breadcrumbTitle(title: String)(implicit messages: Messages): String = {
-    s"$title - ${messages("site.service_name")} - GOV.UK"
+    s"$title - ${messages("service.name")} - GOV.UK"
   }
 
-  def subheading(identifier: String)(implicit messages: Messages) : String = {
+  def errorHref(error: FormError): String = {
+    s"${error.key}-yes"
+  }
+
+  def subheading(identifier: String)(implicit messages: Messages): String = {
     if (IsUTR(identifier)) {
       s"${messages("utr.subheading", identifier)}"
     } else {

@@ -25,7 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
                                                    config: FrontendAppConfig)
-                                                  (implicit val ec : ExecutionContext) {
+                                                  (implicit val ec: ExecutionContext) {
 
   import RelationshipHttpReads.httpReads
 

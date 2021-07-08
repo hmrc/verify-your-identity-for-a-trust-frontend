@@ -18,13 +18,14 @@ package controllers
 
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+
 import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
@@ -47,7 +48,7 @@ class IvFailureController @Inject()(
     with I18nSupport
     with Logging {
 
-  private def renderFailureReason(utr: String, journeyId: String)(implicit hc : HeaderCarrier) = {
+  private def renderFailureReason(utr: String, journeyId: String)(implicit hc: HeaderCarrier): Future[Result] = {
     relationshipEstablishmentConnector.journeyId(journeyId) map {
       case RelationshipEstablishmentStatus.Locked =>
         logger.info(s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] $utr is locked")
@@ -87,7 +88,7 @@ class IvFailureController @Inject()(
       }
   }
 
-  def trustLocked() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustLocked(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       (for {
         utr <- request.userAnswers.get(IdentifierPage)
@@ -103,7 +104,7 @@ class IvFailureController @Inject()(
       }
   }
 
-  def trustNotFound() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustNotFound(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(IdentifierPage) map {
         utr =>
@@ -115,7 +116,7 @@ class IvFailureController @Inject()(
       }
   }
 
-  def trustStillProcessing() : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustStillProcessing(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(IdentifierPage) map {
         utr =>

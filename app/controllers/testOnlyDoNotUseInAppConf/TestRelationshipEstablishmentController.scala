@@ -23,7 +23,7 @@ import play.api.Logging
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Regex, Session}
+import utils.{IdentifierRegex, Session}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,7 +36,7 @@ class TestRelationshipEstablishmentController @Inject()(
                                                          val controllerComponents: MessagesControllerComponents,
                                                          relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
                                                          identify: IdentifierAction)
-                                                       (implicit ec : ExecutionContext)
+                                                       (implicit ec: ExecutionContext)
   extends FrontendBaseController
     with Logging {
 
@@ -46,7 +46,7 @@ class TestRelationshipEstablishmentController @Inject()(
       logger.warn("[TestRelationshipEstablishmentController] TrustIV is using a test route, you don't want this in production.")
 
       identifier match {
-        case Regex.UtrRegex(utr) =>
+        case IdentifierRegex.UtrRegex(utr) =>
           if (utr.startsWith("1")) {
             createRelationship(utr)
           } else {
@@ -55,7 +55,7 @@ class TestRelationshipEstablishmentController @Inject()(
           }
         case "4381028111" | "5000000000" =>
           createRelationship(identifier)
-        case Regex.UrnRegex(urn) =>
+        case IdentifierRegex.UrnRegex(urn) =>
           if (urn.toLowerCase.startsWith("nt")) {
             createRelationship(urn)
           } else {

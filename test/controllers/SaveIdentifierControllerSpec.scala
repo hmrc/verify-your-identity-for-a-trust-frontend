@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -81,7 +81,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+          redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad().url
 
           captor.getValue.get(IdentifierPage).value mustBe utr
 
@@ -105,7 +105,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+          redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad().url
 
           captor.getValue.get(IdentifierPage).value mustBe utr
 
@@ -135,7 +135,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+          redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad().url
 
           captor.getValue.get(IdentifierPage).value mustBe urn
 
@@ -159,7 +159,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+          redirectLocation(result).value mustBe controllers.routes.IsAgentManagingTrustController.onPageLoad().url
 
           captor.getValue.get(IdentifierPage).value mustBe urn
 

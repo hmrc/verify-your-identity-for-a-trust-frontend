@@ -17,9 +17,8 @@
 package controllers
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import javax.inject.Inject
+import models.UserAnswers
 import models.requests.OptionalDataRequest
-import models.{NormalMode, UserAnswers}
 import pages.IdentifierPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -27,17 +26,18 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Regex, Session}
+import utils.{IdentifierRegex, Session}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveIdentifierController @Inject()(
-                                   identify: IdentifierAction,
-                                   override val controllerComponents: MessagesControllerComponents,
-                                   getData: DataRetrievalAction,
-                                   sessionRepository: SessionRepository,
-                                   relationship: RelationshipEstablishment
-                                 )(implicit ec: ExecutionContext)
+                                          identify: IdentifierAction,
+                                          override val controllerComponents: MessagesControllerComponents,
+                                          getData: DataRetrievalAction,
+                                          sessionRepository: SessionRepository,
+                                          relationship: RelationshipEstablishment
+                                        )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -46,8 +46,8 @@ class SaveIdentifierController @Inject()(
     implicit request =>
 
       identifier match {
-        case Regex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
-        case Regex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
+        case IdentifierRegex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
+        case IdentifierRegex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
         case _ =>
           logger.error(s"[Verifying][Session ID: ${Session.id(hc)}] " +
             s"Identifier provided is not a valid URN or UTR")
@@ -79,7 +79,7 @@ class SaveIdentifierController @Inject()(
       _              <- sessionRepository.set(updatedAnswers)
     } yield {
       logger.info(s"[Verifying][Session ID: ${Session.id(hc(request))}] user has started the verifying a trust journey for $identifier")
-      Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+      Redirect(routes.IsAgentManagingTrustController.onPageLoad())
     }
   }
 }

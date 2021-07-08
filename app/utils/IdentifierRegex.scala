@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package navigation
+package utils
 
-import base.SpecBase
-import pages._
+import scala.util.matching.Regex
 
-class NavigatorSpec extends SpecBase {
+object IdentifierRegex {
 
-  val navigator = new Navigator
-
-  "Navigator" must {
-
-    "go to BeforeYouContinue from IsAgentManagingTrust" in {
-      navigator.nextPage(IsAgentManagingTrustPage, emptyUserAnswers) mustBe controllers.routes.BeforeYouContinueController.onPageLoad()
-    }
-  }
+  val UtrRegex: Regex = "^([0-9]{10})$".r
+  val UrnRegex: Regex = "^((?i)[a-z]{2}trust[0-9]{8})$".r
 
 }

@@ -28,7 +28,7 @@ trait IndexManager extends Logging {
 
   val mongo: ReactiveMongoApi
 
-  val config : Configuration
+  val config: Configuration
 
   implicit val ec: ExecutionContext
 

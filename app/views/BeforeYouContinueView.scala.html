@@ -14,22 +14,25 @@
  * limitations under the License.
  *@
 
+@import views.html.components.{HeadingWithCaption, SubmitButton}
+
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    heading: HeadingWithCaption,
+    submitButton: SubmitButton
 )
 
 @(identifier: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("beforeYouContinue.title")
-    ) {
+@mainTemplate(
+    title = messages("beforeYouContinue.title"),
+    showBackLink = true
+) {
 
     @formHelper(action = controllers.routes.BeforeYouContinueController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
-
-        @components.heading("beforeYouContinue.heading", headingSize = "heading-large", subheading = Some(subheading(identifier)))
+        @heading("beforeYouContinue", subheading(identifier))
 
         <p>@messages("beforeYouContinue.p1")</p>
         <p>@messages("beforeYouContinue.p2")</p>
@@ -39,7 +42,7 @@
             <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("beforeYouContinue.a")</a>.
         </p>
 
-        @components.submit_button()
+        @submitButton()
     }
 
 }

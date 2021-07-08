@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package navigation
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
-import base.SpecBase
-import pages._
+@this(
+    govUkErrorSummary: GovukErrorSummary
+)
 
-class NavigatorSpec extends SpecBase {
+@(errors: Seq[FormError])(implicit messages: Messages)
 
-  val navigator = new Navigator
-
-  "Navigator" must {
-
-    "go to BeforeYouContinue from IsAgentManagingTrust" in {
-      navigator.nextPage(IsAgentManagingTrustPage, emptyUserAnswers) mustBe controllers.routes.BeforeYouContinueController.onPageLoad()
-    }
-  }
-
+@if(errors.nonEmpty) {
+    @govUkErrorSummary(ErrorSummary(
+        errorList = errors
+            .map(err => err.copy(key = errorHref(err), args = err.args))
+            .asTextErrorLinks,
+        title = Text(messages("error.summary.title"))
+    ))
 }

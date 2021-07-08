@@ -18,14 +18,14 @@ package controllers
 
 import base.SpecBase
 import forms.IsAgentManagingTrustFormProvider
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
+import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -36,13 +36,11 @@ import scala.concurrent.Future
 
 class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val formProvider = new IsAgentManagingTrustFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
   val utr = "0987654321"
 
-  lazy val isAgentManagingTrustRoute = controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+  lazy val isAgentManagingTrustRoute: String = controllers.routes.IsAgentManagingTrustController.onPageLoad().url
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
@@ -68,7 +66,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, utr)(request, messages).toString
+        view(form, utr)(request, messages).toString
 
       application.stop()
     }
@@ -94,7 +92,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, utr)(request, messages).toString
+        view(form.fill(true), utr)(request, messages).toString
 
       application.stop()
     }
@@ -102,13 +100,14 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
     "redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
+      val fakeNavigator = new FakeNavigator()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), relationshipEstablishment = fakeEstablishmentServiceFailing)
           .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind[Navigator].toInstance(fakeNavigator),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
@@ -121,7 +120,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }
@@ -150,7 +149,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, utr)(request, messages).toString
+        view(boundForm, utr)(request, messages).toString
 
       application.stop()
     }

@@ -14,31 +14,37 @@
  * limitations under the License.
  *@
 
-@import models.Mode
+@import views.html.components.{ErrorSummary, HeadingWithCaption, InputYesNo, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    heading: HeadingWithCaption,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
-@(form: Form[_], mode: Mode, identifier: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], identifier: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)}${messages("isAgentManagingTrust.title")}"
-    ) {
+@mainTemplate(
+    title = s"${errorPrefix(form)}${messages("isAgentManagingTrust.title")}",
+    showBackLink = true
+) {
 
-    @formHelper(action = controllers.routes.IsAgentManagingTrustController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.routes.IsAgentManagingTrustController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading("isAgentManagingTrust", subheading(identifier))
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
-            label = messages("isAgentManagingTrust.heading"),
-            caption = Some(subheading(identifier))
+            legend = messages("isAgentManagingTrust.heading"),
+            legendAsHeading = false,
+            legendClass = Some("govuk-visually-hidden")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

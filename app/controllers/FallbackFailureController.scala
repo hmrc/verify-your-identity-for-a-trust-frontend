@@ -25,9 +25,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
 class FallbackFailureController @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        errorHandler: ErrorHandler
-                                      )
+                                           val controllerComponents: MessagesControllerComponents,
+                                           errorHandler: ErrorHandler
+                                         )
   extends FrontendBaseController
     with I18nSupport
     with Logging {

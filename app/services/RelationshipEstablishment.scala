@@ -32,7 +32,7 @@ sealed trait RelationEstablishmentStatus
 
 case object RelationshipFound extends RelationEstablishmentStatus
 case object RelationshipNotFound extends RelationEstablishmentStatus
-case class RelationshipError(reason : String) extends Exception(reason)
+case class RelationshipError(reason: String) extends Exception(reason)
 
 class RelationshipEstablishmentService @Inject()(
                                                   val authConnector: AuthConnector,
@@ -55,7 +55,7 @@ class RelationshipEstablishmentService @Inject()(
           s" Relationship does not exist in Trust IV for user and $identifier due to error $msg")
 
         Future.successful(RelationshipNotFound)
-      case e : Throwable =>
+      case e: Throwable =>
         logger.error(s"[Verifying][Session ID: ${Session.id(hc)}]" +
           s" Service was unable to determine if an IV relationship existed in Trust IV." +
           s" Cannot continue with the journey")

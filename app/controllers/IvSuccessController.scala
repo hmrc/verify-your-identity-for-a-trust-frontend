@@ -18,17 +18,16 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.Inject
-import models.NormalMode
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.IvSuccessView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IvSuccessController @Inject()(
@@ -39,8 +38,7 @@ class IvSuccessController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
                                      relationshipEstablishment: RelationshipEstablishment,
                                      withPlaybackView: IvSuccessView
-                                   )(implicit ec: ExecutionContext,
-                                     val config: FrontendAppConfig)
+                                   )(implicit ec: ExecutionContext, val config: FrontendAppConfig)
   extends FrontendBaseController
     with I18nSupport
     with Logging
@@ -51,20 +49,20 @@ class IvSuccessController @Inject()(
 
       request.userAnswers.get(IdentifierPage).map { identifier =>
 
-        def onRelationshipFound = {
+        def onRelationshipFound: Future[Result] = {
 
-            val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
-              case None => false
-              case Some(value) => value
-            }
+          val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
+            case None => false
+            case Some(value) => value
+          }
 
-            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
-              s" user successfully passed Trust IV questions for $identifier, user can continue to maintain the trust")
+          logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+            s" user successfully passed Trust IV questions for $identifier, user can continue to maintain the trust")
 
-            Future.successful(Ok(withPlaybackView(isAgentManagingTrust, identifier)))
+          Future.successful(Ok(withPlaybackView(isAgentManagingTrust, identifier)))
         }
 
-        lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
+        lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad()))
 
         relationshipEstablishment.check(request.internalId, identifier) flatMap {
           case RelationshipFound =>
@@ -80,5 +78,9 @@ class IvSuccessController @Inject()(
         Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
       }
 
+  }
+
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    Redirect(config.trustsContinueUrl)
   }
 }

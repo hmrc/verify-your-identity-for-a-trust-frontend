@@ -33,16 +33,15 @@ import views.html.BeforeYouContinueView
 import scala.concurrent.{ExecutionContext, Future}
 
 class BeforeYouContinueController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       relationship: RelationshipEstablishment,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: BeforeYouContinueView,
-                                       connector: TrustsStoreConnector
-                                     )(implicit ec: ExecutionContext,
-                                       config: FrontendAppConfig)
+                                             override val messagesApi: MessagesApi,
+                                             identify: IdentifierAction,
+                                             relationship: RelationshipEstablishment,
+                                             getData: DataRetrievalAction,
+                                             requireData: DataRequiredAction,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             view: BeforeYouContinueView,
+                                             connector: TrustsStoreConnector
+                                           )(implicit ec: ExecutionContext, config: FrontendAppConfig)
   extends FrontendBaseController
     with I18nSupport
     with AuthPartialFunctions
@@ -51,10 +50,10 @@ class BeforeYouContinueController @Inject()(
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-        request.userAnswers.get(IdentifierPage) map { identifier =>
+      request.userAnswers.get(IdentifierPage) map { identifier =>
 
         def body = {
-            Future.successful(Ok(view(identifier)))
+          Future.successful(Ok(view(identifier)))
         }
 
         relationship.check(request.internalId, identifier) flatMap {
@@ -68,11 +67,11 @@ class BeforeYouContinueController @Inject()(
         }
 
       } getOrElse {
-          logger.error(s"[Verifying][Session ID: ${Session.id(hc)}]" +
-            s" no identifier available in user answers, cannot continue with verifying the user")
+        logger.error(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+          s" no identifier available in user answers, cannot continue with verifying the user")
 
-          Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-        }
+        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+      }
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -88,7 +87,7 @@ class BeforeYouContinueController @Inject()(
           val returningSuccessRedirect = config.relationshipEstablishmentSuccessUrl
           val returningFailureRedirect = config.relationshipEstablishmentFailureUrl
 
-          val host = config.relationshipEstablishmentFrontendtUrl(identifier)
+          val host = config.relationshipEstablishmentFrontendUrl(identifier)
 
           val queryString: Map[String, Seq[String]] = Map(
             "success" -> Seq(returningSuccessRedirect),

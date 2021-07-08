@@ -18,11 +18,10 @@ package controllers
 
 import controllers.actions._
 import forms.IsAgentManagingTrustFormProvider
-import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -31,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.IsAgentManagingTrustView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IsAgentManagingTrustController @Inject()(
@@ -44,25 +44,25 @@ class IsAgentManagingTrustController @Inject()(
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: IsAgentManagingTrustView,
                                                 relationship: RelationshipEstablishment
-                                 )(implicit ec: ExecutionContext)
+                                              )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  val form = formProvider()
+  private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(IdentifierPage) map { identifier =>
 
         lazy val body = {
-            val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
-              case None => form
-              case Some(value) => form.fill(value)
-            }
+          val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
+            case None => form
+            case Some(value) => form.fill(value)
+          }
 
-            Future.successful(Ok(view(preparedForm, mode, identifier)))
+          Future.successful(Ok(view(preparedForm, identifier)))
         }
 
         relationship.check(request.internalId, identifier) flatMap {
@@ -83,7 +83,7 @@ class IsAgentManagingTrustController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -91,7 +91,7 @@ class IsAgentManagingTrustController @Inject()(
           (for {
             identifier <- request.userAnswers.get(IdentifierPage)
           } yield {
-            Future.successful(BadRequest(view(formWithErrors, mode, identifier)))
+            Future.successful(BadRequest(view(formWithErrors, identifier)))
           }) getOrElse {
             logger.error(s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}]" +
               s" unable to retrieve identifier from user answers")
@@ -103,7 +103,7 @@ class IsAgentManagingTrustController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IsAgentManagingTrustPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IsAgentManagingTrustPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IsAgentManagingTrustPage, updatedAnswers))
       )
   }
 }

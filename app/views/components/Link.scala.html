@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package navigation
+@this()
 
-import base.SpecBase
-import pages._
+@(href: String, id: String = "", key: String, openInNewWindow: Boolean = false)(implicit messages: Messages)
 
-class NavigatorSpec extends SpecBase {
-
-  val navigator = new Navigator
-
-  "Navigator" must {
-
-    "go to BeforeYouContinue from IsAgentManagingTrust" in {
-      navigator.nextPage(IsAgentManagingTrustPage, emptyUserAnswers) mustBe controllers.routes.BeforeYouContinueController.onPageLoad()
-    }
-  }
-
-}
+<a id="@id" href="@href" @if(openInNewWindow) {target="_blank"}>@messages(key)</a>

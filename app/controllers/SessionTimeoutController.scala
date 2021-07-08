@@ -26,12 +26,12 @@ import utils.Session
 import scala.concurrent.Future
 
 @Singleton
-class SessionTimeoutController @Inject()(val appConfig: FrontendAppConfig,
-                                         val config: Configuration,
-                                         val env: Environment,
-                                         val controllerComponents: MessagesControllerComponents)
-  extends FrontendBaseController
-    with Logging {
+class SessionTimeoutController @Inject()(
+                                          val appConfig: FrontendAppConfig,
+                                          val config: Configuration,
+                                          val env: Environment,
+                                          val controllerComponents: MessagesControllerComponents
+                                        ) extends FrontendBaseController with Logging {
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
     logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] user requested to extend the time remaining to complete Trust IV, user has not been signed out")
