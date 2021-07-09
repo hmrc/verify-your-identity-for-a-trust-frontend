@@ -1,4 +1,6 @@
-@import "lib/govuk-frontend/govuk/all";
+@import "lib/govuk-frontend/govuk/base";
+@import "lib/govuk-frontend/govuk/core/typography";
+@import "lib/govuk-frontend/govuk/core/links";
 
 $govuk-global-styles: true;
 
