@@ -6,9 +6,9 @@ object AppDependencies {
   val compile = Seq(
     play.sbt.PlayImport.ws,
     "org.reactivemongo" %% "play2-reactivemongo"            % "0.20.13-play28",
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "1.1.0-play-28",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.9.0-play-28",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "5.9.0"
+    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "3.6.0-play-28",
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.11.0-play-28",
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "5.21.0"
   )
 
   val test = Seq(
@@ -22,16 +22,16 @@ object AppDependencies {
     "com.github.tomakehurst"      % "wiremock-standalone"      % "2.27.2"
   ).map(_ % Test)
 
-  val akkaVersion = "2.6.10"
+  val akkaVersion = "2.6.7"
   val akkaHttpVersion = "10.1.12"
 
   val overrides = Seq(
-    "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-    "com.typesafe.akka" %% "akka-protobuf" % akkaVersion,
-    "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-    "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
-    "commons-codec"     % "commons-codec"   % "1.12"
+    "com.typesafe.akka" %% "akka-stream_2.12" % akkaVersion,
+    "com.typesafe.akka" %% "akka-protobuf_2.12" % akkaVersion,
+    "com.typesafe.akka" %% "akka-slf4j_2.12" % akkaVersion,
+    "com.typesafe.akka" %% "akka-actor_2.12" % akkaVersion,
+    "com.typesafe.akka" %% "akka-http-core_2.12" % akkaHttpVersion,
+    "commons-codec"     % "commons-codec" % "1.12"
   )
 
   def apply(): Seq[ModuleID] = compile ++ test
