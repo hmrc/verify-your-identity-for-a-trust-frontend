@@ -23,3 +23,9 @@ p {
 a {
     @extend .govuk-link;
 }
+
+@media (min-width: 40.0625em) {
+    .govuk-summary-list__value {
+        width: 50%;
+    }
+}
