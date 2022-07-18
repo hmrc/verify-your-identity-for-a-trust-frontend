@@ -6,19 +6,19 @@ object AppDependencies {
   val compile = Seq(
     play.sbt.PlayImport.ws,
     "org.reactivemongo" %% "play2-reactivemongo"            % "0.20.13-play28",
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "3.6.0-play-28",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "3.22.0-play-28",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.11.0-play-28",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "5.21.0"
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "6.3.0"
   )
 
   val test = Seq(
     "org.scalatest"               %% "scalatest"          % "3.0.9",
     "org.scalatestplus.play"      %% "scalatestplus-play" % "5.0.0",
     "org.pegdown"                 %  "pegdown"            % "1.6.0",
-    "org.jsoup"                   %  "jsoup"              % "1.10.3",
+    "org.jsoup"                   %  "jsoup"              % "1.15.2",
     "com.typesafe.play"           %% "play-test"          % PlayVersion.current,
     "org.mockito"                 %  "mockito-all"        % "1.10.19",
-    "org.scalacheck"              %% "scalacheck"         % "1.14.0",
+    "org.scalacheck"              %% "scalacheck"         % "1.16.0",
     "com.github.tomakehurst"      % "wiremock-standalone"      % "2.27.2"
   ).map(_ % Test)
 
