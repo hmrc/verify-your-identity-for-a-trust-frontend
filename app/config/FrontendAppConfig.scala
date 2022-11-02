@@ -116,4 +116,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   def registerTrustAsTrusteeUrl: String = configuration.get[String]("urls.registerTrustAsTrustee")
+
+  val cachettl: Long = configuration.get[Long]("mongodb.timeToLiveInSeconds")
+
+  val dropIndexes: Boolean = configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
 }

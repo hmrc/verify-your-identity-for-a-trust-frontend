@@ -20,9 +20,9 @@ import base.SpecBase
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest, UserAnswersCached}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{when, verify => verifyMock}
-import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.MockitoSugar.mock
 import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.inject.bind
 import play.api.mvc.Call

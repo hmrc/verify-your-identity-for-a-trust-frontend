@@ -23,12 +23,12 @@ import pages.IdentifierPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{IdentifierRegex, Session}
-
 import javax.inject.Inject
+import repositories.SessionRepository
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveIdentifierController @Inject()(
