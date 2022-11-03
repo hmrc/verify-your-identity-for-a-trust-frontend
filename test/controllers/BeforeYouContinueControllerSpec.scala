@@ -20,9 +20,9 @@ import base.SpecBase
 import connectors.TrustsStoreConnector
 import models.{TrustsStoreRequest, UserAnswersCached}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito.{verify => verifyMock, _}
-import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.MockitoSugar.mock
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.mvc.Call

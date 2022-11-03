@@ -20,9 +20,8 @@ import base.SpecBase
 import forms.IsAgentManagingTrustFormProvider
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.data.Form
 import play.api.inject.bind
