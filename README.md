@@ -10,6 +10,12 @@ If you want to run your local copy, then stop the frontend ran by the service ma
 
 `sbt run`
 
+## Testing the service
+Run unit and integration tests before raising a PR to ensure your code changes pass the Jenkins pipeline. This runs all the unit tests and integration tests with scalastyle and checks for dependency updates:
+
+`./run_all_tests.sh`
+
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
