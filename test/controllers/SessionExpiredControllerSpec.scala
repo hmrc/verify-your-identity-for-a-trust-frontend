@@ -52,9 +52,8 @@ class SessionExpiredControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual frontendAppConfig.loginUrl
-
+      redirectLocation(result).value mustBe "http://localhost:9949/auth-login-stub/gg-sign-in?continue=" +
+        "http%3A%2F%2Flocalhost%3A9789%2Fverify-your-identity-for-a-trust&origin=verify-your-identity-for-a-trust-frontend"
       application.stop()
 
     }
