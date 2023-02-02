@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import models.Enumerable
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.data.{Form, FormError}
+import play.api.data.{Form, FormError, Forms}
 
 object MappingsSpec {
 
@@ -37,13 +37,13 @@ object MappingsSpec {
   }
 }
 
-class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mappings {
+class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Formatters {
 
   "boolean" must {
 
     val testForm: Form[Boolean] =
       Form(
-        "value" -> boolean()
+        "value" -> Forms.of(booleanFormatter("error.required", "error.boolean"))
       )
 
     "bind true" in {

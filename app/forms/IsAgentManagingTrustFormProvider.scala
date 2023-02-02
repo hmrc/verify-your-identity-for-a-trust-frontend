@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 
 package forms
 
+import forms.mappings.Formatters
+import play.api.data.{Form, Forms}
+
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
-
-class IsAgentManagingTrustFormProvider @Inject() extends Mappings {
+class IsAgentManagingTrustFormProvider @Inject() extends Formatters {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("isAgentManagingTrust.error.required")
+      "value" -> Forms.of(booleanFormatter("isAgentManagingTrust.error.required", "error.boolean"))
     )
 }
