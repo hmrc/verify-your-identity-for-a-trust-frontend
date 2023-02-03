@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,10 @@ trait ViewSpecBase extends SpecBase {
     headers.first.text.replaceAll("\u00a0", " ") mustBe expectedHeading
   }
 
-  def assertPageTitleWithCaptionEqualsMessages(doc: Document, expectedCaptionMessageKey: String, captionParam: String, expectedMessageKey: String): Assertion = {
+  def assertPageTitleWithCaptionEqualsMessages(doc: Document,
+                                               expectedCaptionMessageKey: String,
+                                               captionParam: String,
+                                               expectedMessageKey: String): Assertion = {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
 

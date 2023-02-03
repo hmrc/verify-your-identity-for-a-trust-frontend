@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,8 @@ class MessagesSpec extends SpecBase {
       mismatchedArgSequences foreach {
         case (key, engArgSeq, welshArgSeq) =>
           println(
-            s"key which has different arguments or order of arguments between English and Welsh: $key -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq")
+            s"key which has different arguments or order of arguments between English and Welsh: $key -- " +
+              s"English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq")
       }
       mismatchedArgSequences.size mustBe 0
     }
@@ -111,9 +112,9 @@ class MessagesSpec extends SpecBase {
 
   private def isInteger(s: String): Boolean = s forall Character.isDigit
 
-  private def toArgArray(msg: String) = msg.split("\\{|\\}").map(_.trim()).filter(isInteger(_))
+  private def toArgArray(msg: String) = msg.split("\\{|\\}").map(_.trim()).filter(isInteger)
 
-  private def countArgs(msg: String) = toArgArray(msg).size
+  private def countArgs(msg: String) = toArgArray(msg).length
 
   private def listArgs(msg: String) = toArgArray(msg).mkString
 
