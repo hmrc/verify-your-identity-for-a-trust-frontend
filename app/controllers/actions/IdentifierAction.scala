@@ -48,7 +48,7 @@ class AuthenticatedIdentifierAction @Inject()(
       case _ =>
         throw new UnauthorizedException("Unable to retrieve internal Id")
     } recoverWith {
-      recoverFromException
+      recoverFromException()
     }
   }
 }

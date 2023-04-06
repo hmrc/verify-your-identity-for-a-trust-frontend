@@ -22,7 +22,7 @@ object AppDependencies {
     "com.vladsch.flexmark"        % "flexmark-all"              % "0.64.0",
     "org.jsoup"                   %  "jsoup"                    % "1.15.4",
     "com.typesafe.play"           %% "play-test"                % PlayVersion.current,
-    "org.mockito"                 %% "mockito-scala-scalatest"  % "1.17.12",
+    "org.mockito"                 %% "mockito-scala-scalatest"  % "1.17.14",
     "com.github.tomakehurst"      % "wiremock-standalone"       % "2.27.2"
   ).map(_ % Test)
 
