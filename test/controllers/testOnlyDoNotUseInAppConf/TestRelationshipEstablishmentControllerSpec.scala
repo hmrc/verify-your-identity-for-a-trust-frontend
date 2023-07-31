@@ -100,24 +100,6 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "not stub IV relationship for a URN starting with anything but NT" in {
-      val application = applicationBuilder(
-        userAnswers = Some(emptyUserAnswers))
-        .build()
-
-      val identifier = "BBTRUST12345678"
-
-      val request = FakeRequest(GET, controllers.testOnlyDoNotUseInAppConf.routes.TestRelationshipEstablishmentController.check(identifier).url)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustBe controllers.routes.FallbackFailureController.onPageLoad().url
-
-      application.stop()
-    }
-
   }
 
 }

@@ -56,12 +56,8 @@ class TestRelationshipEstablishmentController @Inject()(
         case "4381028111" | "5000000000" =>
           createRelationship(identifier)
         case IdentifierRegex.UrnRegex(urn) =>
-          if (urn.toLowerCase.startsWith("nt")) {
+            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] Creating reationship for URN: $urn")
             createRelationship(urn)
-          } else {
-            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] URN did not start with 'NT', failing IV")
-            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
-          }
         case _ =>
           logger.error(s"[Verifying][Session ID: ${Session.id(hc)}] " +
             s"Identifier provided is not a valid URN or UTR $identifier")
