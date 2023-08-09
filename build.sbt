@@ -9,12 +9,12 @@ lazy val appName: String = "verify-your-identity-for-a-trust-frontend"
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
-  .settings(DefaultBuildSettings.scalaSettings: _*)
-  .settings(DefaultBuildSettings.defaultSettings(): _*)
-  .settings(inConfig(Test)(testSettings): _*)
+  .settings(DefaultBuildSettings.scalaSettings)
+  .settings(DefaultBuildSettings.defaultSettings())
+  .settings(inConfig(Test)(testSettings))
   .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.13.10",
+    scalaVersion := "2.13.11",
     // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     name := appName,
@@ -31,8 +31,7 @@ lazy val root = (project in file("."))
     ),
     PlayKeys.playDefaultPort := 9789,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController;.*Mode.*",
+      ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;;.*Mode.*",
     ScoverageKeys.coverageMinimumStmtTotal := 70,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
@@ -59,11 +58,11 @@ lazy val root = (project in file("."))
     )
   )
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork        := true,
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf"
   )
 )
 
-addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle it:scalastyle")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
