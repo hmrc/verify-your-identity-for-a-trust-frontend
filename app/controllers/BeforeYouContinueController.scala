@@ -19,9 +19,8 @@ package controllers
 import config.FrontendAppConfig
 import connectors.TrustsStoreConnector
 import controllers.actions._
-import javax.inject.Inject
-import models.TrustsStoreRequest
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import models.{TrustsStoreRequest, TrustsStoreResponse}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,7 +29,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.BeforeYouContinueView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 class BeforeYouContinueController @Inject()(
                                              override val messagesApi: MessagesApi,
@@ -52,10 +53,6 @@ class BeforeYouContinueController @Inject()(
 
       request.userAnswers.get(IdentifierPage) map { identifier =>
 
-        def body = {
-          Future.successful(Ok(view(identifier)))
-        }
-
         relationship.check(request.internalId, identifier) flatMap {
           case RelationshipFound =>
             logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
@@ -63,7 +60,7 @@ class BeforeYouContinueController @Inject()(
 
             Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
-            body
+            Future.successful(Ok(view(identifier)))
         }
 
       } getOrElse {
@@ -82,7 +79,7 @@ class BeforeYouContinueController @Inject()(
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
 
-        def onRelationshipNotFound =  {
+        def onRelationshipNotFound = {
 
           val returningSuccessRedirect = config.relationshipEstablishmentSuccessUrl
           val returningFailureRedirect = config.relationshipEstablishmentFailureUrl
@@ -94,14 +91,19 @@ class BeforeYouContinueController @Inject()(
             "failure" -> Seq(returningFailureRedirect)
           )
 
-          connector.claim(TrustsStoreRequest(request.internalId, identifier, isManagedByAgent, trustLocked = false)) map { _ =>
-            logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
-              s" saved users $identifier in trusts-store so they can be identified when they return from Trust IV." +
-              s" Sending the user into Trust IV to answer questions")
-
-            Redirect(host, queryString)
-          }
-
+          connector.claim(TrustsStoreRequest(request.internalId, identifier, isManagedByAgent, trustLocked = false)).transform(
+            (t: Try[TrustsStoreResponse]) => {
+              t match {
+                case Success(_) =>
+                  logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
+                    s" saved users $identifier in trusts-store so they can be identified when they return from Trust IV." +
+                    s" Sending the user into Trust IV to answer questions")
+                case Failure(throwable) =>
+                  logger.warn(s"[Verifying][Session ID: ${Session.id(hc)}] Claim call to trusts store failed", throwable)
+              }
+              logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] proceeding to: ${host} with params: ${queryString}")
+              Try(Redirect(host, queryString))
+            })
         }
 
         relationship.check(request.internalId, identifier) flatMap {
