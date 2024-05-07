@@ -21,7 +21,8 @@ import forms.IsAgentManagingTrustFormProvider
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -33,7 +34,7 @@ import views.html.IsAgentManagingTrustView
 
 import scala.concurrent.Future
 
-class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
+class IsAgentManagingTrustControllerSpec extends SpecBase {
 
   val formProvider = new IsAgentManagingTrustFormProvider()
   val form: Form[Boolean] = formProvider()
@@ -98,7 +99,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
       val fakeNavigator = new FakeNavigator()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)

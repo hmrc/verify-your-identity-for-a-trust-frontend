@@ -17,20 +17,20 @@
 package controllers
 
 import base.SpecBase
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{atLeastOnce, verify}
+import org.mockito.{ArgumentCaptor, Mockito}
 import pages.IdentifierPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
-class LogoutControllerSpec extends SpecBase with MockitoSugar {
+class LogoutControllerSpec extends SpecBase {
 
   "logout should redirect to feedback and audit with a utr" in {
 
-    val mockAuditConnector = mock[AuditConnector]
+    val mockAuditConnector = Mockito.mock(classOf[AuditConnector])
 
     val captor = ArgumentCaptor.forClass(classOf[Map[String, String]])
 
@@ -62,7 +62,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
 
   "logout should redirect to feedback and audit with a urn" in {
 
-    val mockAuditConnector = mock[AuditConnector]
+    val mockAuditConnector = Mockito.mock(classOf[AuditConnector])
 
     val captor = ArgumentCaptor.forClass(classOf[Map[String, String]])
 

@@ -18,9 +18,8 @@ package controllers
 
 import base.SpecBase
 import models.UserAnswers
-import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.mock
+import org.mockito.{ArgumentCaptor, Mockito}
 import pages.IdentifierPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -43,7 +42,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
 
       "render an error page" in {
 
-        val mockSessionRepository = mock[SessionRepository]
+        val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
 
         val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
@@ -67,7 +66,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
 
           val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-          val mockSessionRepository = mock[SessionRepository]
+          val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
 
           when(mockSessionRepository.set(captor.capture()))
             .thenReturn(Future.successful(true))
@@ -91,7 +90,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
 
           val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-          val mockSessionRepository = mock[SessionRepository]
+          val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
 
           when(mockSessionRepository.set(captor.capture()))
             .thenReturn(Future.successful(true))
@@ -121,7 +120,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
 
           val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-          val mockSessionRepository = mock[SessionRepository]
+          val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
 
           when(mockSessionRepository.set(captor.capture()))
             .thenReturn(Future.successful(true))
@@ -145,7 +144,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
 
           val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-          val mockSessionRepository = mock[SessionRepository]
+          val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
 
           when(mockSessionRepository.set(captor.capture()))
             .thenReturn(Future.successful(true))

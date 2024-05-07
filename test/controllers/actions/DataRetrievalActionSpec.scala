@@ -19,7 +19,8 @@ package controllers.actions
 import base.SpecBase
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
@@ -28,7 +29,7 @@ import uk.gov.hmrc.auth.core.retrieve.Credentials
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class DataRetrievalActionSpec extends SpecBase with ScalaFutures {
 
   class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
@@ -40,7 +41,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       "set userAnswers to 'None' in the request" in {
 
-        val sessionRepository = mock[SessionRepository]
+        val sessionRepository = Mockito.mock(classOf[SessionRepository])
         when(sessionRepository.get("id")) thenReturn Future(None)
         val action = new Harness(sessionRepository)
 
@@ -56,7 +57,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
       "build a userAnswers object and add it to the request" in {
 
-        val sessionRepository = mock[SessionRepository]
+        val sessionRepository = Mockito.mock(classOf[SessionRepository])
         when(sessionRepository.get("id")) thenReturn Future(Some(new UserAnswers("id")))
         val action = new Harness(sessionRepository)
 

@@ -18,8 +18,8 @@ package controllers.testOnlyDoNotUseInAppConf
 
 import base.SpecBase
 import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, route, status, _}
@@ -32,7 +32,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
     "stub IV relationship for a UTR starting with 1" in {
 
-      val mockConnector = mock[RelationshipEstablishmentConnector]
+      val mockConnector = Mockito.mock(classOf[RelationshipEstablishmentConnector])
 
       val application = applicationBuilder(
         userAnswers = Some(emptyUserAnswers))
@@ -76,7 +76,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
     "stub IV relationship for a URN starting with NT" in {
 
-      val mockConnector = mock[RelationshipEstablishmentConnector]
+      val mockConnector = Mockito.mock(classOf[RelationshipEstablishmentConnector])
 
       val application = applicationBuilder(
         userAnswers = Some(emptyUserAnswers))
