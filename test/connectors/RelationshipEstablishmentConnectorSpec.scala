@@ -16,29 +16,27 @@
 
 package connectors
 
+import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
 import models.RelationshipEstablishmentStatus
 import org.scalatest.RecoverMethods
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AsyncWordSpec
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class RelationshipEstablishmentConnectorSpec extends SpecBase with WireMockHelper with RecoverMethods {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
   lazy val connector: RelationshipEstablishmentConnector = app.injector.instanceOf[RelationshipEstablishmentConnector]
 
-  lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.relationship-establishment.port" -> server.port(),
-      "auditing.enabled" -> false): _*
-    )
+  override lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(defaultAppConfigurations ++ Map("microservice.services.relationship-establishment.port" -> server.port()))
     .build()
 
   val journeyFailure = s"47a8a543-6961-4221-86e8-d22e2c3c91de"

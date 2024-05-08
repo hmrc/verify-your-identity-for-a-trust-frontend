@@ -27,10 +27,18 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import services.{FakeRelationshipEstablishmentService, RelationshipEstablishment}
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience {
+
+  val defaultAppConfigurations: Map[String, Any] = Map(
+    "auditing.enabled" -> false,
+    "metrics.enabled" -> false,
+    "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter"),
+    "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"
+  )
 
   val userAnswersId = "id"
 
@@ -44,7 +52,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  implicit def fakeRequest = FakeRequest("", "")
+  implicit def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
@@ -59,4 +67,5 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[RelationshipEstablishment].toInstance(relationshipEstablishment)
       )
+      .configure(defaultAppConfigurations)
 }

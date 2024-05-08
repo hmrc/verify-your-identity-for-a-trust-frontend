@@ -6,17 +6,13 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "verify-your-identity-for-a-trust-frontend"
 
+ThisBuild / scalaVersion := "2.13.13"
+ThisBuild / majorVersion := 0
+
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
-  .settings(DefaultBuildSettings.scalaSettings)
-  .settings(DefaultBuildSettings.defaultSettings())
-  .settings(inConfig(Test)(testSettings))
-  .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.13.11",
-    // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
-    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
@@ -36,7 +32,6 @@ lazy val root = (project in file("."))
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     libraryDependencies ++= AppDependencies(),
-    retrieveManaged := true,
     // concatenate js
     Concat.groups := Seq(
       "javascripts/verifyyouridentityforatrust-app.js" ->
@@ -57,12 +52,5 @@ lazy val root = (project in file("."))
       "-Wconf:cat=unused-imports&src=views/.*:s"
     )
   )
-
-lazy val testSettings: Seq[Def.Setting[?]] = Seq(
-  fork        := true,
-  javaOptions ++= Seq(
-    "-Dconfig.resource=test.application.conf"
-  )
-)
 
 addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")

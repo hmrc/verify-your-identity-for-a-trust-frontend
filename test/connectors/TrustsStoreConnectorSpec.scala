@@ -16,11 +16,12 @@
 
 package connectors
 
+import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.{TrustsStoreRequest, UserAnswersCached}
 import org.scalatest.RecoverMethods
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AsyncWordSpec
+import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -28,15 +29,14 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import utils.WireMockHelper
 
-class TrustsStoreConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class TrustsStoreConnectorSpec extends SpecBase with WireMockHelper with RecoverMethods {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  lazy val app = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.trusts-store.port" -> server.port(),
-      "auditing.enabled" -> false): _*
-    )
+  override lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(defaultAppConfigurations ++ Map("microservice.services.trusts-store.port" -> server.port()))
     .build()
 
   lazy val connector: TrustsStoreConnector = app.injector.instanceOf[TrustsStoreConnector]
@@ -47,9 +47,9 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with Matchers with WireMock
   val internalId = "some-authenticated-internal-id"
   val managedByAgent = true
 
-  val request = TrustsStoreRequest(internalId, utr, managedByAgent, false)
+  val request: TrustsStoreRequest = TrustsStoreRequest(internalId, utr, managedByAgent, false)
 
-  private def wiremock(payload: String, status: Int, response: String) =
+  private def wiremock(payload: String, status: Int, response: String): StubMapping =
     server.stubFor(
       post(urlEqualTo(url))
         .withHeader(CONTENT_TYPE, containing("application/json"))

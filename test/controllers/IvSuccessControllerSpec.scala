@@ -19,9 +19,9 @@ package controllers
 import base.SpecBase
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
+import org.mockito.Mockito
 import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatest.BeforeAndAfterAll
-import org.mockito.MockitoSugar.mock
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,7 +34,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
   private val utr = "0987654321"
 
-  private val mockRelationshipEstablishment = mock[RelationshipEstablishment]
+  private val mockRelationshipEstablishment = Mockito.mock(classOf[RelationshipEstablishment])
 
   "Returning IvSuccess Controller" must {
 

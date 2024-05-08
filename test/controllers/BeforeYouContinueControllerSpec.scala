@@ -21,8 +21,8 @@ import connectors.TrustsStoreConnector
 import models.{TrustsStoreRequest, UserAnswersCached}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
+import org.mockito.Mockito
 import org.mockito.Mockito.{verify => verifyMock, _}
-import org.mockito.MockitoSugar.mock
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -68,7 +68,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
-      val connector = mock[TrustsStoreConnector]
+      val connector = Mockito.mock(classOf[TrustsStoreConnector])
 
       when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
         .thenReturn(Future.successful(UserAnswersCached))

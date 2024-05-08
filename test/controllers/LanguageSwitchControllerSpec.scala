@@ -54,6 +54,7 @@ class LanguageSwitchControllerSpec extends SpecBase {
 
           val application = new GuiceApplicationBuilder()
             .overrides(bind[FrontendAppConfig].toInstance(frontendAppConfig()))
+            .configure(defaultAppConfigurations)
             .build()
 
           val requestHeaders: Headers = new Headers(Seq(("Referer", fakeUrl)))
@@ -77,6 +78,7 @@ class LanguageSwitchControllerSpec extends SpecBase {
 
           val application = new GuiceApplicationBuilder()
             .overrides(bind[FrontendAppConfig].toInstance(frontendAppConfig()))
+            .configure(defaultAppConfigurations)
             .build()
 
           val requestHeaders: Headers = new Headers(Seq(("Referer", fakeUrl)))
@@ -102,6 +104,7 @@ class LanguageSwitchControllerSpec extends SpecBase {
 
         val application = new GuiceApplicationBuilder()
           .overrides(bind[FrontendAppConfig].toInstance(frontendAppConfig(false)))
+          .configure(defaultAppConfigurations)
           .build()
 
         val requestHeaders: Headers = new Headers(Seq(("Referer", fakeUrl)))
@@ -126,6 +129,7 @@ class LanguageSwitchControllerSpec extends SpecBase {
 
         val application = new GuiceApplicationBuilder()
           .overrides(bind[FrontendAppConfig].toInstance(frontendAppConfig()))
+          .configure(defaultAppConfigurations)
           .build()
 
         val request = FakeRequest(GET, switchLanguageRoute(welsh))

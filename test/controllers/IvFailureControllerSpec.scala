@@ -21,9 +21,9 @@ import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest, UserAnswersCached}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito
 import org.mockito.Mockito.{when, verify => verifyMock}
-import org.mockito.MockitoSugar.mock
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class IvFailureControllerSpec extends SpecBase {
 
-  lazy val connector: RelationshipEstablishmentConnector = mock[RelationshipEstablishmentConnector]
+  lazy val connector: RelationshipEstablishmentConnector = Mockito.mock(classOf[RelationshipEstablishmentConnector])
 
   "IvFailure Controller" must {
 
@@ -162,7 +162,7 @@ class IvFailureControllerSpec extends SpecBase {
         val managedByAgent = true
         val trustLocked = true
 
-        val connector = mock[TrustsStoreConnector]
+        val connector = Mockito.mock(classOf[TrustsStoreConnector])
 
         when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
           .thenReturn(Future.successful(UserAnswersCached))
