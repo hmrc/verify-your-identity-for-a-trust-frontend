@@ -39,6 +39,6 @@ class FallbackFailureController @Inject()(
     implicit request =>
       val errorMessage = s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}] Trust IV encountered a problem that could not be recovered from"
       logger.error(errorMessage)
-      errorHandler.internalServerErrorTemplate.flatMap(html => Future.successful(InternalServerError(html)))
+      errorHandler.internalServerErrorTemplate.map(html => (InternalServerError(html)))
   }
 }
