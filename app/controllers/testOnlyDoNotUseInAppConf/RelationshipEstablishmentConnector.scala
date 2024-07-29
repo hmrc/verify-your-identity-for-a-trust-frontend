@@ -19,11 +19,14 @@ package controllers.testOnlyDoNotUseInAppConf
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.IsUTR
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.Json
+import play.api.libs.json.Writes
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
+class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClientV2,
                                                    config: FrontendAppConfig)
                                                   (implicit val ec: ExecutionContext) {
 
@@ -41,11 +44,11 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
 
   def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier): Future[RelationshipResponse] = {
     val ttl = config.relationshipTTL
+    val relationshipJson = RelationshipJson(newRelationship(credId, utr), ttlSeconds = ttl)
 
-    httpClient.POST[RelationshipJson, RelationshipResponse](
-      relationshipEstablishmentPostUrl,
-      RelationshipJson(newRelationship(credId, utr), ttlSeconds = ttl)
-    )
+    httpClient.post(url"$relationshipEstablishmentPostUrl")
+      .withBody(Json.toJson(relationshipJson))
+      .execute[RelationshipResponse]
   }
 
 }
