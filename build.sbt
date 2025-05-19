@@ -8,7 +8,7 @@ lazy val appName: String = "verify-your-identity-for-a-trust-frontend"
 
 resolvers += MavenRepository("HMRC-open-artefacts-maven2", "https://open.artefacts.tax.service.gov.uk/maven2")
 
-ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / scalaVersion := "2.13.16"
 ThisBuild / majorVersion := 0
 
 lazy val root = (project in file("."))
@@ -44,6 +44,7 @@ lazy val root = (project in file("."))
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
+    uglifyOps := UglifyOps.singleFile,
     pipelineStages := Seq(digest),
     // below line required to force asset pipeline to operate in dev rather than only prod
     Assets / pipelineStages := Seq(concat,uglify),
