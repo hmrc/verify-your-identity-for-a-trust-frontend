@@ -56,4 +56,3 @@ lazy val root = (project in file("."))
     )
   )
 
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
