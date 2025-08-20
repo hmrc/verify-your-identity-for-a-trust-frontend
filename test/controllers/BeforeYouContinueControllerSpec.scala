@@ -95,5 +95,52 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       application.stop()
 
     }
+    "redirect to SessionExpired for a POST when IsAgentManagingTrustPage is missing" in {
+      val answers = emptyUserAnswers
+        .set(IdentifierPage, utr).success.value
+
+      val application = applicationBuilder(
+        userAnswers = Some(answers),
+        fakeEstablishmentServiceFailing
+      ).build()
+
+      val request = FakeRequest(POST, controllers.routes.BeforeYouContinueController.onSubmit().url)
+      val result  = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "still redirect into Trust IV if trusts-store claim fails (controller transforms failure to redirect)" in {
+      val connector = Mockito.mock(classOf[TrustsStoreConnector])
+
+      when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
+        .thenReturn(Future.failed(new RuntimeException("exception")))
+
+      val answers = emptyUserAnswers
+        .set(IdentifierPage, utr).success.value
+        .set(IsAgentManagingTrustPage, true).success.value
+
+      val application = applicationBuilder(
+        userAnswers = Some(answers),
+        fakeEstablishmentServiceFailing
+      ).overrides(
+        bind[TrustsStoreConnector].toInstance(connector)
+      ).build()
+
+      val request = FakeRequest(POST, controllers.routes.BeforeYouContinueController.onSubmit().url)
+      val result  = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      val loc = redirectLocation(result).value
+      loc must include (utr)
+      loc must include ("success=")
+      loc must include ("failure=")
+
+      verifyMock(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+      application.stop()
+    }
   }
 }
