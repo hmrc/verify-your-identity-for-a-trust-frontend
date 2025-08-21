@@ -21,15 +21,15 @@ import forms.IsAgentManagingTrustFormProvider
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
-import org.mockito.Mockito.when
+import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.Mockito.{verify, when}
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
+import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 import views.html.IsAgentManagingTrustView
 
 import scala.concurrent.Future
@@ -43,7 +43,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
   lazy val isAgentManagingTrustRoute: String = controllers.routes.IsAgentManagingTrustController.onPageLoad().url
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
+  val fakeEstablishmentServiceNotFound = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
+  val fakeEstablishmentServiceFound = new FakeRelationshipEstablishmentService(RelationshipFound)
   "IsAgentManagingTrust Controller" must {
 
     "return OK and the correct view for a GET" in {
@@ -55,7 +57,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
 
       val application = applicationBuilder(
         userAnswers = Some(userAnswers),
-        relationshipEstablishment = fakeEstablishmentServiceFailing ).build()
+        relationshipEstablishment = fakeEstablishmentServiceFailing).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -97,6 +99,39 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
       application.stop()
     }
 
+    "redirect to IvSuccess on GET when relationship is already found" in {
+      val userAnswers = emptyUserAnswers
+        .set(IdentifierPage, utr).success.value
+
+      val application = applicationBuilder(
+        userAnswers = Some(userAnswers),
+        relationshipEstablishment = fakeEstablishmentServiceFound
+      ).build()
+
+      val request = FakeRequest(GET, isAgentManagingTrustRoute)
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.IvSuccessController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a GET if identifier is missing" in {
+      val application = applicationBuilder(
+        userAnswers = Some(emptyUserAnswers),
+        relationshipEstablishment = fakeEstablishmentServiceFound
+      ).build()
+
+      val request = FakeRequest(GET, isAgentManagingTrustRoute)
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+
+      application.stop()
+    }
+
     "redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
@@ -124,7 +159,36 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
 
       application.stop()
     }
+    "redirect to the next page when valid data is submitted (false) and persist false" in {
+      val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
+      val fakeNavigator = new FakeNavigator()
 
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(
+          userAnswers = Some(emptyUserAnswers.set(IdentifierPage, utr).success.value),
+          relationshipEstablishment = fakeEstablishmentServiceNotFound
+        ).overrides(
+          bind[Navigator].toInstance(fakeNavigator),
+          bind[SessionRepository].toInstance(mockSessionRepository)
+        ).build()
+
+      val request =
+        FakeRequest(POST, isAgentManagingTrustRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+      val captor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(captor.capture())
+      captor.getValue.get(IsAgentManagingTrustPage).value mustBe false
+
+      application.stop()
+    }
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers

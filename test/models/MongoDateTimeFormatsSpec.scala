@@ -19,7 +19,7 @@ package models
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, Json}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -48,6 +48,26 @@ class MongoDateTimeFormatsSpec extends AnyFreeSpec with Matchers with OptionValu
     "must serialise/deserialise to the same value" in {
       val result = Json.toJson(date).as[LocalDateTime]
       result mustEqual date
+    }
+
+    "must error when object does not contain $date" in {
+      val json = Json.obj("notDate" -> dateMillis)
+      json.validate[LocalDateTime].isError mustBe true
+    }
+
+    "must error when $date is the wrong type" in {
+      val json = Json.obj("$date" -> JsBoolean(true))
+      json.validate[LocalDateTime].isError mustBe true
+    }
+
+    "must error when $date is an object without $numberLong" in {
+      val json = Json.obj("$date" -> Json.obj("somethingElse" -> "value"))
+      json.validate[LocalDateTime].isError mustBe true
+    }
+
+    "must error when $date is a malformed string" in {
+      val json = Json.obj("$date" -> "not-a-date")
+      json.validate[LocalDateTime].isError mustBe true
     }
   }
 }

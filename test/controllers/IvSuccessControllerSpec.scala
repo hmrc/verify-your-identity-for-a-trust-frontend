@@ -25,7 +25,7 @@ import org.scalatest.BeforeAndAfterAll
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{RelationshipEstablishment, RelationshipFound}
+import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import views.html.IvSuccessView
 
 import scala.concurrent.Future
@@ -137,5 +137,53 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
     }
 
+    "redirect to IsAgentManagingTrustController when relationship is NOT found" in {
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(IsAgentManagingTrustPage, false).success.value
+        .set(IdentifierPage, utr).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+        .build()
+
+      val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
+
+      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+        .thenReturn(Future.successful(RelationshipNotFound))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.IsAgentManagingTrustController.onPageLoad().url
+
+      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+      reset(mockRelationshipEstablishment)
+
+      application.stop()
+    }
+
+    "return OK view with isAgent=false when IsAgentManagingTrustPage is missing" in {
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(IdentifierPage, utr).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+        .build()
+
+      val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
+      val view = application.injector.instanceOf[IvSuccessView]
+      val expectedView = view(isAgent = false, utr)(request, messages).toString
+
+      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+        .thenReturn(Future.successful(RelationshipFound))
+
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+      contentAsString(result) mustEqual expectedView
+
+      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+      reset(mockRelationshipEstablishment)
+
+      application.stop()
+    }
   }
 }

@@ -1,7 +1,4 @@
 import play.sbt.routes.RoutesKeys
-import sbt.Def
-import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "verify-your-identity-for-a-trust-frontend"
@@ -28,11 +25,6 @@ lazy val root = (project in file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 9789,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;;.*Mode.*",
-    ScoverageKeys.coverageMinimumStmtTotal := 70,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
     libraryDependencies ++= AppDependencies(),
     // concatenate js
     Concat.groups := Seq(
@@ -54,6 +46,5 @@ lazy val root = (project in file("."))
       "-Wconf:src=routes/.*:s",
       "-Wconf:cat=unused-imports&src=views/.*:s"
     )
-  )
+  ).settings(CodeCoverageSettings())
 
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")

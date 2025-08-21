@@ -18,14 +18,15 @@ package controllers
 
 import base.SpecBase
 import models.UserAnswers
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{never, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
 import pages.IdentifierPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
+import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 
 import scala.concurrent.Future
 
@@ -35,6 +36,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
   val urn = "ABTRUST12345678"
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
+  val fakeEstablishmentServiceFound = new FakeRelationshipEstablishmentService(RelationshipFound)
 
   "SaveIdentifierController" when {
 
@@ -163,9 +165,24 @@ class SaveIdentifierControllerSpec extends SpecBase {
           captor.getValue.get(IdentifierPage).value mustBe urn
 
         }
+        "redirect to IvSuccess and NOT persist when relationship already exists" in {
+          val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFound)
+            .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+            .build()
+
+          val request = FakeRequest(GET, controllers.routes.SaveIdentifierController.save(urn).url)
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe controllers.routes.IvSuccessController.onPageLoad().url
+
+          verify(mockSessionRepository, never()).set(any())
+
+          application.stop()
+        }
       }
     }
-
   }
-
 }
