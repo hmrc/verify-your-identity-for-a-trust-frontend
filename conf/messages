@@ -119,3 +119,9 @@ notFound.p3 = If you do not have a unique identifier for the trust, you will nee
 notFound.register.link = register the trust
 notFound.p4 = If you need help with this service
 notFound.link1 = contact the trusts helpline (opens in a new window or tab)
+
+problemDeclaring.heading = Sorry, there is a problem with the service
+problemDeclaring.title = Sorry, there is a problem with the service
+problemDeclaring.p1 = Try again later.
+problemDeclaring.p2 = If you need help with the service
+problemDeclaring.contact.link = contact the trusts helpline (opens in a new window or tab)

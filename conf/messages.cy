@@ -103,3 +103,8 @@ notFound.register.link=gofrestru’r ymddiriedolaeth
 notFound.p4=Os oes angen help arnoch gyda’r gwasanaeth hwn
 notFound.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEF (yn agor ffenestr neu dab newydd)
 
+problemDeclaring.heading=Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
+problemDeclaring.title=Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
+problemDeclaring.p1=Rhowch gynnig arall arni yn nes ymlaen.
+problemDeclaring.p2=Os oes angen help arnoch gyda’r gwasanaeth
+problemDeclaring.contact.link=gysylltu â Gwasanaeth Cwsmeriaid Cymraeg CThEF (yn agor ffenestr neu dab newydd)

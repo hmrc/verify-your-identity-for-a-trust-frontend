@@ -1,0 +1,40 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.auth.core.AffinityGroup
+@import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
+@import config.FrontendAppConfig
+@import views.html.components.{Heading, Link}
+
+@this(
+mainTemplate: MainTemplate,
+config: FrontendAppConfig,
+heading: Heading,
+link: Link
+)
+
+@()(implicit request: RequestHeader, messages: Messages)
+
+@mainTemplate(
+    title = messages("problemDeclaring.title"), canSignOut = false
+) {
+    @heading("problemDeclaring.heading", headingSize = "govuk-heading-l govuk-!-padding-top-2")
+
+    <p>@messages("problemDeclaring.p1")</p>
+
+    <p>@messages("problemDeclaring.p2") @link(config.helplineUrl, "help-link", "problemDeclaring.contact.link", openInNewWindow = true).</p>
+
+}
