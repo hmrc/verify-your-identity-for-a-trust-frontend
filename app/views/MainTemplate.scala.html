@@ -42,7 +42,8 @@
     scriptElem: Option[Html] = None,
     timeoutEnabled: Boolean = true,
     canSignOut: Boolean = true,
-    showBackLink: Boolean = false
+    showBackLink: Boolean = false,
+    showPageNotWorkingLink: Boolean = true
 )(mainContent: Html)(implicit request: RequestHeader, messages: Messages)
 
 @headScripts = {
@@ -72,7 +73,9 @@
 
 @mainContentWithGetHelp = {
     @mainContent
-    @hmrcReportTechnicalIssueHelper()
+    @if(showPageNotWorkingLink) {
+        @hmrcReportTechnicalIssueHelper()
+    }
 }
 
 @govukLayout(

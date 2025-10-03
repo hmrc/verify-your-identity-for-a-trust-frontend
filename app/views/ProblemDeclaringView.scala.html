@@ -17,24 +17,39 @@
 @import uk.gov.hmrc.auth.core.AffinityGroup
 @import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 @import config.FrontendAppConfig
-@import views.html.components.{Heading, Link}
+@import views.html.components.{Heading}
+
 
 @this(
 mainTemplate: MainTemplate,
 config: FrontendAppConfig,
-heading: Heading,
-link: Link
+heading: Heading
 )
 
 @()(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
-    title = messages("problemDeclaring.title"), canSignOut = false
+    title = messages("problemDeclaring.title"), canSignOut = false, showPageNotWorkingLink = false
 ) {
-    @heading("problemDeclaring.heading", headingSize = "govuk-heading-l govuk-!-padding-top-2")
+    @heading("problemDeclaring.heading", headingSize = "govuk-heading-xl" )
 
     <p>@messages("problemDeclaring.p1")</p>
 
-    <p>@messages("problemDeclaring.p2") @link(config.helplineUrl, "help-link", "problemDeclaring.contact.link", openInNewWindow = true).</p>
+    @heading("problemDeclaring.p2", headingSize = "govuk-heading-m")
+    <p>
+        @messages("problemDeclaring.p3")<br/>
+        <strong class="govuk-!-font-weight-bold">@messages("problemDeclaring.p4")</strong>
+    </p>
+
+    <p>
+        @messages("problemDeclaring.p5")<br/>
+        <strong class="govuk-!-font-weight-bold">@messages("problemDeclaring.p6")</strong>
+    </p>
+
+    <p>
+        @messages("problemDeclaring.p7")<br/>
+        <strong class="govuk-!-font-weight-bold">@messages("problemDeclaring.p8")</strong>
+    </p>
+    <p>@messages("problemDeclaring.p9")</p>
 
 }
