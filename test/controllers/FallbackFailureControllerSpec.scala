@@ -19,11 +19,14 @@ package controllers
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.ProblemDeclaringView
 
 class FallbackFailureControllerSpec extends SpecBase {
 
 
   def onFailureRoute = controllers.routes.FallbackFailureController.onPageLoad().url
+
+  def contactHelpDesk = controllers.routes.FallbackFailureController.contactHelpDesk().url
 
   "FallbackFailure Controller" must {
 
@@ -36,6 +39,25 @@ class FallbackFailureControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+    }
+
+
+    "render contactHelpDesk view" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(GET, contactHelpDesk)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[ProblemDeclaringView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view()(request, messages).toString
 
       application.stop()
     }
