@@ -105,7 +105,7 @@ notFound.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEF (yn agor ffenes
 
 problemDeclaring.title = Mae problem wedi codi
 problemDeclaring.heading = Mae problem wedi codi
-problemDeclaring.p1 = Mae angen i ni siarad â chi i’ch helpu i gael mynediad at yr ymddiriedolaeth.
+problemDeclaring.p1 = Mae problem wedi codi
 problemDeclaring.p2 = Cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEF
 problemDeclaring.p3 = Ffôn:
 problemDeclaring.p4 = 0300 200 1900
