@@ -43,10 +43,9 @@ class FallbackFailureController @Inject()(
       errorHandler.internalServerErrorTemplate.map(html => (InternalServerError(html)))
   }
 
-
   def contactHelpDesk(): Action[AnyContent] = Action.async {
     implicit request =>
-      val errorMessage = s"[contactHelpDesk][Trust IV][Session ID: ${Session.id(hc)}] Invalid answer given to the Trust IV question"
+      val errorMessage = s"[FallbackFailureController][contactHelpDesk][Trust IV][Session ID: ${Session.id(hc)}] Invalid answer given to the Trust IV question"
       logger.error(errorMessage)
       Future.successful(Ok(problemDeclaringView()))
   }
