@@ -24,7 +24,7 @@ GET        /not-found                                   controllers.IvFailureCon
 
 GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad()
 
-GET        /problem-declaring                           controllers.FallbackFailureController.contactHelpDesk()
+GET        /authorisation-problem                       controllers.FallbackFailureController.contactHelpDesk()
 
 GET        /verified                                    controllers.IvSuccessController.onPageLoad()
 POST       /verified                                    controllers.IvSuccessController.onSubmit()
