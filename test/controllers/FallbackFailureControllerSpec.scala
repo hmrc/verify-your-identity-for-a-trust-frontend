@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.ProblemDeclaringView
+import views.html.AuthorisationProblemView
 
 class FallbackFailureControllerSpec extends SpecBase {
 
@@ -44,7 +44,7 @@ class FallbackFailureControllerSpec extends SpecBase {
     }
 
 
-    "render contactHelpDesk view" in {
+    "render authorisation problem view" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
@@ -52,7 +52,7 @@ class FallbackFailureControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ProblemDeclaringView]
+      val view = application.injector.instanceOf[AuthorisationProblemView]
 
       status(result) mustEqual OK
 

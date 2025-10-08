@@ -150,7 +150,7 @@ class IvFailureControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to problem declaring page when user data is empty" in {
+      "redirect to authorisation problem page when user data is empty" in {
 
         val answers = emptyUserAnswers
           .set(IdentifierPage, "1234567890").success.value

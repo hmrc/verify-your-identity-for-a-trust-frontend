@@ -24,13 +24,14 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
-import views.html.ProblemDeclaringView
+import views.html.AuthorisationProblemView
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class FallbackFailureController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            errorHandler: ErrorHandler,
-                                           problemDeclaringView : ProblemDeclaringView
+                                           authorisationProblemView : AuthorisationProblemView
                                          )(implicit val ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -47,6 +48,6 @@ class FallbackFailureController @Inject()(
     implicit request =>
       val errorMessage = s"[FallbackFailureController][contactHelpDesk][Trust IV][Session ID: ${Session.id(hc)}] Invalid answer given to the Trust IV question"
       logger.error(errorMessage)
-      Future.successful(Ok(problemDeclaringView()))
+      Future.successful(Ok(authorisationProblemView()))
   }
 }
