@@ -59,6 +59,9 @@ class IvFailureController @Inject()(
       case RelationshipEstablishmentStatus.InProcessing =>
         logger.info(s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] $utr is processing")
         Redirect(routes.IvFailureController.trustStillProcessing())
+      case RelationshipEstablishmentStatus.NotMatchAnswer =>
+        logger.info(s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] data mismatch found for $utr")
+        Redirect(controllers.routes.FallbackFailureController.contactHelpDesk())
       case UnsupportedRelationshipStatus(reason) =>
         logger.warn(s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason")
         Redirect(controllers.routes.FallbackFailureController.onPageLoad())

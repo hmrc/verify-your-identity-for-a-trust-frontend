@@ -149,6 +149,35 @@ class IvFailureControllerSpec extends SpecBase {
 
         application.stop()
       }
+
+      "redirect to authorisation problem page when user data is empty" in {
+
+        val answers = emptyUserAnswers
+          .set(IdentifierPage, "1234567890").success.value
+          .set(IsAgentManagingTrustPage, false).success.value
+
+        val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
+
+        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotMatchAnswer))
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.FallbackFailureController.contactHelpDesk().url
+
+        application.stop()
+      }
     }
 
     "locked route" when {
