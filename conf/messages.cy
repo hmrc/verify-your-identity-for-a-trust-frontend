@@ -103,7 +103,7 @@ notFound.register.link=gofrestru’r ymddiriedolaeth
 notFound.p4=Os oes angen help arnoch gyda’r gwasanaeth hwn
 notFound.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEF (yn agor ffenestr neu dab newydd)
 
-problemDeclaring.title = Mae problem - Cofrestru Ymddiriedolaeth a’i Chynnal - GOV.UK
+problemDeclaring.title = Mae problem
 problemDeclaring.heading = Mae problem
 problemDeclaring.p1 = Mae angen i ni siarad â chi er mwyn cadarnhau eich bod wedi’ch awdurdodi i fwrw golwg dros fanylion yr ymddiriedolaeth a’u rheoli
 problemDeclaring.p2 = Cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEF
