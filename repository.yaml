@@ -1,5 +1,8 @@
 repoVisibility: public_0C3F0CE3E6E6448FAD341E7BFA50FCD333E06A20CFF05FCACE61154DDBBADF71
-digital-service: verify-your-identity-for-a-trust-frontend
+digital-service: TRS/Trusts
+description: This service is responsible for navigating the user to trusts-relationship-establishment-frontend. It determines if the user has authority to maintain a trust based on information previously provided in the last registration or update.
+type: Service
+service-type: Frontend
 test-repositories:
   - maintain-a-trust-performance-tests
   - trusts-acceptance-tests
