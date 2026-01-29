@@ -26,15 +26,18 @@ import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
+class TrustsStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig) {
 
-  def claim(request: TrustsStoreRequest)(implicit hc: HeaderCarrier,
-                                         ec: ExecutionContext,
-                                         writes: Writes[TrustsStoreRequest]): Future[TrustsStoreResponse] = {
+  def claim(request: TrustsStoreRequest)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext,
+    writes: Writes[TrustsStoreRequest]
+  ): Future[TrustsStoreResponse] = {
     val url: String = s"${config.trustsStoreUrl}/trusts-store/claim"
-    http.post(url"$url")
-    .withBody(Json.toJson(request))
-    .execute[TrustsStoreResponse]
+    http
+      .post(url"$url")
+      .withBody(Json.toJson(request))
+      .execute[TrustsStoreResponse]
   }
 
 }

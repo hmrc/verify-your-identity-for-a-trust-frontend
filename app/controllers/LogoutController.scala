@@ -32,44 +32,43 @@ import utils.Session
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class LogoutController @Inject()(
-                                  appConfig: FrontendAppConfig,
-                                  val controllerComponents: MessagesControllerComponents,
-                                  identify: IdentifierAction,
-                                  getData: DataRetrievalAction,
-                                  requireData: DataRequiredAction,
-                                  auditConnector: AuditConnector
-                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with Logging {
+class LogoutController @Inject() (
+  appConfig: FrontendAppConfig,
+  val controllerComponents: MessagesControllerComponents,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  auditConnector: AuditConnector
+)(implicit val ec: ExecutionContext)
+    extends FrontendBaseController with Logging {
 
-  def logout: Action[AnyContent] = (identify andThen getData andThen requireData) {
-    request =>
+  def logout: Action[AnyContent] = (identify andThen getData andThen requireData) { request =>
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    logger.info(s"[Session ID: ${utils.Session.id(hc)}] user signed out from the service, asking for feedback")
 
-      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-      logger.info(s"[Session ID: ${utils.Session.id(hc)}] user signed out from the service, asking for feedback")
+    if (appConfig.logoutAudit) {
 
-      if(appConfig.logoutAudit) {
+      val auditData = Map(
+        "sessionId" -> Session.id(hc),
+        "event"     -> "signout",
+        "service"   -> "verify-your-identity-for-a-trust-frontend",
+        "userGroup" -> request.affinityGroup.toString
+      )
 
-        val auditData = Map(
-          "sessionId" -> Session.id(hc),
-          "event" -> "signout",
-          "service" -> "verify-your-identity-for-a-trust-frontend",
-          "userGroup" -> request.affinityGroup.toString
-        )
+      val auditDataWithUtr = request.userAnswers.get(IdentifierPage).fold(auditData) { identifier =>
+        val key = if (IsUTR(identifier)) "utr" else "urn"
 
-
-        val auditDataWithUtr = request.userAnswers.get(IdentifierPage).fold(auditData) { identifier =>
-          val key = if(IsUTR(identifier)) "utr" else "urn"
-
-          auditData ++ Map(key -> identifier)
-        }
-
-        auditConnector.sendExplicitAudit(
-          "trusts",
-          auditDataWithUtr
-        )
-
+        auditData ++ Map(key -> identifier)
       }
 
-      Redirect(appConfig.logoutUrl).withSession(session = ("feedbackId", Session.id(hc)))
+      auditConnector.sendExplicitAudit(
+        "trusts",
+        auditDataWithUtr
+      )
+
+    }
+
+    Redirect(appConfig.logoutUrl).withSession(session = ("feedbackId", Session.id(hc)))
   }
+
 }

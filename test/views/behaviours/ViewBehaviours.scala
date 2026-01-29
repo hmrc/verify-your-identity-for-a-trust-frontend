@@ -24,9 +24,7 @@ trait ViewBehaviours extends ViewSpecBase {
   private def findBannerTitle(view: HtmlFormat.Appendable): String =
     asDocument(view).getElementsByClass("govuk-service-navigation__service-name").text().trim
 
-  def normalPage(view: HtmlFormat.Appendable,
-                 messageKeyPrefix: String,
-                 expectedGuidanceKeys: String*): Unit = {
+  def normalPage(view: HtmlFormat.Appendable, messageKeyPrefix: String, expectedGuidanceKeys: String*): Unit =
 
     "behave like a normal page" when {
       "rendered" must {
@@ -60,13 +58,14 @@ trait ViewBehaviours extends ViewSpecBase {
         }
       }
     }
-  }
 
-  def normalPageWithCaption(view: HtmlFormat.Appendable,
-                            messageKeyPrefix: String,
-                            captionKey: String,
-                            captionParam: String,
-                            expectedGuidanceKeys: String*): Unit = {
+  def normalPageWithCaption(
+    view: HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    captionKey: String,
+    captionParam: String,
+    expectedGuidanceKeys: String*
+  ): Unit =
 
     "behave like a normal page" when {
       "rendered" must {
@@ -85,7 +84,8 @@ trait ViewBehaviours extends ViewSpecBase {
 
           val doc = asDocument(view)
 
-          assertPageTitleWithCaptionEqualsMessages(doc,
+          assertPageTitleWithCaptionEqualsMessages(
+            doc,
             expectedCaptionMessageKey = s"$captionKey.subheading",
             captionParam = captionParam,
             expectedMessageKey = s"$messageKeyPrefix.heading"
@@ -105,14 +105,13 @@ trait ViewBehaviours extends ViewSpecBase {
         }
       }
     }
-  }
 
-  def pageWithBackLink(view: HtmlFormat.Appendable): Unit = {
+  def pageWithBackLink(view: HtmlFormat.Appendable): Unit =
 
     "behave like a page with a back link" in {
 
       val doc = asDocument(view)
       assertRenderedById(doc, "back-link")
     }
-  }
+
 }

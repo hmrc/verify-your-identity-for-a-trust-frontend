@@ -28,4 +28,5 @@ class BeforeYouContinuePageSpec extends PageBehaviours {
 
     beRemovable[String](BeforeYouContinuePage)
   }
+
 }

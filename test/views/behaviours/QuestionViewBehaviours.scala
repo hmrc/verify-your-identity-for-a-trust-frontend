@@ -20,8 +20,8 @@ import play.api.data.{Form, FormError}
 
 trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
-  val errorKey = "value"
-  val errorMessage = "error.boolean"
+  val errorKey         = "value"
+  val errorMessage     = "error.boolean"
   val error: FormError = FormError(errorKey, errorMessage)
 
   val form: Form[A]

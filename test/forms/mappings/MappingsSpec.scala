@@ -34,7 +34,9 @@ object MappingsSpec {
 
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+
   }
+
 }
 
 class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Formatters {
@@ -76,4 +78,5 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Form
       result.apply("value").value.value mustEqual "true"
     }
   }
+
 }

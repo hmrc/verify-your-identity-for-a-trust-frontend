@@ -28,16 +28,14 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
+trait IdentifierAction
+    extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
-class AuthenticatedIdentifierAction @Inject()(
-                                               override val authConnector: AuthConnector,
-                                               val parser: BodyParsers.Default
-                                             )
-                                             (implicit val executionContext: ExecutionContext,
-                                              implicit val config: FrontendAppConfig)
-
-  extends IdentifierAction with AuthorisedFunctions with AuthPartialFunctions {
+class AuthenticatedIdentifierAction @Inject() (
+  override val authConnector: AuthConnector,
+  val parser: BodyParsers.Default
+)(implicit val executionContext: ExecutionContext, implicit val config: FrontendAppConfig)
+    extends IdentifierAction with AuthorisedFunctions with AuthPartialFunctions {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
@@ -45,10 +43,10 @@ class AuthenticatedIdentifierAction @Inject()(
     authorised().retrieve(Retrievals.internalId and Retrievals.credentials and Retrievals.affinityGroup) {
       case Some(internalId) ~ Some(credentials) ~ Some(affinityGroup) =>
         block(IdentifierRequest(request, internalId, credentials, affinityGroup))
-      case _ =>
+      case _                                                          =>
         throw new UnauthorizedException("Unable to retrieve internal Id")
-    } recoverWith {
+    } recoverWith
       recoverFromException()
-    }
   }
+
 }

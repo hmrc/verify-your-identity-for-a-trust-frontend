@@ -35,9 +35,9 @@ import scala.concurrent.Future
 
 class BeforeYouContinueControllerSpec extends SpecBase {
 
-  val utr = "0987654321"
+  val utr            = "0987654321"
   val managedByAgent = true
-  val trustLocked = false
+  val trustLocked    = false
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
@@ -46,7 +46,9 @@ class BeforeYouContinueControllerSpec extends SpecBase {
     "return OK and the correct view for a GET" in {
 
       val answers = emptyUserAnswers
-        .set(IdentifierPage, utr).success.value
+        .set(IdentifierPage, utr)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
@@ -70,12 +72,18 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val connector = Mockito.mock(classOf[TrustsStoreConnector])
 
-      when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
+      when(
+        connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+      )
         .thenReturn(Future.successful(UserAnswersCached))
 
       val answers = emptyUserAnswers
-        .set(IdentifierPage, "0987654321").success.value
-        .set(IsAgentManagingTrustPage, true).success.value
+        .set(IdentifierPage, "0987654321")
+        .success
+        .value
+        .set(IsAgentManagingTrustPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing)
         .overrides(bind[TrustsStoreConnector].toInstance(connector))
@@ -90,14 +98,17 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       redirectLocation(result).value must include("0987654321")
 
-      verifyMock(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+      verifyMock(connector)
+        .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
 
       application.stop()
 
     }
     "redirect to SessionExpired for a POST when IsAgentManagingTrustPage is missing" in {
       val answers = emptyUserAnswers
-        .set(IdentifierPage, utr).success.value
+        .set(IdentifierPage, utr)
+        .success
+        .value
 
       val application = applicationBuilder(
         userAnswers = Some(answers),
@@ -116,12 +127,18 @@ class BeforeYouContinueControllerSpec extends SpecBase {
     "still redirect into Trust IV if trusts-store claim fails (controller transforms failure to redirect)" in {
       val connector = Mockito.mock(classOf[TrustsStoreConnector])
 
-      when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
+      when(
+        connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+      )
         .thenReturn(Future.failed(new RuntimeException("exception")))
 
       val answers = emptyUserAnswers
-        .set(IdentifierPage, utr).success.value
-        .set(IsAgentManagingTrustPage, true).success.value
+        .set(IdentifierPage, utr)
+        .success
+        .value
+        .set(IsAgentManagingTrustPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(
         userAnswers = Some(answers),
@@ -135,12 +152,14 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
       val loc = redirectLocation(result).value
-      loc must include (utr)
-      loc must include ("success=")
-      loc must include ("failure=")
+      loc must include(utr)
+      loc must include("success=")
+      loc must include("failure=")
 
-      verifyMock(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+      verifyMock(connector)
+        .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
       application.stop()
     }
   }
+
 }

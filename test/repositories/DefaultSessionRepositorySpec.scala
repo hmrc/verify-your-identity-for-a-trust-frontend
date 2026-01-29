@@ -35,7 +35,7 @@ class DefaultSessionRepositorySpec extends SpecBase with MongoSupport with Befor
   lazy val repository = new DefaultSessionRepository(mongoComponent, frontendAppConfig)
 
   private def checkUserAnswers(actual: UserAnswers, expected: UserAnswers): Unit = {
-    actual.id mustBe expected.id
+    actual.id   mustBe expected.id
     actual.data mustBe expected.data
   }
 
@@ -59,9 +59,9 @@ class DefaultSessionRepositorySpec extends SpecBase with MongoSupport with Befor
     }
 
     "must return the userAnswers after update" in {
-      val internalId = "Int-328969d0-557e-2559-96ba-074d0597107e"
+      val internalId               = "Int-328969d0-557e-2559-96ba-074d0597107e"
       val userAnswers: UserAnswers = UserAnswers(internalId)
-      val userAnswers2 = userAnswers.copy(data = Json.obj("key" -> "321"))
+      val userAnswers2             = userAnswers.copy(data = Json.obj("key" -> "321"))
 
       repository.get(internalId).futureValue mustBe None
 
@@ -70,7 +70,7 @@ class DefaultSessionRepositorySpec extends SpecBase with MongoSupport with Befor
       val dbUserAnswer = repository.get(internalId).futureValue.value
       checkUserAnswers(dbUserAnswer, userAnswers)
 
-      //update
+      // update
 
       repository.set(userAnswers2).futureValue mustBe true
 
@@ -78,4 +78,5 @@ class DefaultSessionRepositorySpec extends SpecBase with MongoSupport with Befor
       checkUserAnswers(dbUserAnswer2, userAnswers2)
     }
   }
+
 }

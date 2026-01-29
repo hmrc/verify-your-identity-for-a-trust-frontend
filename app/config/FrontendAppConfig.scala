@@ -25,21 +25,24 @@ import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject()(configuration: Configuration,
-                                  servicesConfig: ServicesConfig,
-                                  contactFrontendConfig: ContactFrontendConfig) {
+class FrontendAppConfig @Inject() (
+  configuration: Configuration,
+  servicesConfig: ServicesConfig,
+  contactFrontendConfig: ContactFrontendConfig
+) {
 
   final val ENGLISH = "en"
-  final val WELSH = "cy"
+  final val WELSH   = "cy"
 
   lazy val appName: String = configuration.get[String]("appName")
 
-  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
+  val betaFeedbackUrl =
+    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
-  lazy val authUrl: String = servicesConfig.baseUrl("auth")
-  lazy val loginUrl: String = configuration.get[String]("urls.login")
+  lazy val authUrl: String          = servicesConfig.baseUrl("auth")
+  lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  lazy val logoutUrl: String = configuration.get[String]("urls.logout")
+  lazy val logoutUrl: String        = configuration.get[String]("urls.logout")
 
   lazy val logoutAudit: Boolean =
     configuration.get[Boolean]("microservice.services.features.auditing.logout")
@@ -82,13 +85,12 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   lazy val relationshipEstablishmentStubbed: Boolean =
     configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
 
-  def relationshipEstablishmentFrontendUrl(identifier: String): String = {
-    if(relationshipEstablishmentStubbed) {
+  def relationshipEstablishmentFrontendUrl(identifier: String): String =
+    if (relationshipEstablishmentStubbed) {
       s"$stubbedRelationshipEstablishmentFrontendHost/${stubbedRelationshipEstablishmentFrontendPath(identifier)}"
     } else {
       s"$relationshipEstablishmentFrontendHost/${relationshipEstablishmentFrontendPath(identifier)}"
     }
-  }
 
   def relationshipEstablishmentBaseUrl: String = servicesConfig.baseUrl("test.relationship-establishment")
 
@@ -99,12 +101,12 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
     configuration.get[String]("microservice.services.self.relationship-establishment.failureUrl")
 
   lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
-  lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
+  lazy val timeoutLength: Int   = configuration.get[Int]("timeout.length")
 
   def helplineUrl(implicit messages: Messages): String = {
     val path = messages.lang.code match {
       case "cy" => "urls.welshHelpline"
-      case _ => "urls.trustsHelpline"
+      case _    => "urls.trustsHelpline"
     }
     configuration.get[String](path)
   }
@@ -121,5 +123,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   val cachettl: Long = configuration.get[Long]("mongodb.timeToLiveInSeconds")
 
-  val dropIndexes: Boolean = configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
+  val dropIndexes: Boolean =
+    configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
+
 }

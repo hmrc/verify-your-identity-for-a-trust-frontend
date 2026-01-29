@@ -26,19 +26,23 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class SessionTimeoutController @Inject()(
-                                          val appConfig: FrontendAppConfig,
-                                          val config: Configuration,
-                                          val controllerComponents: MessagesControllerComponents
-                                        ) extends FrontendBaseController with Logging {
+class SessionTimeoutController @Inject() (
+  val appConfig: FrontendAppConfig,
+  val config: Configuration,
+  val controllerComponents: MessagesControllerComponents
+) extends FrontendBaseController with Logging {
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
-    logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] user requested to extend the time remaining to complete Trust IV, user has not been signed out")
+    logger.info(
+      s"[Verifying][Session ID: ${Session.id(hc)}] user requested to extend the time remaining to complete Trust IV, user has not been signed out"
+    )
     Future.successful(Ok.withSession(request.session))
   }
 
   val timeout: Action[AnyContent] = Action.async { implicit request =>
-    logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] user remained inactive on the service, user has been signed out")
+    logger.info(
+      s"[Verifying][Session ID: ${Session.id(hc)}] user remained inactive on the service, user has been signed out"
+    )
     Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad().url).withNewSession)
   }
 

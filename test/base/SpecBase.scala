@@ -34,10 +34,10 @@ import services.{FakeRelationshipEstablishmentService, RelationshipEstablishment
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience {
 
   val defaultAppConfigurations: Map[String, Any] = Map(
-    "auditing.enabled" -> false,
-    "metrics.enabled" -> false,
+    "auditing.enabled"      -> false,
+    "metrics.enabled"       -> false,
     "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter"),
-    "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"
+    "play.http.router"      -> "testOnlyDoNotUseInAppConf.Routes"
   )
 
   val userAnswersId = "id"
@@ -57,9 +57,9 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
   protected def applicationBuilder(
-                                    userAnswers: Option[UserAnswers] = None,
-                                    relationshipEstablishment: RelationshipEstablishment = new FakeRelationshipEstablishmentService()
-                                  ): GuiceApplicationBuilder =
+    userAnswers: Option[UserAnswers] = None,
+    relationshipEstablishment: RelationshipEstablishment = new FakeRelationshipEstablishmentService()
+  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
@@ -68,4 +68,5 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
         bind[RelationshipEstablishment].toInstance(relationshipEstablishment)
       )
       .configure(defaultAppConfigurations)
+
 }

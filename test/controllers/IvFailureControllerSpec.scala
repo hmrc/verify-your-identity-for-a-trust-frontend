@@ -22,7 +22,7 @@ import models.{RelationshipEstablishmentStatus, TrustsStoreRequest, UserAnswersC
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
-import org.mockito.Mockito.{when, verify => verifyMock}
+import org.mockito.Mockito.{verify => verifyMock, when}
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -42,8 +42,12 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to IV FallbackFailure when no journeyId is provided" in {
 
         val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890").success.value
-          .set(IsAgentManagingTrustPage, true).success.value
+          .set(IdentifierPage, "1234567890")
+          .success
+          .value
+          .set(IsAgentManagingTrustPage, true)
+          .success
+          .value
 
         val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
@@ -68,8 +72,12 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to trust locked page when user fails Trusts IV after multiple attempts" in {
 
         val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890").success.value
-          .set(IsAgentManagingTrustPage, true).success.value
+          .set(IdentifierPage, "1234567890")
+          .success
+          .value
+          .set(IsAgentManagingTrustPage, true)
+          .success
+          .value
 
         val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
@@ -97,8 +105,12 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to trust utr not found page when the utr isn't found" in {
 
         val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890").success.value
-          .set(IsAgentManagingTrustPage, true).success.value
+          .set(IdentifierPage, "1234567890")
+          .success
+          .value
+          .set(IsAgentManagingTrustPage, true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(
@@ -125,8 +137,12 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to trust utr in processing page when the utr is processing" in {
 
         val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890").success.value
-          .set(IsAgentManagingTrustPage, true).success.value
+          .set(IdentifierPage, "1234567890")
+          .success
+          .value
+          .set(IsAgentManagingTrustPage, true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(
@@ -153,8 +169,12 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to authorisation problem page when user data is empty" in {
 
         val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890").success.value
-          .set(IsAgentManagingTrustPage, false).success.value
+          .set(IdentifierPage, "1234567890")
+          .success
+          .value
+          .set(IsAgentManagingTrustPage, false)
+          .success
+          .value
 
         val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
@@ -186,19 +206,26 @@ class IvFailureControllerSpec extends SpecBase {
 
         val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
-        val onLockedRoute = controllers.routes.IvFailureController.trustLocked().url
-        val utr = "3000000001"
+        val onLockedRoute  = controllers.routes.IvFailureController.trustLocked().url
+        val utr            = "3000000001"
         val managedByAgent = true
-        val trustLocked = true
+        val trustLocked    = true
 
         val connector = Mockito.mock(classOf[TrustsStoreConnector])
 
-        when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
+        when(
+          connector
+            .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        )
           .thenReturn(Future.successful(UserAnswersCached))
 
         val answers = emptyUserAnswers
-          .set(IdentifierPage, utr).success.value
-          .set(IsAgentManagingTrustPage, true).success.value
+          .set(IdentifierPage, utr)
+          .success
+          .value
+          .set(IsAgentManagingTrustPage, true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsStoreConnector].toInstance(connector))
@@ -211,9 +238,12 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) must include("As you have had 3 unsuccessful tries at accessing this trust you will need to try again in 30 minutes.")
+        contentAsString(result) must include(
+          "As you have had 3 unsuccessful tries at accessing this trust you will need to try again in 30 minutes."
+        )
 
-        verifyMock(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        verifyMock(connector)
+          .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
 
         application.stop()
       }
@@ -223,7 +253,9 @@ class IvFailureControllerSpec extends SpecBase {
         val onLockedRoute = controllers.routes.IvFailureController.trustNotFound().url
 
         val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890").success.value
+          .set(IdentifierPage, "1234567890")
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -243,7 +275,9 @@ class IvFailureControllerSpec extends SpecBase {
         val onLockedRoute = controllers.routes.IvFailureController.trustStillProcessing().url
 
         val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567891").success.value
+          .set(IdentifierPage, "1234567891")
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -278,4 +312,5 @@ class IvFailureControllerSpec extends SpecBase {
     }
 
   }
+
 }

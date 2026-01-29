@@ -23,10 +23,10 @@ import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Navigator @Inject()() {
+class Navigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => Call = {
-    case IsAgentManagingTrustPage => _ => controllers.routes.BeforeYouContinueController.onPageLoad()
+  private val normalRoutes: Page => UserAnswers => Call = { case IsAgentManagingTrustPage =>
+    _ => controllers.routes.BeforeYouContinueController.onPageLoad()
   }
 
   def nextPage(page: Page, userAnswers: UserAnswers): Call = normalRoutes(page)(userAnswers)
