@@ -28,4 +28,5 @@ class IdentifierPageSpec extends PageBehaviours {
 
     beRemovable[String](IdentifierPage)
   }
+
 }

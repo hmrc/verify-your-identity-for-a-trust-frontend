@@ -19,7 +19,7 @@ package controllers.testOnlyDoNotUseInAppConf
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-case class BusinessKey(name: String,value: String)
+case class BusinessKey(name: String, value: String)
 
 object BusinessKey {
   implicit val format: OFormat[BusinessKey] = Json.format[BusinessKey]
@@ -30,6 +30,7 @@ case class Relationship(relationshipName: String, businessKeys: Set[BusinessKey]
 object Relationship {
   implicit val format: OFormat[Relationship] = Json.format[Relationship]
 }
+
 case class RelationshipJson(relationship: Relationship, ttlSeconds: Int)
 
 object RelationshipJson {
@@ -40,8 +41,8 @@ sealed trait RelationshipResponse
 case object RelationshipStubbedResponse extends RelationshipResponse
 
 object RelationshipHttpReads {
-  implicit lazy val httpReads: HttpReads[RelationshipResponse] = (_: String, _: String, _: HttpResponse) => {
+
+  implicit lazy val httpReads: HttpReads[RelationshipResponse] = (_: String, _: String, _: HttpResponse) =>
     RelationshipStubbedResponse
-  }
 
 }

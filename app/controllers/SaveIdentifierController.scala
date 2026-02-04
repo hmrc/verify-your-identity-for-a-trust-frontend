@@ -31,55 +31,59 @@ import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SaveIdentifierController @Inject()(
-                                          identify: IdentifierAction,
-                                          override val controllerComponents: MessagesControllerComponents,
-                                          getData: DataRetrievalAction,
-                                          sessionRepository: SessionRepository,
-                                          relationship: RelationshipEstablishment
-                                        )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Logging {
+class SaveIdentifierController @Inject() (
+  identify: IdentifierAction,
+  override val controllerComponents: MessagesControllerComponents,
+  getData: DataRetrievalAction,
+  sessionRepository: SessionRepository,
+  relationship: RelationshipEstablishment
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  def save(identifier: String): Action[AnyContent] = (identify andThen getData).async {
-    implicit request =>
-
-      identifier match {
-        case IdentifierRegex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
-        case IdentifierRegex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
-        case _ =>
-          logger.error(s"[Verifying][Session ID: ${Session.id(hc)}] " +
-            s"Identifier provided is not a valid URN or UTR")
-          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
-      }
+  def save(identifier: String): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+    identifier match {
+      case IdentifierRegex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
+      case IdentifierRegex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
+      case _                             =>
+        logger.error(
+          s"[Verifying][Session ID: ${Session.id(hc)}] " +
+            s"Identifier provided is not a valid URN or UTR"
+        )
+        Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+    }
   }
 
-  private def checkIfAlreadyHaveIvRelationship(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+  private def checkIfAlreadyHaveIvRelationship(
+    identifier: String
+  )(implicit request: OptionalDataRequest[AnyContent]): Future[Result] =
     relationship.check(request.internalId, identifier) flatMap {
-      case RelationshipFound =>
-        logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] " +
-          s"relationship is already established in IV for $identifier sending user to successfully verified")
+      case RelationshipFound    =>
+        logger.info(
+          s"[Verifying][Session ID: ${Session.id(hc)}] " +
+            s"relationship is already established in IV for $identifier sending user to successfully verified"
+        )
 
         Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
       case RelationshipNotFound =>
         saveAndContinue(identifier)
     }
-  }
 
   private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
     val userAnswers = request.userAnswers match {
       case Some(userAnswers) =>
         userAnswers.set(IdentifierPage, identifier)
-      case _ =>
+      case _                 =>
         UserAnswers(request.internalId).set(IdentifierPage, identifier)
     }
     for {
       updatedAnswers <- Future.fromTry(userAnswers)
       _              <- sessionRepository.set(updatedAnswers)
     } yield {
-      logger.info(s"[Verifying][Session ID: ${Session.id(hc(request))}] user has started the verifying a trust journey for $identifier")
+      logger.info(
+        s"[Verifying][Session ID: ${Session.id(hc(request))}] user has started the verifying a trust journey for $identifier"
+      )
       Redirect(routes.IsAgentManagingTrustController.onPageLoad())
     }
   }
+
 }

@@ -32,19 +32,23 @@ class RelationshipEstablishmentConnectorSpec extends SpecBase with WireMockHelpe
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  lazy val config: FrontendAppConfig                     = app.injector.instanceOf[FrontendAppConfig]
   lazy val connector: RelationshipEstablishmentConnector = app.injector.instanceOf[RelationshipEstablishmentConnector]
 
   override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(defaultAppConfigurations ++ Map("microservice.services.relationship-establishment.port" -> server.port()))
+    .configure(
+      defaultAppConfigurations ++ Map("microservice.services.relationship-establishment.port" -> server.port())
+    )
     .build()
 
   val journeyFailure = s"47a8a543-6961-4221-86e8-d22e2c3c91de"
-  val url = s"/relationship-establishment/journey-failure/$journeyFailure"
+  val url            = s"/relationship-establishment/journey-failure/$journeyFailure"
 
   private def wiremock(expectedJourneyFailureReason: String) =
-    server.stubFor(get(urlEqualTo(url))
-      .willReturn(okJson(expectedJourneyFailureReason)))
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(okJson(expectedJourneyFailureReason))
+    )
 
   "RelationshipEstablishmentConnector" must {
 

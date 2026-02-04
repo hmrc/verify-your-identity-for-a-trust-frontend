@@ -41,11 +41,16 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
     "return OK and the correct view for a GET with no Agent" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(IsAgentManagingTrustPage, false).success.value
-        .set(IdentifierPage, utr).success.value
+        .set(IsAgentManagingTrustPage, false)
+        .success
+        .value
+        .set(IdentifierPage, utr)
+        .success
+        .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+          .build()
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
 
@@ -73,11 +78,16 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
     "return OK and the correct view for a GET with Agent" in {
 
       val userAnswers = UserAnswers(userAnswersId)
-        .set(IsAgentManagingTrustPage, true).success.value
-        .set(IdentifierPage, utr).success.value
+        .set(IsAgentManagingTrustPage, true)
+        .success
+        .value
+        .set(IdentifierPage, utr)
+        .success
+        .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+          .build()
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
 
@@ -139,11 +149,16 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
     "redirect to IsAgentManagingTrustController when relationship is NOT found" in {
       val userAnswers = UserAnswers(userAnswersId)
-        .set(IsAgentManagingTrustPage, false).success.value
-        .set(IdentifierPage, utr).success.value
+        .set(IsAgentManagingTrustPage, false)
+        .success
+        .value
+        .set(IdentifierPage, utr)
+        .success
+        .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+          .build()
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
 
@@ -163,13 +178,16 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
     "return OK view with isAgent=false when IsAgentManagingTrustPage is missing" in {
       val userAnswers = UserAnswers(userAnswersId)
-        .set(IdentifierPage, utr).success.value
+        .set(IdentifierPage, utr)
+        .success
+        .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
+          .build()
 
-      val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
-      val view = application.injector.instanceOf[IvSuccessView]
+      val request      = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
+      val view         = application.injector.instanceOf[IvSuccessView]
       val expectedView = view(isAgent = false, utr)(request, messages).toString
 
       when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
@@ -186,4 +204,5 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
       application.stop()
     }
   }
+
 }

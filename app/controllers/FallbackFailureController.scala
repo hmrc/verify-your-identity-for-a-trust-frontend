@@ -28,26 +28,25 @@ import views.html.AuthorisationProblemView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FallbackFailureController @Inject()(
-                                           val controllerComponents: MessagesControllerComponents,
-                                           errorHandler: ErrorHandler,
-                                           authorisationProblemView : AuthorisationProblemView
-                                         )(implicit val ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Logging {
+class FallbackFailureController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  errorHandler: ErrorHandler,
+  authorisationProblemView: AuthorisationProblemView
+)(implicit val ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(): Action[AnyContent] = Action.async {
-    implicit request =>
-      val errorMessage = s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}] Trust IV encountered a problem that could not be recovered from"
-      logger.error(errorMessage)
-      errorHandler.internalServerErrorTemplate.map(html => (InternalServerError(html)))
+  def onPageLoad(): Action[AnyContent] = Action.async { implicit request =>
+    val errorMessage =
+      s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}] Trust IV encountered a problem that could not be recovered from"
+    logger.error(errorMessage)
+    errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
   }
 
-  def contactHelpDesk(): Action[AnyContent] = Action.async {
-    implicit request =>
-      val errorMessage = s"[FallbackFailureController][contactHelpDesk][Trust IV][Session ID: ${Session.id(hc)}] Invalid answer given to the Trust IV question"
-      logger.error(errorMessage)
-      Future.successful(Ok(authorisationProblemView()))
+  def contactHelpDesk(): Action[AnyContent] = Action.async { implicit request =>
+    val errorMessage =
+      s"[FallbackFailureController][contactHelpDesk][Trust IV][Session ID: ${Session.id(hc)}] Invalid answer given to the Trust IV question"
+    logger.error(errorMessage)
+    Future.successful(Ok(authorisationProblemView()))
   }
+
 }

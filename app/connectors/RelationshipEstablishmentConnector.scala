@@ -25,11 +25,15 @@ import uk.gov.hmrc.http.client.HttpClientV2
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RelationshipEstablishmentConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
+class RelationshipEstablishmentConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig) {
 
-  def journeyId(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RelationshipEstablishmentStatus] = {
+  def journeyId(
+    id: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RelationshipEstablishmentStatus] = {
     val url = s"${config.relationshipEstablishmentUrl}/relationship-establishment/journey-failure/$id"
-    http.get(url"$url")
+    http
+      .get(url"$url")
       .execute[RelationshipEstablishmentStatus]
   }
+
 }

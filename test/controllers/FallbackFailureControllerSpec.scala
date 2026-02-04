@@ -23,7 +23,6 @@ import views.html.AuthorisationProblemView
 
 class FallbackFailureControllerSpec extends SpecBase {
 
-
   def onFailureRoute = controllers.routes.FallbackFailureController.onPageLoad().url
 
   def contactHelpDesk = controllers.routes.FallbackFailureController.contactHelpDesk().url
@@ -42,7 +41,6 @@ class FallbackFailureControllerSpec extends SpecBase {
 
       application.stop()
     }
-
 
     "render authorisation problem view" in {
 
@@ -63,4 +61,5 @@ class FallbackFailureControllerSpec extends SpecBase {
     }
 
   }
+
 }

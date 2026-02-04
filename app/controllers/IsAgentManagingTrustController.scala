@@ -33,72 +33,70 @@ import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsAgentManagingTrustController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                sessionRepository: SessionRepository,
-                                                navigator: Navigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: IsAgentManagingTrustFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: IsAgentManagingTrustView,
-                                                relationship: RelationshipEstablishment
-                                              )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Logging {
+class IsAgentManagingTrustController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  formProvider: IsAgentManagingTrustFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IsAgentManagingTrustView,
+  relationship: RelationshipEstablishment
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
-      request.userAnswers.get(IdentifierPage) map { identifier =>
-
-        lazy val body = {
-          val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
-            case None => form
-            case Some(value) => form.fill(value)
-          }
-
-          Future.successful(Ok(view(preparedForm, identifier)))
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+    request.userAnswers.get(IdentifierPage) map { identifier =>
+      lazy val body = {
+        val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
         }
 
-        relationship.check(request.internalId, identifier) flatMap {
-          case RelationshipFound =>
-            logger.info(s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}]" +
-              s" user has recently passed IV for utr $identifier, sending user to successfully verified")
-
-            Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
-          case RelationshipNotFound =>
-            body
-        }
-
-      } getOrElse {
-        logger.error(s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}]" +
-          s" unable to retrieve identifier from user answers")
-
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Ok(view(preparedForm, identifier)))
       }
+
+      relationship.check(request.internalId, identifier) flatMap {
+        case RelationshipFound    =>
+          logger.info(
+            s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}]" +
+              s" user has recently passed IV for utr $identifier, sending user to successfully verified"
+          )
+
+          Future.successful(Redirect(controllers.routes.IvSuccessController.onPageLoad()))
+        case RelationshipNotFound =>
+          body
+      }
+
+    } getOrElse {
+      logger.error(
+        s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}]" +
+          s" unable to retrieve identifier from user answers"
+      )
+
+      Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+    }
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
         formWithErrors =>
           (for {
             identifier <- request.userAnswers.get(IdentifierPage)
-          } yield {
-            Future.successful(BadRequest(view(formWithErrors, identifier)))
-          }) getOrElse {
-            logger.error(s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}]" +
-              s" unable to retrieve identifier from user answers")
+          } yield Future.successful(BadRequest(view(formWithErrors, identifier)))) getOrElse {
+            logger.error(
+              s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}]" +
+                s" unable to retrieve identifier from user answers"
+            )
 
             Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-          }
-        ,
+          },
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IsAgentManagingTrustPage, value))
@@ -106,4 +104,5 @@ class IsAgentManagingTrustController @Inject()(
           } yield Redirect(navigator.nextPage(IsAgentManagingTrustPage, updatedAnswers))
       )
   }
+
 }

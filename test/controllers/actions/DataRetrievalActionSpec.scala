@@ -43,9 +43,10 @@ class DataRetrievalActionSpec extends SpecBase with ScalaFutures {
 
         val sessionRepository = Mockito.mock(classOf[SessionRepository])
         when(sessionRepository.get("id")) thenReturn Future(None)
-        val action = new Harness(sessionRepository)
+        val action            = new Harness(sessionRepository)
 
-        val futureResult = action.callTransform(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
+        val futureResult =
+          action.callTransform(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isEmpty mustBe true
@@ -59,9 +60,10 @@ class DataRetrievalActionSpec extends SpecBase with ScalaFutures {
 
         val sessionRepository = Mockito.mock(classOf[SessionRepository])
         when(sessionRepository.get("id")) thenReturn Future(Some(new UserAnswers("id")))
-        val action = new Harness(sessionRepository)
+        val action            = new Harness(sessionRepository)
 
-        val futureResult = action.callTransform(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
+        val futureResult =
+          action.callTransform(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isDefined mustBe true
@@ -69,4 +71,5 @@ class DataRetrievalActionSpec extends SpecBase with ScalaFutures {
       }
     }
   }
+
 }

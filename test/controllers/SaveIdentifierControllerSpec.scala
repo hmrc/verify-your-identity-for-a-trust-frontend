@@ -36,7 +36,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
   val urn = "ABTRUST12345678"
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
-  val fakeEstablishmentServiceFound = new FakeRelationshipEstablishmentService(RelationshipFound)
+  val fakeEstablishmentServiceFound   = new FakeRelationshipEstablishmentService(RelationshipFound)
 
   "SaveIdentifierController" when {
 
@@ -173,7 +173,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
             .build()
 
           val request = FakeRequest(GET, controllers.routes.SaveIdentifierController.save(urn).url)
-          val result = route(application, request).value
+          val result  = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.routes.IvSuccessController.onPageLoad().url
@@ -185,4 +185,5 @@ class SaveIdentifierControllerSpec extends SpecBase {
       }
     }
   }
+
 }

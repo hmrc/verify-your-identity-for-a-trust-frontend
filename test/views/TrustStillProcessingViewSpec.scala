@@ -34,7 +34,9 @@ class TrustStillProcessingViewSpec extends ViewBehaviours {
       "stillProcessing",
       "utr",
       utr,
-      "p1","p2", "link1"
+      "p1",
+      "p2",
+      "link1"
     )
 
     "display the correct subheading" in {

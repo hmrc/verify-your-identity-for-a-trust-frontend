@@ -27,11 +27,10 @@ object EnrolmentResponse {
 
   import play.api.http.Status._
 
-  implicit lazy val httpReads: HttpReads[EnrolmentResponse] = (_: String, _: String, response: HttpResponse) => {
+  implicit lazy val httpReads: HttpReads[EnrolmentResponse] = (_: String, _: String, response: HttpResponse) =>
     response.status match {
       case NO_CONTENT => EnrolmentCreated
-      case _ => throw UpstreamTaxEnrolmentsError(s"HTTP response ${response.status} ${response.body}")
+      case _          => throw UpstreamTaxEnrolmentsError(s"HTTP response ${response.status} ${response.body}")
     }
-  }
 
 }

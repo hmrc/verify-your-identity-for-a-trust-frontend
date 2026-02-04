@@ -30,57 +30,59 @@ import views.html.IvSuccessView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IvSuccessController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     identify: IdentifierAction,
-                                     getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     relationshipEstablishment: RelationshipEstablishment,
-                                     withPlaybackView: IvSuccessView
-                                   )(implicit ec: ExecutionContext, val config: FrontendAppConfig)
-  extends FrontendBaseController
-    with I18nSupport
-    with Logging
-    with AuthPartialFunctions {
+class IvSuccessController @Inject() (
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  relationshipEstablishment: RelationshipEstablishment,
+  withPlaybackView: IvSuccessView
+)(implicit ec: ExecutionContext, val config: FrontendAppConfig)
+    extends FrontendBaseController with I18nSupport with Logging with AuthPartialFunctions {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+    request.userAnswers.get(IdentifierPage).map { identifier =>
+      def onRelationshipFound: Future[Result] = {
 
-      request.userAnswers.get(IdentifierPage).map { identifier =>
-
-        def onRelationshipFound: Future[Result] = {
-
-          val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
-            case None => false
-            case Some(value) => value
-          }
-
-          logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
-            s" user successfully passed Trust IV questions for $identifier, user can continue to maintain the trust")
-
-          Future.successful(Ok(withPlaybackView(isAgentManagingTrust, identifier)))
+        val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
+          case None        => false
+          case Some(value) => value
         }
 
-        lazy val onRelationshipNotFound = Future.successful(Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad()))
+        logger.info(
+          s"[Verifying][Session ID: ${Session.id(hc)}]" +
+            s" user successfully passed Trust IV questions for $identifier, user can continue to maintain the trust"
+        )
 
-        relationshipEstablishment.check(request.internalId, identifier) flatMap {
-          case RelationshipFound =>
-            onRelationshipFound
-          case RelationshipNotFound =>
-            logger.warn(s"[Verifying][Session ID: ${Session.id(hc)}]" +
-              s" no relationship found in Trust IV, cannot continue with maintaining the trust, sending user back to the start of Trust IV")
-
-            onRelationshipNotFound
-        }
-      } getOrElse {
-        logger.warn(s"[Verifying][Session ID: ${Session.id(hc)}] no identifier found in user answers, unable to continue with verifying the user")
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Ok(withPlaybackView(isAgentManagingTrust, identifier)))
       }
+
+      lazy val onRelationshipNotFound =
+        Future.successful(Redirect(controllers.routes.IsAgentManagingTrustController.onPageLoad()))
+
+      relationshipEstablishment.check(request.internalId, identifier) flatMap {
+        case RelationshipFound    =>
+          onRelationshipFound
+        case RelationshipNotFound =>
+          logger.warn(
+            s"[Verifying][Session ID: ${Session.id(hc)}]" +
+              s" no relationship found in Trust IV, cannot continue with maintaining the trust, sending user back to the start of Trust IV"
+          )
+
+          onRelationshipNotFound
+      }
+    } getOrElse {
+      logger.warn(
+        s"[Verifying][Session ID: ${Session.id(hc)}] no identifier found in user answers, unable to continue with verifying the user"
+      )
+      Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+    }
 
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     Redirect(config.trustsContinueUrl)
   }
+
 }

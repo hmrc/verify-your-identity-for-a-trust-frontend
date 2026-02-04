@@ -21,9 +21,7 @@ import play.api.i18n.{Lang, MessagesApi}
 
 class FrontendAppConfigSpec extends SpecBase {
 
-
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
-
 
   "FrontendAppConfig" should {
 
@@ -37,15 +35,15 @@ class FrontendAppConfigSpec extends SpecBase {
     }
 
     "expose auth, login/continue/logout URLs and logoutAudit" in {
-      appConfig.authUrl mustBe "http://localhost:8500"
-      appConfig.loginUrl mustBe "http://localhost:9949/auth-login-stub/gg-sign-in"
+      appConfig.authUrl          mustBe "http://localhost:8500"
+      appConfig.loginUrl         mustBe "http://localhost:9949/auth-login-stub/gg-sign-in"
       appConfig.loginContinueUrl mustBe "http://localhost:9789/verify-your-identity-for-a-trust"
-      appConfig.logoutUrl mustBe "http://localhost:9514/feedback/trusts"
-      appConfig.logoutAudit mustBe false
+      appConfig.logoutUrl        mustBe "http://localhost:9514/feedback/trusts"
+      appConfig.logoutAudit      mustBe false
     }
 
     "expose trusts continue & registration URLs" in {
-      appConfig.trustsContinueUrl mustBe "http://localhost:9788/maintain-a-trust/status"
+      appConfig.trustsContinueUrl  mustBe "http://localhost:9788/maintain-a-trust/status"
       appConfig.trustsRegistration mustBe "http://localhost:9781/trusts-registration"
     }
 
@@ -54,23 +52,23 @@ class FrontendAppConfigSpec extends SpecBase {
     }
 
     "expose base urls via ServicesConfig" in {
-      appConfig.trustsStoreUrl mustBe "http://localhost:9783"
-      appConfig.relationshipEstablishmentUrl mustBe "http://localhost:9662"
+      appConfig.trustsStoreUrl                   mustBe "http://localhost:9783"
+      appConfig.relationshipEstablishmentUrl     mustBe "http://localhost:9662"
       appConfig.relationshipEstablishmentBaseUrl mustBe "http://localhost:9662"
     }
 
     "expose relationship establishment settings" in {
-      appConfig.relationshipName mustBe "Trusts"
-      appConfig.relationshipTaxableIdentifier mustBe "utr"
-      appConfig.relationshipNonTaxableIdentifier mustBe "urn"
-      appConfig.relationshipTTL mustBe 1400
+      appConfig.relationshipName                    mustBe "Trusts"
+      appConfig.relationshipTaxableIdentifier       mustBe "utr"
+      appConfig.relationshipNonTaxableIdentifier    mustBe "urn"
+      appConfig.relationshipTTL                     mustBe 1400
       appConfig.relationshipEstablishmentSuccessUrl mustBe "http://localhost:9789/verify-your-identity-for-a-trust/verified"
       appConfig.relationshipEstablishmentFailureUrl mustBe "http://localhost:9789/verify-your-identity-for-a-trust/callback-failure"
     }
 
     "expose timeout values" in {
       appConfig.countdownLength mustBe 120
-      appConfig.timeoutLength mustBe 900
+      appConfig.timeoutLength   mustBe 900
     }
 
     "return the English helpline URL when Messages.lang is en" in {
@@ -95,8 +93,8 @@ class FrontendAppConfigSpec extends SpecBase {
 
     "expose registerTrustAsTrusteeUrl, cache ttl and dropIndexes flag" in {
       appConfig.registerTrustAsTrusteeUrl mustBe "https://www.gov.uk/guidance/register-a-trust-as-a-trustee"
-      appConfig.cachettl mustBe 7200
-      appConfig.dropIndexes mustBe true
+      appConfig.cachettl                  mustBe 7200
+      appConfig.dropIndexes               mustBe true
     }
 
     "return the STUBBED host/path when the feature flag is true" in {
@@ -112,20 +110,18 @@ class FrontendAppConfigSpec extends SpecBase {
     }
 
     "return the English helpline URL when Messages.lang is explicitly en" in {
-      val messagesApi = app.injector.instanceOf[MessagesApi]
+      val messagesApi       = app.injector.instanceOf[MessagesApi]
       implicit val messages = messagesApi.preferred(Seq(Lang("en")))
       appConfig.helplineUrl mustBe
         "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts"
     }
 
     "return the Welsh helpline URL when Messages.lang is explicitly cy" in {
-      val messagesApi = app.injector.instanceOf[MessagesApi]
+      val messagesApi       = app.injector.instanceOf[MessagesApi]
       implicit val messages = messagesApi.preferred(Seq(Lang("cy")))
       appConfig.helplineUrl mustBe
         "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines"
     }
   }
 
-
 }
-

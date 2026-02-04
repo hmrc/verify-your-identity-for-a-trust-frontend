@@ -29,8 +29,8 @@ class ErrorHandlerSpec extends SpecBase {
   // Provide an implicit ExecutionContext for the handler's constructor
   implicit private val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-  private val messageApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  private val errorTemplate: ErrorTemplate = app.injector.instanceOf[ErrorTemplate]
+  private val messageApi: MessagesApi        = app.injector.instanceOf[MessagesApi]
+  private val errorTemplate: ErrorTemplate   = app.injector.instanceOf[ErrorTemplate]
   private val notFoundView: PageNotFoundView = app.injector.instanceOf[PageNotFoundView]
 
   private val handler = new ErrorHandler(messageApi, errorTemplate, notFoundView)
@@ -39,23 +39,24 @@ class ErrorHandlerSpec extends SpecBase {
 
     "render the standard error template with the given title, heading and message" in {
       val pageTitle = "pageTitle"
-      val heading = "heading"
-      val message = "message"
+      val heading   = "heading"
+      val message   = "message"
 
-      val result: Html = await(handler.standardErrorTemplate(pageTitle, heading, message)(fakeRequest))
+      val result: Html   = await(handler.standardErrorTemplate(pageTitle, heading, message)(fakeRequest))
       val expected: Html = errorTemplate(pageTitle, heading, message)
 
       result.body mustBe expected.body
-      result.body must not be empty
+      result.body   must not be empty
 
     }
 
     "render the not found template" in {
-      val result: Html = await(handler.notFoundTemplate(fakeRequest))
+      val result: Html   = await(handler.notFoundTemplate(fakeRequest))
       val expected: Html = notFoundView()
 
       result.body mustBe expected.body
-      result.body must not be empty
+      result.body   must not be empty
     }
   }
+
 }

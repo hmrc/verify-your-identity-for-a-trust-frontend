@@ -65,9 +65,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val result = service.check(fakeInternalId, utr)
 
-            whenReady(result) {
-              s =>
-                s mustBe RelationshipNotFound
+            whenReady(result) { s =>
+              s mustBe RelationshipNotFound
             }
           }
 
@@ -83,9 +82,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val result = service.check(fakeInternalId, utr)
 
-            whenReady(result) {
-              s =>
-                s mustBe RelationshipFound
+            whenReady(result) { s =>
+              s mustBe RelationshipFound
             }
 
           }
@@ -109,9 +107,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val result = service.check(fakeInternalId, urn)
 
-            whenReady(result) {
-              s =>
-                s mustBe RelationshipNotFound
+            whenReady(result) { s =>
+              s mustBe RelationshipNotFound
             }
           }
 
@@ -127,9 +124,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val result = service.check(fakeInternalId, urn)
 
-            whenReady(result) {
-              s =>
-                s mustBe RelationshipFound
+            whenReady(result) { s =>
+              s mustBe RelationshipFound
             }
 
           }

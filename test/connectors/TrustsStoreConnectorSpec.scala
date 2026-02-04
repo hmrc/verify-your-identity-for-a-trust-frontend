@@ -43,8 +43,8 @@ class TrustsStoreConnectorSpec extends SpecBase with WireMockHelper with Recover
 
   lazy val url: String = "/trusts-store/claim"
 
-  val utr = "1234567890"
-  val internalId = "some-authenticated-internal-id"
+  val utr            = "1234567890"
+  val internalId     = "some-authenticated-internal-id"
   val managedByAgent = true
 
   val request: TrustsStoreRequest = TrustsStoreRequest(internalId, utr, managedByAgent, false)
@@ -74,7 +74,6 @@ class TrustsStoreConnectorSpec extends SpecBase with WireMockHelper with Recover
             |  "utr": "a string representing the tax reference to associate with this internalId",
             |  "managedByAgent": "boolean derived from answers in the claim a trust journey"
             |}""".stripMargin
-
 
         wiremock(
           payload = json,

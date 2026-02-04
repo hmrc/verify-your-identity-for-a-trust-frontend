@@ -30,4 +30,5 @@ trait UserAnswersEntryGenerators extends PageGenerators {
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
+
 }

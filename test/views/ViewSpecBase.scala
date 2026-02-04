@@ -29,7 +29,7 @@ trait ViewSpecBase extends SpecBase {
 
   def viewFor[A](data: Option[UserAnswers] = None)(implicit tag: ClassTag[A]): A = {
     val application = applicationBuilder(data).build()
-    val view = application.injector.instanceOf[A]
+    val view        = application.injector.instanceOf[A]
     application.stop()
     view
   }
@@ -42,9 +42,9 @@ trait ViewSpecBase extends SpecBase {
   def assertEqualsValue(doc: Document, cssSelector: String, expectedValue: String): Assertion = {
     val elements = doc.select(cssSelector)
 
-    if(elements.isEmpty) throw new IllegalArgumentException(s"CSS Selector $cssSelector wasn't rendered.")
+    if (elements.isEmpty) throw new IllegalArgumentException(s"CSS Selector $cssSelector wasn't rendered.")
 
-    //<p> HTML elements are rendered out with a carriage return on some pages, so discount for comparison
+    // <p> HTML elements are rendered out with a carriage return on some pages, so discount for comparison
     assert(elements.first().html().replace("\n", "") == expectedValue)
   }
 
@@ -52,65 +52,75 @@ trait ViewSpecBase extends SpecBase {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
 
-    val expectedHeading = messages(expectedMessageKey, args:_*).replaceAll("&nbsp;", " ")
+    val expectedHeading = messages(expectedMessageKey, args: _*).replaceAll("&nbsp;", " ")
 
     headers.first.text.replaceAll("\u00a0", " ") mustBe expectedHeading
   }
 
-  def assertPageTitleWithCaptionEqualsMessages(doc: Document,
-                                               expectedCaptionMessageKey: String,
-                                               captionParam: String,
-                                               expectedMessageKey: String): Assertion = {
+  def assertPageTitleWithCaptionEqualsMessages(
+    doc: Document,
+    expectedCaptionMessageKey: String,
+    captionParam: String,
+    expectedMessageKey: String
+  ): Assertion = {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
 
-    val expectedSubheading =  messages(expectedCaptionMessageKey, captionParam).replaceAll("&nbsp;", " ")
-    val expectedHeading =  messages(expectedMessageKey).replaceAll("&nbsp;", " ")
+    val expectedSubheading = messages(expectedCaptionMessageKey, captionParam).replaceAll("&nbsp;", " ")
+    val expectedHeading    = messages(expectedMessageKey).replaceAll("&nbsp;", " ")
 
     val expected = s"$expectedSubheading $expectedHeading"
 
     headers.first.text.replaceAll("\u00a0", " ") mustBe expected
   }
 
-  def assertContainsText(doc:Document, text: String): Assertion = assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
+  def assertContainsText(doc: Document, text: String): Assertion =
+    assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
 
-  def assertContainsMessages(doc: Document, expectedMessageKeys: String*): Unit = {
+  def assertContainsMessages(doc: Document, expectedMessageKeys: String*): Unit =
     for (key <- expectedMessageKeys) assertContainsText(doc, messages(key))
-  }
 
-  def assertRenderedById(doc: Document, id: String): Assertion = {
+  def assertRenderedById(doc: Document, id: String): Assertion =
     assert(doc.getElementById(id) != null, "\n\nElement " + id + " was not rendered on the page.\n")
-  }
 
-  def assertNotRenderedById(doc: Document, id: String): Assertion = {
+  def assertNotRenderedById(doc: Document, id: String): Assertion =
     assert(doc.getElementById(id) == null, "\n\nElement " + id + " was rendered on the page.\n")
-  }
 
-  def assertRenderedByCssSelector(doc: Document, cssSelector: String): Assertion = {
+  def assertRenderedByCssSelector(doc: Document, cssSelector: String): Assertion =
     assert(!doc.select(cssSelector).isEmpty, "Element " + cssSelector + " was not rendered on the page.")
-  }
 
-  def assertNotRenderedByCssSelector(doc: Document, cssSelector: String): Assertion = {
+  def assertNotRenderedByCssSelector(doc: Document, cssSelector: String): Assertion =
     assert(doc.select(cssSelector).isEmpty, "\n\nElement " + cssSelector + " was rendered on the page.\n")
-  }
 
-  def assertContainsLabel(doc: Document, forElement: String, expectedText: String, expectedHintText: Option[String] = None): Any = {
+  def assertContainsLabel(
+    doc: Document,
+    forElement: String,
+    expectedText: String,
+    expectedHintText: Option[String] = None
+  ): Any = {
     val labels = doc.getElementsByAttributeValue("for", forElement)
     assert(labels.size == 1, s"\n\nLabel for $forElement was not rendered on the page.")
-    val label = labels.first
+    val label  = labels.first
     assert(label.text().contains(expectedText), s"\n\nLabel for $forElement was not $expectedText")
 
     if (expectedHintText.isDefined) {
-      assert(label.getElementsByClass("form-hint").first.text == expectedHintText.get,
-        s"\n\nLabel for $forElement did not contain hint text $expectedHintText")
+      assert(
+        label.getElementsByClass("form-hint").first.text == expectedHintText.get,
+        s"\n\nLabel for $forElement did not contain hint text $expectedHintText"
+      )
     }
   }
 
-  def assertElementHasClass(doc: Document, id: String, expectedClass: String): Assertion = {
+  def assertElementHasClass(doc: Document, id: String, expectedClass: String): Assertion =
     assert(doc.getElementById(id).hasClass(expectedClass), s"\n\nElement $id does not have class $expectedClass")
-  }
 
-  def assertContainsRadioButton(doc: Document, id: String, name: String, value: String, isChecked: Boolean): Assertion = {
+  def assertContainsRadioButton(
+    doc: Document,
+    id: String,
+    name: String,
+    value: String,
+    isChecked: Boolean
+  ): Assertion = {
     assertRenderedById(doc, id)
     val radio = doc.getElementById(id)
     assert(radio.attr("name") == name, s"\n\nElement $id does not have name $name")
@@ -122,8 +132,7 @@ trait ViewSpecBase extends SpecBase {
     }
   }
 
-  def assertRenderedByClass(doc: Document, cssClass: String): Assertion = {
+  def assertRenderedByClass(doc: Document, cssClass: String): Assertion =
     assert(doc.getElementsByClass(cssClass) != null, "\n\nElement " + cssClass + " was not rendered on the page.\n")
-  }
 
 }

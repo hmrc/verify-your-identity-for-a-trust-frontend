@@ -25,27 +25,34 @@ import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClientV2,
-                                                   config: FrontendAppConfig)
-                                                  (implicit val ec: ExecutionContext) {
+class RelationshipEstablishmentConnector @Inject() (val httpClient: HttpClientV2, config: FrontendAppConfig)(implicit
+  val ec: ExecutionContext
+) {
 
   import RelationshipHttpReads.httpReads
 
-  private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
+  private val relationshipEstablishmentPostUrl: String =
+    s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
 
-  private def newRelationship(credId: String, identifier: String): Relationship = {
-    if(IsUTR(identifier)) {
+  private def newRelationship(credId: String, identifier: String): Relationship =
+    if (IsUTR(identifier)) {
       Relationship(config.relationshipName, Set(BusinessKey(config.relationshipTaxableIdentifier, identifier)), credId)
     } else {
-      Relationship(config.relationshipName, Set(BusinessKey(config.relationshipNonTaxableIdentifier, identifier)), credId)
+      Relationship(
+        config.relationshipName,
+        Set(BusinessKey(config.relationshipNonTaxableIdentifier, identifier)),
+        credId
+      )
     }
-  }
 
-  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier): Future[RelationshipResponse] = {
-    val ttl = config.relationshipTTL
+  def createRelationship(credId: String, utr: String)(implicit
+    headerCarrier: HeaderCarrier
+  ): Future[RelationshipResponse] = {
+    val ttl              = config.relationshipTTL
     val relationshipJson = RelationshipJson(newRelationship(credId, utr), ttlSeconds = ttl)
 
-    httpClient.post(url"$relationshipEstablishmentPostUrl")
+    httpClient
+      .post(url"$relationshipEstablishmentPostUrl")
       .withBody(Json.toJson(relationshipJson))
       .execute[RelationshipResponse]
   }

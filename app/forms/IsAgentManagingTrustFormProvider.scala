@@ -27,4 +27,5 @@ class IsAgentManagingTrustFormProvider @Inject() extends Formatters {
     Form(
       "value" -> Forms.of(booleanFormatter("isAgentManagingTrust.error.required", "error.boolean"))
     )
+
 }

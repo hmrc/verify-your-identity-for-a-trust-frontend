@@ -43,4 +43,5 @@ class IsAgentManagingTrustViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(form, applyView, messageKeyPrefix)
   }
+
 }

@@ -31,21 +31,21 @@ object RelationshipEstablishmentStatus {
 
   import play.api.http.Status._
 
-  implicit lazy val httpReads: HttpReads[RelationshipEstablishmentStatus] = new HttpReads[RelationshipEstablishmentStatus] {
-    override def read(method: String, url: String, response: HttpResponse): RelationshipEstablishmentStatus = {
-      response.status match {
-        case OK =>
-          (response.json \ "errorKey").asOpt[String] match {
-            case Some("TRUST_LOCKED")         => Locked
-            case Some("TRUST_NOT_FOUND")      => NotFound
-            case Some("TRUST_IN_PROCESSING")  => InProcessing
-            case Some("NOT_MATCH_ANSWER")     => NotMatchAnswer
-            case Some(unsupported)            => UnsupportedRelationshipStatus(unsupported)
-            case None                         => UnsupportedRelationshipStatus("None")
-          }
-        case status => UpstreamRelationshipError(s"Unexpected HTTP response code $status")
-      }
+  implicit lazy val httpReads: HttpReads[RelationshipEstablishmentStatus] =
+    new HttpReads[RelationshipEstablishmentStatus] {
+      override def read(method: String, url: String, response: HttpResponse): RelationshipEstablishmentStatus =
+        response.status match {
+          case OK     =>
+            (response.json \ "errorKey").asOpt[String] match {
+              case Some("TRUST_LOCKED")        => Locked
+              case Some("TRUST_NOT_FOUND")     => NotFound
+              case Some("TRUST_IN_PROCESSING") => InProcessing
+              case Some("NOT_MATCH_ANSWER")    => NotMatchAnswer
+              case Some(unsupported)           => UnsupportedRelationshipStatus(unsupported)
+              case None                        => UnsupportedRelationshipStatus("None")
+            }
+          case status => UpstreamRelationshipError(s"Unexpected HTTP response code $status")
+        }
     }
-  }
 
 }

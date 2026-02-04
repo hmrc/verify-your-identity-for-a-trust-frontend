@@ -22,23 +22,20 @@ import play.api.i18n.Messages
 
 object ViewUtils {
 
-  def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
+  def errorPrefix(form: Form[_])(implicit messages: Messages): String =
     if (form.hasErrors || form.hasGlobalErrors) s"${messages("error.browser.title.prefix")} " else ""
-  }
 
-  def breadcrumbTitle(title: String)(implicit messages: Messages): String = {
+  def breadcrumbTitle(title: String)(implicit messages: Messages): String =
     s"$title - ${messages("service.name")} - GOV.UK"
-  }
 
-  def errorHref(error: FormError): String = {
+  def errorHref(error: FormError): String =
     s"${error.key}-yes"
-  }
 
-  def subheading(identifier: String)(implicit messages: Messages): String = {
+  def subheading(identifier: String)(implicit messages: Messages): String =
     if (IsUTR(identifier)) {
       s"${messages("utr.subheading", identifier)}"
     } else {
       s"${messages("urn.subheading", identifier)}"
     }
-  }
+
 }

@@ -70,4 +70,5 @@ class MongoDateTimeFormatsSpec extends AnyFreeSpec with Matchers with OptionValu
       json.validate[LocalDateTime].isError mustBe true
     }
   }
+
 }

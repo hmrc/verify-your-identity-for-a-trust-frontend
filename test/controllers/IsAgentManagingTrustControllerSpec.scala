@@ -36,16 +36,17 @@ import scala.concurrent.Future
 
 class IsAgentManagingTrustControllerSpec extends SpecBase {
 
-  val formProvider = new IsAgentManagingTrustFormProvider()
+  val formProvider        = new IsAgentManagingTrustFormProvider()
   val form: Form[Boolean] = formProvider()
-  val utr = "0987654321"
+  val utr                 = "0987654321"
 
   lazy val isAgentManagingTrustRoute: String = controllers.routes.IsAgentManagingTrustController.onPageLoad().url
 
-  val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
+  val fakeEstablishmentServiceFailing  = new FakeRelationshipEstablishmentService(RelationshipNotFound)
   val fakeEstablishmentServiceNotFound = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
   val fakeEstablishmentServiceFound = new FakeRelationshipEstablishmentService(RelationshipFound)
+
   "IsAgentManagingTrust Controller" must {
 
     "return OK and the correct view for a GET" in {
@@ -55,9 +56,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
         .success
         .value
 
-      val application = applicationBuilder(
-        userAnswers = Some(userAnswers),
-        relationshipEstablishment = fakeEstablishmentServiceFailing).build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = fakeEstablishmentServiceFailing)
+          .build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -77,13 +78,15 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
 
       val userAnswers = UserAnswers(userAnswersId)
         .set(IsAgentManagingTrustPage, true)
-        .success.value
+        .success
+        .value
         .set(IdentifierPage, utr)
-        .success.value
+        .success
+        .value
 
-      val application = applicationBuilder(
-        userAnswers = Some(userAnswers),
-        relationshipEstablishment = fakeEstablishmentServiceFailing).build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = fakeEstablishmentServiceFailing)
+          .build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -101,7 +104,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
 
     "redirect to IvSuccess on GET when relationship is already found" in {
       val userAnswers = emptyUserAnswers
-        .set(IdentifierPage, utr).success.value
+        .set(IdentifierPage, utr)
+        .success
+        .value
 
       val application = applicationBuilder(
         userAnswers = Some(userAnswers),
@@ -109,7 +114,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
       ).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
-      val result = route(application, request).value
+      val result  = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.IvSuccessController.onPageLoad().url
@@ -124,7 +129,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
       ).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
-      val result = route(application, request).value
+      val result  = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
@@ -135,12 +140,15 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
     "redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
-      val fakeNavigator = new FakeNavigator()
+      val fakeNavigator         = new FakeNavigator()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), relationshipEstablishment = fakeEstablishmentServiceFailing)
+        applicationBuilder(
+          userAnswers = Some(emptyUserAnswers),
+          relationshipEstablishment = fakeEstablishmentServiceFailing
+        )
           .overrides(
             bind[Navigator].toInstance(fakeNavigator),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -161,7 +169,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
     }
     "redirect to the next page when valid data is submitted (false) and persist false" in {
       val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
-      val fakeNavigator = new FakeNavigator()
+      val fakeNavigator         = new FakeNavigator()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -196,9 +204,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
         .success
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers),
-        relationshipEstablishment = fakeEstablishmentServiceFailing)
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = fakeEstablishmentServiceFailing)
+          .build()
 
       val request =
         FakeRequest(POST, isAgentManagingTrustRoute)
@@ -250,4 +258,5 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

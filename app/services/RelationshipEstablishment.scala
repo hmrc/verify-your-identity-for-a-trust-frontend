@@ -34,31 +34,35 @@ case object RelationshipFound extends RelationEstablishmentStatus
 case object RelationshipNotFound extends RelationEstablishmentStatus
 case class RelationshipError(reason: String) extends Exception(reason)
 
-class RelationshipEstablishmentService @Inject()(
-                                                  val authConnector: AuthConnector,
-                                                  relationshipForIdentifier: RelationshipForIdentifier
-                                                )(
-                                                  implicit val config: FrontendAppConfig,
-                                                  implicit val executionContext: ExecutionContext
-                                                )
-  extends RelationshipEstablishment
-    with Logging {
+class RelationshipEstablishmentService @Inject() (
+  val authConnector: AuthConnector,
+  relationshipForIdentifier: RelationshipForIdentifier
+)(
+  implicit val config: FrontendAppConfig,
+  implicit val executionContext: ExecutionContext
+) extends RelationshipEstablishment with Logging {
 
-  def check(internalId: String, identifier: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
+  def check(internalId: String, identifier: String)(implicit
+    request: Request[AnyContent]
+  ): Future[RelationEstablishmentStatus] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
         // relationship does not exist
-        logger.warn(s"[Verifying][Session ID: ${Session.id(hc)}]" +
-          s" Relationship does not exist in Trust IV for user and $identifier due to error $msg")
+        logger.warn(
+          s"[Verifying][Session ID: ${Session.id(hc)}]" +
+            s" Relationship does not exist in Trust IV for user and $identifier due to error $msg"
+        )
 
         Future.successful(RelationshipNotFound)
-      case e: Throwable =>
-        logger.error(s"[Verifying][Session ID: ${Session.id(hc)}]" +
-          s" Service was unable to determine if an IV relationship existed in Trust IV." +
-          s" Cannot continue with the journey")
+      case e: Throwable            =>
+        logger.error(
+          s"[Verifying][Session ID: ${Session.id(hc)}]" +
+            s" Service was unable to determine if an IV relationship existed in Trust IV." +
+            s" Cannot continue with the journey"
+        )
 
         throw RelationshipError(e.getMessage)
     }
@@ -66,13 +70,14 @@ class RelationshipEstablishmentService @Inject()(
     val relationshipToCheck = relationshipForIdentifier(identifier)
 
     authorised(relationshipToCheck) {
-      logger.info(s"[Verifying][Session ID: ${Session.id(hc)}]" +
-        s" Relationship established in Trust IV for user and $identifier")
+      logger.info(
+        s"[Verifying][Session ID: ${Session.id(hc)}]" +
+          s" Relationship established in Trust IV for user and $identifier"
+      )
 
       Future.successful(RelationshipFound)
-    } recoverWith {
+    } recoverWith
       failedRelationshipPF
-    }
   }
 
 }
