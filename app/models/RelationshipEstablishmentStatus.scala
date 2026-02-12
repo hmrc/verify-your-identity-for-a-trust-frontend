@@ -25,6 +25,7 @@ object RelationshipEstablishmentStatus {
   case object NotFound extends RelationshipEstablishmentStatus
   case object InProcessing extends RelationshipEstablishmentStatus
   case object NotMatchAnswer extends RelationshipEstablishmentStatus
+  case object NotEnoughQuestions extends RelationshipEstablishmentStatus
 
   case class UnsupportedRelationshipStatus(reason: String) extends RelationshipEstablishmentStatus
   case class UpstreamRelationshipError(reason: String) extends RelationshipEstablishmentStatus
@@ -37,12 +38,13 @@ object RelationshipEstablishmentStatus {
         response.status match {
           case OK     =>
             (response.json \ "errorKey").asOpt[String] match {
-              case Some("TRUST_LOCKED")        => Locked
-              case Some("TRUST_NOT_FOUND")     => NotFound
-              case Some("TRUST_IN_PROCESSING") => InProcessing
-              case Some("NOT_MATCH_ANSWER")    => NotMatchAnswer
-              case Some(unsupported)           => UnsupportedRelationshipStatus(unsupported)
-              case None                        => UnsupportedRelationshipStatus("None")
+              case Some("TRUST_LOCKED")         => Locked
+              case Some("TRUST_NOT_FOUND")      => NotFound
+              case Some("TRUST_IN_PROCESSING")  => InProcessing
+              case Some("NOT_MATCH_ANSWER")     => NotMatchAnswer
+              case Some("NOT_ENOUGH_QUESTIONS") => NotEnoughQuestions
+              case Some(unsupported)            => UnsupportedRelationshipStatus(unsupported)
+              case None                         => UnsupportedRelationshipStatus("None")
             }
           case status => UpstreamRelationshipError(s"Unexpected HTTP response code $status")
         }
