@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
+import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest, UserAnswersCached}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -35,28 +36,42 @@ class IvFailureControllerSpec extends SpecBase {
 
   lazy val connector: RelationshipEstablishmentConnector = Mockito.mock(classOf[RelationshipEstablishmentConnector])
 
+  private val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
+
+  private val agentNotManagingTrustsAnswers = emptyUserAnswers
+    .set(IdentifierPage, "1234567890")
+    .success
+    .value
+    .set(IsAgentManagingTrustPage, false)
+    .success
+    .value
+
+  private val agentManagingTrustsAnswers = emptyUserAnswers
+    .set(IdentifierPage, "1234567890")
+    .success
+    .value
+    .set(IsAgentManagingTrustPage, true)
+    .success
+    .value
+
+  private lazy val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
+
+  private val journeyId = "journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de"
+
+  private lazy val request = FakeRequest(GET, s"$onIvFailureRoute?$journeyId")
+
   "IvFailure Controller" must {
 
     "callback-failure route" when {
 
       "redirect to IV FallbackFailure when no journeyId is provided" in {
 
-        val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890")
-          .success
-          .value
-          .set(IsAgentManagingTrustPage, true)
-          .success
-          .value
-
-        val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
-
-        val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
+        val application = applicationBuilder(userAnswers = Some(agentManagingTrustsAnswers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[Navigator].toInstance(fakeNavigator)
+          )
           .build()
-
-        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
 
         val request = FakeRequest(GET, s"$onIvFailureRoute")
 
@@ -71,27 +86,15 @@ class IvFailureControllerSpec extends SpecBase {
 
       "redirect to trust locked page when user fails Trusts IV after multiple attempts" in {
 
-        val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890")
-          .success
-          .value
-          .set(IsAgentManagingTrustPage, true)
-          .success
-          .value
-
-        val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
-
-        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
-
-        val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
+        val application = applicationBuilder(userAnswers = Some(agentManagingTrustsAnswers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[Navigator].toInstance(fakeNavigator)
+          )
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.Locked))
-
-        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
         val result = route(application, request).value
 
@@ -104,15 +107,7 @@ class IvFailureControllerSpec extends SpecBase {
 
       "redirect to trust utr not found page when the utr isn't found" in {
 
-        val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890")
-          .success
-          .value
-          .set(IsAgentManagingTrustPage, true)
-          .success
-          .value
-
-        val application = applicationBuilder(userAnswers = Some(answers))
+        val application = applicationBuilder(userAnswers = Some(agentManagingTrustsAnswers))
           .overrides(
             bind[RelationshipEstablishmentConnector].toInstance(connector)
           )
@@ -120,10 +115,6 @@ class IvFailureControllerSpec extends SpecBase {
 
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotFound))
-
-        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
-
-        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
         val result = route(application, request).value
 
@@ -135,16 +126,7 @@ class IvFailureControllerSpec extends SpecBase {
       }
 
       "redirect to trust utr in processing page when the utr is processing" in {
-
-        val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890")
-          .success
-          .value
-          .set(IsAgentManagingTrustPage, true)
-          .success
-          .value
-
-        val application = applicationBuilder(userAnswers = Some(answers))
+        val application = applicationBuilder(userAnswers = Some(agentManagingTrustsAnswers))
           .overrides(
             bind[RelationshipEstablishmentConnector].toInstance(connector)
           )
@@ -152,10 +134,6 @@ class IvFailureControllerSpec extends SpecBase {
 
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.InProcessing))
-
-        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
-
-        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
         val result = route(application, request).value
 
@@ -168,27 +146,15 @@ class IvFailureControllerSpec extends SpecBase {
 
       "redirect to authorisation problem page when user data is empty" in {
 
-        val answers = emptyUserAnswers
-          .set(IdentifierPage, "1234567890")
-          .success
-          .value
-          .set(IsAgentManagingTrustPage, false)
-          .success
-          .value
-
-        val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
-
-        val onIvFailureRoute = controllers.routes.IvFailureController.onTrustIvFailure().url
-
-        val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
+        val application = applicationBuilder(userAnswers = Some(agentNotManagingTrustsAnswers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[Navigator].toInstance(fakeNavigator)
+          )
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotMatchAnswer))
-
-        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
         val result = route(application, request).value
 
@@ -198,23 +164,85 @@ class IvFailureControllerSpec extends SpecBase {
 
         application.stop()
       }
+
+      "redirect to IV FallbackFailure given UnsupportedRelationshipStatus response" in {
+
+        val application = applicationBuilder(userAnswers = Some(agentNotManagingTrustsAnswers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[Navigator].toInstance(fakeNavigator)
+          )
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(UnsupportedRelationshipStatus("reason")))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.FallbackFailureController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to IV FallbackFailure given UpstreamRelationshipError response" in {
+
+        val application = applicationBuilder(userAnswers = Some(agentNotManagingTrustsAnswers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[Navigator].toInstance(fakeNavigator)
+          )
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(UpstreamRelationshipError("reason")))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.FallbackFailureController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to could not confirm identity page given NotEnoughQuestions response" in {
+
+        val application = applicationBuilder(userAnswers = Some(agentNotManagingTrustsAnswers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[Navigator].toInstance(fakeNavigator)
+          )
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotEnoughQuestions))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.routes.FallbackFailureController
+          .couldNotConfirmIdentity()
+          .url
+
+        application.stop()
+      }
     }
 
     "locked route" when {
 
       "return OK and the correct view for a GET for locked route" in {
 
-        val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
-
-        val onLockedRoute  = controllers.routes.IvFailureController.trustLocked().url
         val utr            = "3000000001"
         val managedByAgent = true
         val trustLocked    = true
 
-        val connector = Mockito.mock(classOf[TrustsStoreConnector])
+        val storeConnector = Mockito.mock(classOf[TrustsStoreConnector])
 
         when(
-          connector
+          storeConnector
             .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
         )
           .thenReturn(Future.successful(UserAnswersCached))
@@ -223,18 +251,19 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IdentifierPage, utr)
           .success
           .value
-          .set(IsAgentManagingTrustPage, true)
+          .set(IsAgentManagingTrustPage, managedByAgent)
           .success
           .value
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[TrustsStoreConnector].toInstance(connector))
-          .overrides(bind[Navigator].toInstance(fakeNavigator))
+          .overrides(
+            bind[TrustsStoreConnector].toInstance(storeConnector),
+            bind[Navigator].toInstance(fakeNavigator)
+          )
           .build()
 
-        val request = FakeRequest(GET, onLockedRoute)
-
-        val result = route(application, request).value
+        val request = FakeRequest(GET, controllers.routes.IvFailureController.trustLocked().url)
+        val result  = route(application, request).value
 
         status(result) mustEqual OK
 
@@ -242,15 +271,13 @@ class IvFailureControllerSpec extends SpecBase {
           "As you have had 3 unsuccessful tries at accessing this trust you will need to try again in 30 minutes."
         )
 
-        verifyMock(connector)
+        verifyMock(storeConnector)
           .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
 
         application.stop()
       }
 
       "return OK and the correct view for a GET for not found route" in {
-
-        val onLockedRoute = controllers.routes.IvFailureController.trustNotFound().url
 
         val answers = emptyUserAnswers
           .set(IdentifierPage, "1234567890")
@@ -259,7 +286,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-        val request = FakeRequest(GET, onLockedRoute)
+        val request = FakeRequest(GET, controllers.routes.IvFailureController.trustNotFound().url)
 
         val result = route(application, request).value
 
@@ -272,8 +299,6 @@ class IvFailureControllerSpec extends SpecBase {
 
       "return OK and the correct view for a GET for still processing route" in {
 
-        val onLockedRoute = controllers.routes.IvFailureController.trustStillProcessing().url
-
         val answers = emptyUserAnswers
           .set(IdentifierPage, "1234567891")
           .success
@@ -281,7 +306,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-        val request = FakeRequest(GET, onLockedRoute)
+        val request = FakeRequest(GET, controllers.routes.IvFailureController.trustStillProcessing().url)
 
         val result = route(application, request).value
 
@@ -296,9 +321,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val onLockedRoute = controllers.routes.IvFailureController.trustLocked().url
-
-        val request = FakeRequest(GET, onLockedRoute)
+        val request = FakeRequest(GET, controllers.routes.IvFailureController.trustLocked().url)
 
         val result = route(application, request).value
 

@@ -19,13 +19,15 @@ package controllers
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.AuthorisationProblemView
+import views.html.{AuthorisationProblemView, CouldNotConfirmIdentityView}
 
 class FallbackFailureControllerSpec extends SpecBase {
 
-  def onFailureRoute = controllers.routes.FallbackFailureController.onPageLoad().url
+  private def onFailureRoute = controllers.routes.FallbackFailureController.onPageLoad().url
 
-  def contactHelpDesk = controllers.routes.FallbackFailureController.contactHelpDesk().url
+  private def contactHelpDesk = controllers.routes.FallbackFailureController.contactHelpDesk().url
+
+  private def couldNotConfirmIdentity = controllers.routes.FallbackFailureController.couldNotConfirmIdentity().url
 
   "FallbackFailure Controller" must {
 
@@ -51,6 +53,24 @@ class FallbackFailureControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       val view = application.injector.instanceOf[AuthorisationProblemView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view()(request, messages).toString
+
+      application.stop()
+    }
+
+    "render could not confirm identity view" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(GET, couldNotConfirmIdentity)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[CouldNotConfirmIdentityView]
 
       status(result) mustEqual OK
 

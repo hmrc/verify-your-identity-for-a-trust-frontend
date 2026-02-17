@@ -114,3 +114,15 @@ problemDeclaring.p6 = +44 300 200 1900
 problemDeclaring.p7 = Oriau agor:
 problemDeclaring.p8 = Dydd Llun i ddydd Gwener: 9am tan 5pm
 problemDeclaring.p9 = Ar gau ar benwythnosau a gwyliau banc
+
+couldNotConfirmIdentity.title = Nid oedd modd i ni gadarnhau pwy ydych
+couldNotConfirmIdentity.heading = Nid oedd modd i ni gadarnhau pwy ydych
+couldNotConfirmIdentity.p1 = Mae angen i ni siarad â chi i’ch helpu i gael mynediad at yr ymddiriedolaeth.
+couldNotConfirmIdentity.p2 = Cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEF
+couldNotConfirmIdentity.p3 = Ffôn:
+couldNotConfirmIdentity.p4 = 0300 200 1900
+couldNotConfirmIdentity.p5 = O’r tu allan i’r DU:
+couldNotConfirmIdentity.p6 = +44 300 200 1900
+couldNotConfirmIdentity.p7 = Oriau agor:
+couldNotConfirmIdentity.p8 = Dydd Llun i ddydd Gwener: 08:30 - 17:00
+couldNotConfirmIdentity.p9 = Ar gau ar benwythnosau a gwyliau banc.

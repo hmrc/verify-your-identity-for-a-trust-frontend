@@ -46,29 +46,41 @@ class IvFailureController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
-  private def renderFailureReason(utr: String, journeyId: String)(implicit hc: HeaderCarrier): Future[Result] =
+  private def renderFailureReason(utr: String, journeyId: String)(implicit hc: HeaderCarrier): Future[Result] = {
+    val logMessageStart = s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}]"
+
     relationshipEstablishmentConnector.journeyId(journeyId) map {
-      case RelationshipEstablishmentStatus.Locked         =>
-        logger.info(s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] $utr is locked")
+      case RelationshipEstablishmentStatus.Locked =>
+        logger.info(s"$logMessageStart $utr is locked")
         Redirect(routes.IvFailureController.trustLocked())
-      case RelationshipEstablishmentStatus.NotFound       =>
-        logger.info(s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] $utr was not found")
+
+      case RelationshipEstablishmentStatus.NotFound =>
+        logger.info(s"$logMessageStart $utr was not found")
         Redirect(routes.IvFailureController.trustNotFound())
-      case RelationshipEstablishmentStatus.InProcessing   =>
-        logger.info(s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] $utr is processing")
+
+      case RelationshipEstablishmentStatus.InProcessing =>
+        logger.info(s"$logMessageStart $utr is processing")
         Redirect(routes.IvFailureController.trustStillProcessing())
+
       case RelationshipEstablishmentStatus.NotMatchAnswer =>
-        logger.info(s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] data mismatch found for $utr")
+        logger.info(s"$logMessageStart data mismatch found for $utr")
         Redirect(controllers.routes.FallbackFailureController.contactHelpDesk())
-      case UnsupportedRelationshipStatus(reason)          =>
+
+      case RelationshipEstablishmentStatus.NotEnoughQuestions =>
+        logger.warn(s"$logMessageStart not enough questions for $utr")
+        Redirect(controllers.routes.FallbackFailureController.couldNotConfirmIdentity())
+
+      case UnsupportedRelationshipStatus(reason) =>
         logger.warn(
-          s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason"
+          s"$logMessageStart Unsupported IV failure reason: $reason"
         )
         Redirect(controllers.routes.FallbackFailureController.onPageLoad())
-      case UpstreamRelationshipError(response)            =>
-        logger.warn(s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}] HTTP response: $response")
+
+      case UpstreamRelationshipError(response) =>
+        logger.warn(s"$logMessageStart HTTP response: $response")
         Redirect(controllers.routes.FallbackFailureController.onPageLoad())
     }
+  }
 
   def onTrustIvFailure(): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     request.userAnswers.get(IdentifierPage) match {

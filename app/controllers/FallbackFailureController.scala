@@ -24,14 +24,15 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
-import views.html.AuthorisationProblemView
+import views.html.{AuthorisationProblemView, CouldNotConfirmIdentityView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class FallbackFailureController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   errorHandler: ErrorHandler,
-  authorisationProblemView: AuthorisationProblemView
+  authorisationProblemView: AuthorisationProblemView,
+  couldNotConfirmIdentityView: CouldNotConfirmIdentityView
 )(implicit val ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
@@ -47,6 +48,14 @@ class FallbackFailureController @Inject() (
       s"[FallbackFailureController][contactHelpDesk][Trust IV][Session ID: ${Session.id(hc)}] Invalid answer given to the Trust IV question"
     logger.error(errorMessage)
     Future.successful(Ok(authorisationProblemView()))
+  }
+
+  def couldNotConfirmIdentity(): Action[AnyContent] = Action.async { implicit request =>
+    val errorMessage =
+      s"[FallbackFailureController][couldNotConfirmIdentity][Trust IV][Session ID: ${Session.id(hc)}] Not enough questions to verify identity"
+    logger.error(errorMessage)
+
+    Future.successful(Ok(couldNotConfirmIdentityView()))
   }
 
 }
