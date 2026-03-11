@@ -72,7 +72,7 @@ class IvFailureController @Inject() (
 
       case RelationshipEstablishmentStatus.QuestionTamper =>
         logger.warn(s"$logMessageStart User has followed a bookmark or otherwise manipulated the url for $utr")
-        Redirect(controllers.routes.FallbackFailureController.questionTamper())
+        Redirect(controllers.routes.IvSuccessController.questionTamper())
 
       case UnsupportedRelationshipStatus(reason) =>
         logger.warn(

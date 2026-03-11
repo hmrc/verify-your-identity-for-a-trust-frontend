@@ -29,8 +29,6 @@ class FallbackFailureControllerSpec extends SpecBase {
 
   private def couldNotConfirmIdentity = controllers.routes.FallbackFailureController.couldNotConfirmIdentity().url
 
-  private def questionTamper = controllers.routes.FallbackFailureController.questionTamper().url
-
   "FallbackFailure Controller" must {
 
     "render internal server error view" in {
@@ -78,21 +76,6 @@ class FallbackFailureControllerSpec extends SpecBase {
 
       contentAsString(result) mustEqual
         view()(request, messages).toString
-
-      application.stop()
-    }
-
-    "redirect to Manage a Trust page when user encountered with Question Tamper error" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(GET, questionTamper)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual frontendAppConfig.trustsContinueUrl
 
       application.stop()
     }

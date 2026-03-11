@@ -147,6 +147,22 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
     }
 
+    "redirect to next page for a Question Tamper Flow" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(GET, controllers.routes.IvSuccessController.questionTamper().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual frontendAppConfig.trustsContinueUrl
+
+      application.stop()
+
+    }
+
     "redirect to IsAgentManagingTrustController when relationship is NOT found" in {
       val userAnswers = UserAnswers(userAnswersId)
         .set(IsAgentManagingTrustPage, false)
