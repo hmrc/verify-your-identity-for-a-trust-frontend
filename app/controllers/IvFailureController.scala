@@ -70,6 +70,10 @@ class IvFailureController @Inject() (
         logger.warn(s"$logMessageStart not enough questions for $utr")
         Redirect(controllers.routes.FallbackFailureController.couldNotConfirmIdentity())
 
+      case RelationshipEstablishmentStatus.QuestionTamper =>
+        logger.warn(s"$logMessageStart User has followed a bookmark or otherwise manipulated the url for $utr")
+        Redirect(controllers.routes.FallbackFailureController.questionTamper())
+
       case UnsupportedRelationshipStatus(reason) =>
         logger.warn(
           s"$logMessageStart Unsupported IV failure reason: $reason"

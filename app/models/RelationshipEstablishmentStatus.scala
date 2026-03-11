@@ -26,6 +26,7 @@ object RelationshipEstablishmentStatus {
   case object InProcessing extends RelationshipEstablishmentStatus
   case object NotMatchAnswer extends RelationshipEstablishmentStatus
   case object NotEnoughQuestions extends RelationshipEstablishmentStatus
+  case object QuestionTamper extends RelationshipEstablishmentStatus
 
   case class UnsupportedRelationshipStatus(reason: String) extends RelationshipEstablishmentStatus
   case class UpstreamRelationshipError(reason: String) extends RelationshipEstablishmentStatus
@@ -43,6 +44,7 @@ object RelationshipEstablishmentStatus {
               case Some("TRUST_IN_PROCESSING")  => InProcessing
               case Some("NOT_MATCH_ANSWER")     => NotMatchAnswer
               case Some("NOT_ENOUGH_QUESTIONS") => NotEnoughQuestions
+              case Some("QUESTION_TAMPER")      => QuestionTamper
               case Some(unsupported)            => UnsupportedRelationshipStatus(unsupported)
               case None                         => UnsupportedRelationshipStatus("None")
             }

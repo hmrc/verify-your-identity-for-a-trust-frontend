@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import handlers.ErrorHandler
 
 import javax.inject.Inject
@@ -33,7 +34,7 @@ class FallbackFailureController @Inject() (
   errorHandler: ErrorHandler,
   authorisationProblemView: AuthorisationProblemView,
   couldNotConfirmIdentityView: CouldNotConfirmIdentityView
-)(implicit val ec: ExecutionContext)
+)(implicit val ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = Action.async { implicit request =>
@@ -56,6 +57,13 @@ class FallbackFailureController @Inject() (
     logger.error(errorMessage)
 
     Future.successful(Ok(couldNotConfirmIdentityView()))
+  }
+
+  def questionTamper(): Action[AnyContent] = Action.async { implicit request =>
+    val errorMessage =
+      s"[FallbackFailureController][questionTamper][Trust IV][Session ID: ${Session.id(hc)}] user followed bookmarked URL"
+    logger.error(errorMessage)
+    Future.successful(Redirect(config.trustsContinueUrl))
   }
 
 }

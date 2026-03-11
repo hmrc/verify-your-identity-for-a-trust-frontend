@@ -24,7 +24,8 @@ GET        /not-found                                   controllers.IvFailureCon
 
 GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad()
 GET        /authorisation-problem                       controllers.FallbackFailureController.contactHelpDesk()
-GET        /could-not-confirm-identity                   controllers.FallbackFailureController.couldNotConfirmIdentity()
+GET        /could-not-confirm-identity                  controllers.FallbackFailureController.couldNotConfirmIdentity()
+GET        /invalid-journey                             controllers.FallbackFailureController.questionTamper()
 
 GET        /verified                                    controllers.IvSuccessController.onPageLoad()
 POST       /verified                                    controllers.IvSuccessController.onSubmit()
