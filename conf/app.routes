@@ -24,10 +24,12 @@ GET        /not-found                                   controllers.IvFailureCon
 
 GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad()
 GET        /authorisation-problem                       controllers.FallbackFailureController.contactHelpDesk()
-GET        /could-not-confirm-identity                   controllers.FallbackFailureController.couldNotConfirmIdentity()
+GET        /could-not-confirm-identity                  controllers.FallbackFailureController.couldNotConfirmIdentity()
 
 GET        /verified                                    controllers.IvSuccessController.onPageLoad()
 POST       /verified                                    controllers.IvSuccessController.onSubmit()
+
+GET        /invalid-journey                              controllers.IvSuccessController.questionTamper()
 
 GET        /save/:identifier                            controllers.SaveIdentifierController.save(identifier: String)
 

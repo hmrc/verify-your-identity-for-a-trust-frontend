@@ -85,4 +85,8 @@ class IvSuccessController @Inject() (
     Redirect(config.trustsContinueUrl)
   }
 
+  def questionTamper(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    Redirect(config.trustsContinueUrl)
+  }
+
 }
