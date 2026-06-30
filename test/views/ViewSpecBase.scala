@@ -64,14 +64,22 @@ trait ViewSpecBase extends SpecBase {
     expectedMessageKey: String
   ): Assertion = {
     val headers = doc.getElementsByTag("h1")
-    headers.size mustBe 1
+    val heading =
+      if (!headers.isEmpty) {
+        headers.size mustBe 1
+        headers.first
+      } else {
+        val legends = doc.getElementsByTag("legend")
+        legends.size mustBe 1
+        legends.first
+      }
 
     val expectedSubheading = messages(expectedCaptionMessageKey, captionParam).replaceAll("&nbsp;", " ")
     val expectedHeading    = messages(expectedMessageKey).replaceAll("&nbsp;", " ")
 
     val expected = s"$expectedSubheading $expectedHeading"
 
-    headers.first.text.replaceAll("\u00a0", " ") mustBe expected
+    heading.text.replaceAll("\u00a0", " ") mustBe expected
   }
 
   def assertContainsText(doc: Document, text: String): Assertion =
