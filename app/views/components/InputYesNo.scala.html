@@ -36,12 +36,7 @@
     hint = if(hint.isDefined) Some(Hint(content = Text(hint.get))) else None,
     fieldset = Some(Fieldset(
         legend = Some(Legend(
-            content = caption.map {
-                        captionText =>
-                            HtmlContent(
-                            s"""${subHeading(captionText)}
-                                |${messages(legend)}""".stripMargin)
-                            }.getOrElse(Text(legend)),
+            content = legendContent,
             isPageHeading = legendAsHeading,
             classes = legendClass.getOrElse("govuk-fieldset__legend--l")
         ))
@@ -61,3 +56,11 @@
         )
     )
 ))
+
+
+@legendContent = @{
+        caption match {
+            case Some(captionText) => HtmlContent(s"${subHeading(captionText)}${messages(legend)}")
+            case None => Text(legend)
+        }
+}
