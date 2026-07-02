@@ -36,13 +36,11 @@
 
         @errorSummary(form.errors)
 
-        @heading("isAgentManagingTrust", subheading(identifier))
-
         @inputYesNo(
             field = form("value"),
             legend = messages("isAgentManagingTrust.heading"),
             legendAsHeading = false,
-            legendClass = Some("govuk-visually-hidden")
+            caption = Some(subheading(identifier))
         )
 
         @submitButton()
