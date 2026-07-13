@@ -16,18 +16,13 @@
 
 @import config.FrontendAppConfig
 @import resources._
-@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 
 @this(
     appConfig: FrontendAppConfig,
-    govukLayout: GovukLayout,
-    hmrcHead: HmrcHead,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcStandardPage: HmrcStandardPage,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-    hmrcStandardFooter: HmrcStandardFooter,
-    hmrcStandardHeader: HmrcStandardHeader,
-    standardBetaBanner: StandardBetaBanner,
-    hmrcScripts: HmrcScripts,
     stylesheets: Stylesheets,
     govukBackLink: GovukBackLink,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
@@ -46,7 +41,7 @@
     showPageNotWorkingLink: Boolean = true
 )(mainContent: Html)(implicit request: RequestHeader, messages: Messages)
 
-@headScripts = {
+@additionalHead = {
     @if(timeoutEnabled) {
         @hmrcTimeoutDialogHelper(
             signOutUrl = SessionTimeoutController.timeout.url,
@@ -63,10 +58,9 @@
 }
 
 @beforeContentBlock = {
-    @hmrcLanguageSelectHelper()
     @if(showBackLink) {
         @govukBackLink(BackLink(
-            attributes = Map("id" -> "back-link"), classes="js-enabled", href="javascript:history.back()", content = HtmlContent(messages("site.back"))
+        attributes = Map("id" -> "back-link", "data-module" -> "hmrc-back-link"), classes = "js-enabled", href = "#", content = HtmlContent(messages("site.back"))
         ))
     }
 }
@@ -78,18 +72,16 @@
     }
 }
 
-@govukLayout(
+@hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(breadcrumbTitle(title)),
-    headBlock = Some(hmrcHead(
-        headBlock = Some(headScripts)
-    )),
-    headerBlock = Some(hmrcStandardHeader(
+    serviceName = Some(messages("service.name")),
+    isWelshTranslationAvailable = true,
+    serviceURLs = ServiceURLs(
         serviceUrl = Some(appConfig.trustsRegistration),
-        signOutUrl = if(canSignOut) Some(LogoutController.logout().url) else None,
-        phaseBanner = None,
-        isWelshTranslationAvailable = true
-    )),
-    beforeContentBlock = Some(beforeContentBlock),
-    scriptsBlock = None,
-    footerBlock = Some(hmrcStandardFooter())
-)(mainContentWithGetHelp)
+        signOutUrl = if(canSignOut) Some(LogoutController.logout().url) else None
+    ),
+    templateOverrides = TemplateOverrides(
+        additionalHeadBlock = Some(additionalHead),
+        beforeContentBlock = Some(beforeContentBlock)
+    )
+))(mainContentWithGetHelp)
