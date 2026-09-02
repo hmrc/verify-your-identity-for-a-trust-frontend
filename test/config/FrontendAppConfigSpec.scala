@@ -31,7 +31,7 @@ class FrontendAppConfigSpec extends SpecBase {
 
     "build betaFeedbackUrl from contact-frontend config" in {
       appConfig.betaFeedbackUrl mustBe
-        "http://localhost:9250/contact/beta-feedback?service=trusts"
+        "http://localhost:9250/contact/beta-feedback?service=trusts&useServiceNavigation"
     }
 
     "expose auth, login/continue/logout URLs and logoutAudit" in {
