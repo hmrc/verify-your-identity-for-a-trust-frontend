@@ -33,7 +33,7 @@ class FrontendAppConfigSpec extends SpecBase {
       appConfig.authUrl          mustBe "http://localhost:8500"
       appConfig.loginUrl         mustBe "http://localhost:9949/auth-login-stub/gg-sign-in"
       appConfig.loginContinueUrl mustBe "http://localhost:9789/verify-your-identity-for-a-trust"
-      appConfig.logoutUrl        mustBe "http://localhost:9514/feedback/trusts&useServiceNavigation"
+      appConfig.logoutUrl        mustBe "http://localhost:9514/feedback/trusts?useServiceNavigation"
       appConfig.logoutAudit      mustBe false
     }
 
