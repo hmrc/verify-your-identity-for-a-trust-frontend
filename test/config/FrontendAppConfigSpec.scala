@@ -29,16 +29,11 @@ class FrontendAppConfigSpec extends SpecBase {
       appConfig.appName mustBe "verify-your-identity-for-a-trust-frontend"
     }
 
-    "build betaFeedbackUrl from contact-frontend config" in {
-      appConfig.betaFeedbackUrl mustBe
-        "http://localhost:9250/contact/beta-feedback?service=trusts&useServiceNavigation"
-    }
-
     "expose auth, login/continue/logout URLs and logoutAudit" in {
       appConfig.authUrl          mustBe "http://localhost:8500"
       appConfig.loginUrl         mustBe "http://localhost:9949/auth-login-stub/gg-sign-in"
       appConfig.loginContinueUrl mustBe "http://localhost:9789/verify-your-identity-for-a-trust"
-      appConfig.logoutUrl        mustBe "http://localhost:9514/feedback/trusts"
+      appConfig.logoutUrl        mustBe "http://localhost:9514/feedback/trusts&useServiceNavigation"
       appConfig.logoutAudit      mustBe false
     }
 

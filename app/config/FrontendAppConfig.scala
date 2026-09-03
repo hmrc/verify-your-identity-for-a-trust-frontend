@@ -36,13 +36,10 @@ class FrontendAppConfig @Inject() (
 
   lazy val appName: String = configuration.get[String]("appName")
 
-  val betaFeedbackUrl =
-    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}&useServiceNavigation"
-
   lazy val authUrl: String          = servicesConfig.baseUrl("auth")
   lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  lazy val logoutUrl: String        = configuration.get[String]("urls.logout")
+  lazy val logoutUrl: String        = s"${configuration.get[String]("urls.logout")}&useServiceNavigation"
 
   lazy val logoutAudit: Boolean =
     configuration.get[Boolean]("microservice.services.features.auditing.logout")
