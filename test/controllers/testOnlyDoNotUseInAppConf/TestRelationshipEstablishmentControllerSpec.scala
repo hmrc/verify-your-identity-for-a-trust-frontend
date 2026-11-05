@@ -17,9 +17,9 @@
 package controllers.testOnlyDoNotUseInAppConf
 
 import base.SpecBase
-import org.mockito.ArgumentMatchers._
+import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, route, status, _}
@@ -42,7 +42,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       val identifier = "1234567890"
 
-      when(mockConnector.createRelationship(any(), any())(any()))
+      when(mockConnector.createRelationship(any(), any())(using any()))
         .thenReturn(Future.successful(RelationshipStubbedResponse))
 
       val request = FakeRequest(
@@ -91,7 +91,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       val identifier = "NTTRUST12345678"
 
-      when(mockConnector.createRelationship(any(), any())(any()))
+      when(mockConnector.createRelationship(any(), any())(using any()))
         .thenReturn(Future.successful(RelationshipStubbedResponse))
 
       val request = FakeRequest(

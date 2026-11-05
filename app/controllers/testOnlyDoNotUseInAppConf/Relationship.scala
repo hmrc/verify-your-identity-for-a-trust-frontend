@@ -22,19 +22,19 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 case class BusinessKey(name: String, value: String)
 
 object BusinessKey {
-  implicit val format: OFormat[BusinessKey] = Json.format[BusinessKey]
+  given format: OFormat[BusinessKey] = Json.format[BusinessKey]
 }
 
 case class Relationship(relationshipName: String, businessKeys: Set[BusinessKey], credId: String)
 
 object Relationship {
-  implicit val format: OFormat[Relationship] = Json.format[Relationship]
+  given format: OFormat[Relationship] = Json.format[Relationship]
 }
 
 case class RelationshipJson(relationship: Relationship, ttlSeconds: Int)
 
 object RelationshipJson {
-  implicit val format: OFormat[RelationshipJson] = Json.format[RelationshipJson]
+  given format: OFormat[RelationshipJson] = Json.format[RelationshipJson]
 }
 
 sealed trait RelationshipResponse

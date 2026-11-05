@@ -23,7 +23,7 @@ case object UserAnswersCached extends TrustsStoreResponse
 
 object TrustsStoreResponse {
 
-  import play.api.http.Status._
+  import play.api.http.Status.*
 
   implicit lazy val httpReads: HttpReads[TrustsStoreResponse] = (_: String, _: String, response: HttpResponse) =>
     response.status match {

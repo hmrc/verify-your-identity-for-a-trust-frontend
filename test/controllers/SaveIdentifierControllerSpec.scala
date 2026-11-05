@@ -24,7 +24,7 @@ import org.mockito.{ArgumentCaptor, Mockito}
 import pages.IdentifierPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 

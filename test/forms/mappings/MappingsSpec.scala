@@ -32,8 +32,8 @@ object MappingsSpec {
 
     val values: Set[Foo] = Set(Bar, Baz)
 
-    implicit val fooEnumerable: Enumerable[Foo] =
-      Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+    given fooEnumerable: Enumerable[Foo] =
+      Enumerable(values.toSeq.map(v => v.toString -> v)*)
 
   }
 
@@ -45,7 +45,7 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Form
 
     val testForm: Form[Boolean] =
       Form(
-        "value" -> Forms.of(booleanFormatter("error.required", "error.boolean"))
+        "value" -> Forms.of(using booleanFormatter("error.required", "error.boolean"))
       )
 
     "bind true" in {

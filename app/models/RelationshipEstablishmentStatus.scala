@@ -31,7 +31,7 @@ object RelationshipEstablishmentStatus {
   case class UnsupportedRelationshipStatus(reason: String) extends RelationshipEstablishmentStatus
   case class UpstreamRelationshipError(reason: String) extends RelationshipEstablishmentStatus
 
-  import play.api.http.Status._
+  import play.api.http.Status.*
 
   implicit lazy val httpReads: HttpReads[RelationshipEstablishmentStatus] =
     new HttpReads[RelationshipEstablishmentStatus] {

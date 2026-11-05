@@ -17,7 +17,7 @@
 package config
 
 import base.SpecBase
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 
 class FrontendAppConfigSpec extends SpecBase {
 
@@ -105,15 +105,15 @@ class FrontendAppConfigSpec extends SpecBase {
     }
 
     "return the English helpline URL when Messages.lang is explicitly en" in {
-      val messagesApi       = app.injector.instanceOf[MessagesApi]
-      implicit val messages = messagesApi.preferred(Seq(Lang("en")))
+      val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+      given messages: Messages     = messagesApi.preferred(Seq(Lang("en")))
       appConfig.helplineUrl mustBe
         "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts"
     }
 
     "return the Welsh helpline URL when Messages.lang is explicitly cy" in {
-      val messagesApi       = app.injector.instanceOf[MessagesApi]
-      implicit val messages = messagesApi.preferred(Seq(Lang("cy")))
+      val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+      given messages: Messages     = messagesApi.preferred(Seq(Lang("cy")))
       appConfig.helplineUrl mustBe
         "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines"
     }

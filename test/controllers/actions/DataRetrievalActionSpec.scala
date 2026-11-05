@@ -31,7 +31,7 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with ScalaFutures {
 
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
+  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository)(global) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
@@ -42,7 +42,7 @@ class DataRetrievalActionSpec extends SpecBase with ScalaFutures {
       "set userAnswers to 'None' in the request" in {
 
         val sessionRepository = Mockito.mock(classOf[SessionRepository])
-        when(sessionRepository.get("id")) thenReturn Future(None)
+        when(sessionRepository.get("id")).thenReturn(Future(None))
         val action            = new Harness(sessionRepository)
 
         val futureResult =
@@ -59,7 +59,7 @@ class DataRetrievalActionSpec extends SpecBase with ScalaFutures {
       "build a userAnswers object and add it to the request" in {
 
         val sessionRepository = Mockito.mock(classOf[SessionRepository])
-        when(sessionRepository.get("id")) thenReturn Future(Some(new UserAnswers("id")))
+        when(sessionRepository.get("id")).thenReturn(Future(Some(new UserAnswers("id"))))
         val action            = new Harness(sessionRepository)
 
         val futureResult =

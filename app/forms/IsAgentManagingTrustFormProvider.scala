@@ -25,7 +25,7 @@ class IsAgentManagingTrustFormProvider @Inject() extends Formatters {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> Forms.of(booleanFormatter("isAgentManagingTrust.error.required", "error.boolean"))
+      "value" -> Forms.of(using booleanFormatter("isAgentManagingTrust.error.required", "error.boolean"))
     )
 
 }

@@ -24,7 +24,7 @@ import org.mockito.Mockito.{verify => verifyMock, _}
 import org.scalatest.BeforeAndAfterAll
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import views.html.IvSuccessView
 
@@ -56,9 +56,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val view = application.injector.instanceOf[IvSuccessView]
 
-      val viewAsString = view(isAgent = false, utr)(request, messages).toString
+      val viewAsString = view(isAgent = false, utr)(using request, messages).toString
 
-      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(using any()))
         .thenReturn(Future.successful(RelationshipFound))
 
       val result = route(application, request).value
@@ -67,7 +67,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       contentAsString(result) mustEqual viewAsString
 
-      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(using any())
 
       reset(mockRelationshipEstablishment)
 
@@ -93,9 +93,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val view = application.injector.instanceOf[IvSuccessView]
 
-      val viewAsString = view(isAgent = true, utr)(request, messages).toString
+      val viewAsString = view(isAgent = true, utr)(using request, messages).toString
 
-      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(using any()))
         .thenReturn(Future.successful(RelationshipFound))
 
       val result = route(application, request).value
@@ -104,7 +104,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       contentAsString(result) mustEqual viewAsString
 
-      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(using any())
 
       reset(mockRelationshipEstablishment)
 
@@ -178,7 +178,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val request = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
 
-      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(using any()))
         .thenReturn(Future.successful(RelationshipNotFound))
 
       val result = route(application, request).value
@@ -186,7 +186,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.IsAgentManagingTrustController.onPageLoad().url
 
-      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(using any())
       reset(mockRelationshipEstablishment)
 
       application.stop()
@@ -204,9 +204,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val request      = FakeRequest(GET, controllers.routes.IvSuccessController.onPageLoad().url)
       val view         = application.injector.instanceOf[IvSuccessView]
-      val expectedView = view(isAgent = false, utr)(request, messages).toString
+      val expectedView = view(isAgent = false, utr)(using request, messages).toString
 
-      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+      when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(using any()))
         .thenReturn(Future.successful(RelationshipFound))
 
       val result = route(application, request).value
@@ -214,7 +214,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
       status(result) mustEqual OK
       contentAsString(result) mustEqual expectedView
 
-      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+      verifyMock(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(using any())
       reset(mockRelationshipEstablishment)
 
       application.stop()

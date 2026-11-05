@@ -25,7 +25,7 @@ final case class UpstreamTaxEnrolmentsError(message: String) extends Exception(m
 
 object EnrolmentResponse {
 
-  import play.api.http.Status._
+  import play.api.http.Status.*
 
   implicit lazy val httpReads: HttpReads[EnrolmentResponse] = (_: String, _: String, response: HttpResponse) =>
     response.status match {

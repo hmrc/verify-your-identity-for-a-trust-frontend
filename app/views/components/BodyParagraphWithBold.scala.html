@@ -19,7 +19,7 @@
 @(
     descriptionMessageKey: String,
     valueMessageKey: String
-)(implicit messages: Messages)
+)(using messages: Messages)
 
 <p class="govuk-body">
     @messages(descriptionMessageKey)<br />

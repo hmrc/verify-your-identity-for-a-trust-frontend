@@ -17,8 +17,6 @@
 package controllers
 
 import handlers.ErrorHandler
-
-import javax.inject.Inject
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -26,6 +24,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.{AuthorisationProblemView, CouldNotConfirmIdentityView}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class FallbackFailureController @Inject() (
@@ -33,7 +32,7 @@ class FallbackFailureController @Inject() (
   errorHandler: ErrorHandler,
   authorisationProblemView: AuthorisationProblemView,
   couldNotConfirmIdentityView: CouldNotConfirmIdentityView
-)(implicit val ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = Action.async { implicit request =>

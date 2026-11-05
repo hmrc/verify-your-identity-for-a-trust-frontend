@@ -14,18 +14,17 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{ErrorSummary, HeadingWithCaption, InputYesNo, SubmitButton}
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     errorSummary: ErrorSummary,
-    heading: HeadingWithCaption,
     inputYesNo: InputYesNo,
     submitButton: SubmitButton
 )
 
-@(form: Form[_], identifier: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[?], identifier: String)(using request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)}${messages("isAgentManagingTrust.title")}",

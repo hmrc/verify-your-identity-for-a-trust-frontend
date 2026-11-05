@@ -14,16 +14,16 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 
 @this(
     govUkErrorSummary: GovukErrorSummary
 )
 
-@(errors: Seq[FormError])(implicit messages: Messages)
+@(errors: Seq[FormError])(using messages: Messages)
 
 @if(errors.nonEmpty) {
-    @govUkErrorSummary(ErrorSummary(
+    @govUkErrorSummary(uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.ErrorSummary(
         errorList = errors
             .map(err => err.copy(key = errorHref(err), args = err.args))
             .asTextErrorLinks,

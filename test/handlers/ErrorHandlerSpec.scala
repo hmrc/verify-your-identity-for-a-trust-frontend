@@ -18,7 +18,7 @@ package handlers
 
 import base.SpecBase
 import play.api.i18n.MessagesApi
-import play.api.test.Helpers.{await, defaultAwaitTimeout} // <-- brings in await
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import play.twirl.api.Html
 import views.html.{ErrorTemplate, PageNotFoundView}
 
@@ -42,8 +42,8 @@ class ErrorHandlerSpec extends SpecBase {
       val heading   = "heading"
       val message   = "message"
 
-      val result: Html   = await(handler.standardErrorTemplate(pageTitle, heading, message)(fakeRequest))
-      val expected: Html = errorTemplate(pageTitle, heading, message)
+      val result: Html   = await(handler.standardErrorTemplate(pageTitle, heading, message)(using fakeRequest))
+      val expected: Html = errorTemplate(pageTitle, message)
 
       result.body mustBe expected.body
       result.body   must not be empty
@@ -51,7 +51,7 @@ class ErrorHandlerSpec extends SpecBase {
     }
 
     "render the not found template" in {
-      val result: Html   = await(handler.notFoundTemplate(fakeRequest))
+      val result: Html   = await(handler.notFoundTemplate(using fakeRequest))
       val expected: Html = notFoundView()
 
       result.body mustBe expected.body

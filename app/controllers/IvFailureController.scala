@@ -18,8 +18,6 @@ package controllers
 
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-
-import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
@@ -31,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.{TrustLocked, TrustNotFound, TrustStillProcessing}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IvFailureController @Inject() (
@@ -43,10 +42,10 @@ class IvFailureController @Inject() (
   requireData: DataRequiredAction,
   relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
   connector: TrustsStoreConnector
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
-  private def renderFailureReason(utr: String, journeyId: String)(implicit hc: HeaderCarrier): Future[Result] = {
+  private def renderFailureReason(utr: String, journeyId: String)(using hc: HeaderCarrier): Future[Result] = {
     val logMessageStart = s"[Verifying][Trust IV][status][Session ID: ${Session.id(hc)}]"
 
     relationshipEstablishmentConnector.journeyId(journeyId) map {
@@ -126,7 +125,7 @@ class IvFailureController @Inject() (
   def trustNotFound(): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     request.userAnswers.get(IdentifierPage) map { utr =>
       logger.info(s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}] IV was unable to find the trust for utr $utr")
-      Future.successful(Ok(notFoundView(utr)))
+      Future.successful(Ok(notFoundView()))
     } getOrElse {
       logger.error(
         s"[Verifying][Trust IV][Session ID: ${Session.id(hc)}] no utr stored in user answers when informing user the trust was not found"

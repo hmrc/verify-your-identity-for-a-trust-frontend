@@ -17,27 +17,25 @@
 package repositories
 
 import com.google.inject.Singleton
+import config.FrontendAppConfig
+import models.UserAnswers
+import org.mongodb.scala.model.Filters.equal
+import org.mongodb.scala.model.Indexes.ascending
+import org.mongodb.scala.model.*
+import play.api.libs.json.*
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
-import config.FrontendAppConfig
-
 import javax.inject.Inject
-import models.UserAnswers
-import org.mongodb.scala.model.{FindOneAndUpdateOptions, IndexModel, IndexOptions, ReplaceOptions, Updates}
-import org.mongodb.scala.model.Indexes.ascending
-import play.api.libs.json._
-import uk.gov.hmrc.mongo.MongoComponent
-import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
-import org.mongodb.scala.model.Filters.equal
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DefaultSessionRepository @Inject() (
   val mongoComponent: MongoComponent,
   val config: FrontendAppConfig
-)(implicit val ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends PlayMongoRepository[UserAnswers](
       collectionName = "user-answers",
       mongoComponent = mongoComponent,

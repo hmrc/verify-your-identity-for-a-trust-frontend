@@ -21,14 +21,12 @@ import controllers.routes
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Call
-import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class FrontendAppConfig @Inject() (
   configuration: Configuration,
-  servicesConfig: ServicesConfig,
-  contactFrontendConfig: ContactFrontendConfig
+  servicesConfig: ServicesConfig
 ) {
 
   final val ENGLISH = "en"
@@ -105,7 +103,7 @@ class FrontendAppConfig @Inject() (
   lazy val timeOutUrl: String              = configuration.get[String]("urls.timeOut")
   lazy val logoutWithBasGatewayUrl: String = s"$basGatewayBaseUrl$logoutUrl"
 
-  def helplineUrl(implicit messages: Messages): String = {
+  def helplineUrl(using messages: Messages): String = {
     val path = messages.lang.code match {
       case "cy" => "urls.welshHelpline"
       case _    => "urls.trustsHelpline"

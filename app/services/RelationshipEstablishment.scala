@@ -17,15 +17,15 @@
 package services
 
 import config.FrontendAppConfig
-import javax.inject.Inject
 import models.RelationshipForIdentifier
 import play.api.Logging
-import play.api.mvc._
-import uk.gov.hmrc.auth.core._
+import play.api.mvc.*
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Session
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait RelationEstablishmentStatus
@@ -37,16 +37,16 @@ case class RelationshipError(reason: String) extends Exception(reason)
 class RelationshipEstablishmentService @Inject() (
   val authConnector: AuthConnector,
   relationshipForIdentifier: RelationshipForIdentifier
-)(
-  implicit val config: FrontendAppConfig,
-  implicit val executionContext: ExecutionContext
+)(using
+  val config: FrontendAppConfig,
+  val executionContext: ExecutionContext
 ) extends RelationshipEstablishment with Logging {
 
-  def check(internalId: String, identifier: String)(implicit
+  def check(internalId: String, identifier: String)(using
     request: Request[AnyContent]
   ): Future[RelationEstablishmentStatus] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    given hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
@@ -84,6 +84,6 @@ class RelationshipEstablishmentService @Inject() (
 
 trait RelationshipEstablishment extends AuthorisedFunctions {
 
-  def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus]
+  def check(internalId: String, utr: String)(using request: Request[AnyContent]): Future[RelationEstablishmentStatus]
 
 }

@@ -20,12 +20,13 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.IsUTR
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RelationshipEstablishmentConnector @Inject() (val httpClient: HttpClientV2, config: FrontendAppConfig)(implicit
+class RelationshipEstablishmentConnector @Inject() (val httpClient: HttpClientV2, config: FrontendAppConfig)(using
   val ec: ExecutionContext
 ) {
 
@@ -45,7 +46,7 @@ class RelationshipEstablishmentConnector @Inject() (val httpClient: HttpClientV2
       )
     }
 
-  def createRelationship(credId: String, utr: String)(implicit
+  def createRelationship(credId: String, utr: String)(using
     headerCarrier: HeaderCarrier
   ): Future[RelationshipResponse] = {
     val ttl              = config.relationshipTTL

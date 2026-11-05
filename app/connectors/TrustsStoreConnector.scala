@@ -17,18 +17,18 @@
 package connectors
 
 import config.FrontendAppConfig
-
-import javax.inject.Inject
 import models.{TrustsStoreRequest, TrustsStoreResponse}
 import play.api.libs.json.{Json, Writes}
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustsStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig) {
 
-  def claim(request: TrustsStoreRequest)(implicit
+  def claim(request: TrustsStoreRequest)(using
     hc: HeaderCarrier,
     ec: ExecutionContext,
     writes: Writes[TrustsStoreRequest]
