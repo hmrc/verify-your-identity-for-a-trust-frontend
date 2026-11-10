@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class TrustsStoreConnectorSpec extends SpecBase with WireMockHelper with RecoverMethods {
 
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(defaultAppConfigurations ++ Map("microservice.services.trusts-store.port" -> server.port()))

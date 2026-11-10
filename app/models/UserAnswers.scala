@@ -65,7 +65,7 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  implicit lazy val reads: Reads[UserAnswers] = {
+  given reads: Reads[UserAnswers] = {
 
     import play.api.libs.functional.syntax.*
 
@@ -76,7 +76,7 @@ object UserAnswers {
     )(UserAnswers.apply)
   }
 
-  implicit lazy val writes: OWrites[UserAnswers] = {
+  given writes: OWrites[UserAnswers] = {
 
     import play.api.libs.functional.syntax.*
 

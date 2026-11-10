@@ -42,7 +42,7 @@ class AuthActionSpec extends SpecBase {
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
         val authAction =
-          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new MissingBearerToken), bodyParsers)(
+          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new MissingBearerToken), bodyParsers)()(using
             global,
             frontendAppConfig
           )
@@ -64,7 +64,7 @@ class AuthActionSpec extends SpecBase {
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
         val authAction =
-          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new BearerTokenExpired), bodyParsers)(
+          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new BearerTokenExpired), bodyParsers)()(using
             global,
             frontendAppConfig
           )
@@ -86,7 +86,8 @@ class AuthActionSpec extends SpecBase {
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
         val authAction =
-          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientEnrolments), bodyParsers)(
+          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientEnrolments), bodyParsers)()(
+            using
             global,
             frontendAppConfig
           )
@@ -108,7 +109,10 @@ class AuthActionSpec extends SpecBase {
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
         val authAction =
-          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new InsufficientConfidenceLevel), bodyParsers)(
+          new AuthenticatedIdentifierAction(
+            new FakeFailingAuthConnector(new InsufficientConfidenceLevel),
+            bodyParsers
+          )()(using
             global,
             frontendAppConfig
           )
@@ -130,7 +134,8 @@ class AuthActionSpec extends SpecBase {
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
         val authAction =
-          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), bodyParsers)(
+          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAuthProvider), bodyParsers)()(
+            using
             global,
             frontendAppConfig
           )
@@ -152,7 +157,8 @@ class AuthActionSpec extends SpecBase {
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
         val authAction =
-          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), bodyParsers)(
+          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), bodyParsers)()(
+            using
             global,
             frontendAppConfig
           )
@@ -174,7 +180,8 @@ class AuthActionSpec extends SpecBase {
         val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
 
         val authAction =
-          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedCredentialRole), bodyParsers)(
+          new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new UnsupportedCredentialRole), bodyParsers)()(
+            using
             global,
             frontendAppConfig
           )

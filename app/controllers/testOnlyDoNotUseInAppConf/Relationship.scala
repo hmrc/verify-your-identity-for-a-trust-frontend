@@ -42,7 +42,7 @@ case object RelationshipStubbedResponse extends RelationshipResponse
 
 object RelationshipHttpReads {
 
-  implicit lazy val httpReads: HttpReads[RelationshipResponse] = (_: String, _: String, _: HttpResponse) =>
+  given httpReads: HttpReads[RelationshipResponse] = (_: String, _: String, _: HttpResponse) =>
     RelationshipStubbedResponse
 
 }

@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
 
-  implicit lazy val arbitraryIsAgentManagingTrustUserAnswersEntry: Arbitrary[(IsAgentManagingTrustPage.type, JsValue)] =
+  given arbitraryIsAgentManagingTrustUserAnswersEntry: Arbitrary[(IsAgentManagingTrustPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[IsAgentManagingTrustPage.type]

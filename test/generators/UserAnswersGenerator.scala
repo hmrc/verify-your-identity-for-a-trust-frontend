@@ -30,7 +30,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(IsAgentManagingTrustPage.type, JsValue)] ::
       Nil
 
-  implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
+  given arbitraryUserData: Arbitrary[UserAnswers] = {
 
     import models.*
 
