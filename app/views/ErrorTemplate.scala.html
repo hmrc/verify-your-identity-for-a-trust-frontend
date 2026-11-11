@@ -17,18 +17,13 @@
 @import views.html.components.Heading
 
 @this(
-    mainTemplate: MainTemplate,
-    headingComponent: Heading
+    mainTemplate: MainTemplate
 )
 
-@(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader, messages: Messages)
-
-@contentHeader = {
-    @headingComponent(heading)
-}
+@(pageTitle: String, message: String)(using request: RequestHeader, messages: Messages)
 
 @mainContent = {
     <p>@message</p>
 }
 
-@mainTemplate(title = pageTitle, contentHeader = Some(contentHeader))(mainContent = mainContent)
+@mainTemplate(title = pageTitle)(mainContent = mainContent)

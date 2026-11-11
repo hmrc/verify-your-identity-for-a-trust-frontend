@@ -23,7 +23,7 @@ import org.mockito.{ArgumentCaptor, Mockito}
 import pages.IdentifierPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import java.net.URLEncoder
@@ -62,7 +62,7 @@ class LogoutControllerSpec extends SpecBase {
     value must include("useServiceNavigation")
 
     verify(mockAuditConnector, atLeastOnce)
-      .sendExplicitAudit(eqTo("trusts"), captor.capture())(any(), any())
+      .sendExplicitAudit(eqTo("trusts"), captor.capture())(using any(), any())
 
     captor.getValue.keys must contain("utr")
 
@@ -98,7 +98,7 @@ class LogoutControllerSpec extends SpecBase {
     value must include("useServiceNavigation")
 
     verify(mockAuditConnector, atLeastOnce)
-      .sendExplicitAudit(eqTo("trusts"), captor.capture())(any(), any())
+      .sendExplicitAudit(eqTo("trusts"), captor.capture())(using any(), any())
 
     captor.getValue.keys must contain("urn")
 

@@ -28,7 +28,7 @@ import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 import scala.concurrent.Future
 
@@ -93,7 +93,7 @@ class IvFailureControllerSpec extends SpecBase {
           )
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.Locked))
 
         val result = route(application, request).value
@@ -113,7 +113,7 @@ class IvFailureControllerSpec extends SpecBase {
           )
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotFound))
 
         val result = route(application, request).value
@@ -132,7 +132,7 @@ class IvFailureControllerSpec extends SpecBase {
           )
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.InProcessing))
 
         val result = route(application, request).value
@@ -153,7 +153,7 @@ class IvFailureControllerSpec extends SpecBase {
           )
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotMatchAnswer))
 
         val result = route(application, request).value
@@ -174,7 +174,7 @@ class IvFailureControllerSpec extends SpecBase {
           )
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(UnsupportedRelationshipStatus("reason")))
 
         val result = route(application, request).value
@@ -195,7 +195,7 @@ class IvFailureControllerSpec extends SpecBase {
           )
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(UpstreamRelationshipError("reason")))
 
         val result = route(application, request).value
@@ -216,7 +216,7 @@ class IvFailureControllerSpec extends SpecBase {
           )
           .build()
 
-        when(connector.journeyId(any[String])(any(), any()))
+        when(connector.journeyId(any[String])(using any(), any()))
           .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotEnoughQuestions))
 
         val result = route(application, request).value
@@ -243,7 +243,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         when(
           storeConnector
-            .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+            .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using any(), any(), any())
         )
           .thenReturn(Future.successful(UserAnswersCached))
 
@@ -272,7 +272,7 @@ class IvFailureControllerSpec extends SpecBase {
         )
 
         verifyMock(storeConnector)
-          .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+          .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using any(), any(), any())
 
         application.stop()
       }

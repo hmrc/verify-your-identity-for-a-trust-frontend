@@ -18,6 +18,7 @@ package repositories
 
 import base.SpecBase
 import models.UserAnswers
+import org.mongodb.scala.SingleObservableFuture
 import org.mongodb.scala.bson.BsonDocument
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
@@ -44,7 +45,7 @@ class DefaultSessionRepositorySpec extends SpecBase with MongoSupport with Befor
     "return None when no data in db" in {
       val internalId = "Int-328969d0-557e-4559-sdba-074d0597107e"
 
-      repository.get(internalId).futureValue mustBe None
+      repository.get(internalId).futureValue.mustBe(None)
     }
 
     "must return a UserAnswers when one exists" in {
@@ -53,7 +54,7 @@ class DefaultSessionRepositorySpec extends SpecBase with MongoSupport with Befor
 
       val userAnswers = UserAnswers(internalId, Json.obj("key" -> "123"))
 
-      repository.set(userAnswers).futureValue mustBe true
+      repository.set(userAnswers).futureValue.mustBe(true)
 
       checkUserAnswers(repository.get(internalId).futureValue.value, userAnswers)
     }
@@ -63,16 +64,14 @@ class DefaultSessionRepositorySpec extends SpecBase with MongoSupport with Befor
       val userAnswers: UserAnswers = UserAnswers(internalId)
       val userAnswers2             = userAnswers.copy(data = Json.obj("key" -> "321"))
 
-      repository.get(internalId).futureValue mustBe None
+      repository.get(internalId).futureValue.mustBe(None)
 
-      repository.set(userAnswers).futureValue mustBe true
+      repository.set(userAnswers).futureValue.mustBe(true)
 
       val dbUserAnswer = repository.get(internalId).futureValue.value
       checkUserAnswers(dbUserAnswer, userAnswers)
 
-      // update
-
-      repository.set(userAnswers2).futureValue mustBe true
+      repository.set(userAnswers2).futureValue.mustBe(true)
 
       val dbUserAnswer2 = repository.get(internalId).futureValue.value
       checkUserAnswers(dbUserAnswer2, userAnswers2)

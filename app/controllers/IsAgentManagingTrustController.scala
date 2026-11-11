@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.IsAgentManagingTrustFormProvider
 import navigation.Navigator
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
@@ -24,13 +24,13 @@ import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.IsAgentManagingTrustView
-import javax.inject.Inject
-import repositories.SessionRepository
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IsAgentManagingTrustController @Inject() (
@@ -44,7 +44,7 @@ class IsAgentManagingTrustController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: IsAgentManagingTrustView,
   relationship: RelationshipEstablishment
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   private val form: Form[Boolean] = formProvider()

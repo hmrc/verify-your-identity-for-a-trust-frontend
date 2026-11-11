@@ -18,7 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.TrustsStoreConnector
-import controllers.actions._
+import controllers.actions.*
 import models.{TrustsStoreRequest, TrustsStoreResponse}
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
@@ -42,7 +42,7 @@ class BeforeYouContinueController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: BeforeYouContinueView,
   connector: TrustsStoreConnector
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(using ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>

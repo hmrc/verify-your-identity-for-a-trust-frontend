@@ -16,17 +16,15 @@
 
 @import uk.gov.hmrc.auth.core.AffinityGroup
 @import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
-@import config.FrontendAppConfig
 @import views.html.components.{Heading}
 
 
 @this(
 mainTemplate: MainTemplate,
-config: FrontendAppConfig,
 heading: Heading
 )
 
-@()(implicit request: RequestHeader, messages: Messages)
+@()(using request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("problemDeclaring.title"), canSignOut = false, showPageNotWorkingLink = false

@@ -16,15 +16,14 @@
 
 package models
 
+import play.api.libs.json.*
+
 import java.time.{Instant, LocalDateTime, ZoneOffset, ZonedDateTime}
-
-import play.api.libs.json._
-
 import scala.util.{Success, Try}
 
 trait MongoDateTimeFormats {
 
-  implicit val localDateTimeRead: Reads[LocalDateTime] = {
+  given localDateTimeRead: Reads[LocalDateTime] = {
     case JsObject(map) if map.contains("$date") =>
       map("$date") match {
         case JsNumber(bigDecimal)   =>
@@ -54,7 +53,7 @@ trait MongoDateTimeFormats {
     case _                                      => JsError("Unexpected LocalDateTime Format")
   }
 
-  implicit val localDateTimeWrite: Writes[LocalDateTime] = new Writes[LocalDateTime] {
+  given localDateTimeWrite: Writes[LocalDateTime] = new Writes[LocalDateTime] {
     def writes(dateTime: LocalDateTime): JsValue = Json.obj(
       "$date" -> dateTime.atZone(ZoneOffset.UTC).toInstant.toEpochMilli
     )

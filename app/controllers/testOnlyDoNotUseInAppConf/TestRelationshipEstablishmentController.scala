@@ -36,7 +36,7 @@ class TestRelationshipEstablishmentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
   identify: IdentifierAction
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with Logging {
 
   def check(identifier: String) = identify.async { implicit request =>
@@ -70,7 +70,7 @@ class TestRelationshipEstablishmentController @Inject() (
     }
   }
 
-  private def createRelationship(identifier: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
+  private def createRelationship(identifier: String)(using request: IdentifierRequest[AnyContent]): Future[Result] =
     relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, identifier) map { _ =>
       logger.info(s"[Verifying][Session ID: ${Session.id(hc)}] Stubbed IV relationship for $identifier")
       Redirect(controllers.routes.IvSuccessController.onPageLoad())

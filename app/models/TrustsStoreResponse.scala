@@ -23,9 +23,9 @@ case object UserAnswersCached extends TrustsStoreResponse
 
 object TrustsStoreResponse {
 
-  import play.api.http.Status._
+  import play.api.http.Status.*
 
-  implicit lazy val httpReads: HttpReads[TrustsStoreResponse] = (_: String, _: String, response: HttpResponse) =>
+  given httpReads: HttpReads[TrustsStoreResponse] = (_: String, _: String, response: HttpResponse) =>
     response.status match {
       case CREATED => UserAnswersCached
       case _       => throw UpstreamErrorResponse.apply(s"HTTP response ${response.status} ${response.body}", response.status)

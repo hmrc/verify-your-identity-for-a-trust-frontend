@@ -27,7 +27,7 @@ import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
 import views.html.BeforeYouContinueView
 
@@ -61,7 +61,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(utr)(request, messages).toString
+        view(utr)(using request, messages).toString
 
       application.stop()
     }
@@ -73,7 +73,11 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       val connector = Mockito.mock(classOf[TrustsStoreConnector])
 
       when(
-        connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using
+          any(),
+          any(),
+          any()
+        )
       )
         .thenReturn(Future.successful(UserAnswersCached))
 
@@ -99,7 +103,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       redirectLocation(result).value must include("0987654321")
 
       verifyMock(connector)
-        .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using any(), any(), any())
 
       application.stop()
 
@@ -128,7 +132,11 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       val connector = Mockito.mock(classOf[TrustsStoreConnector])
 
       when(
-        connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using
+          any(),
+          any(),
+          any()
+        )
       )
         .thenReturn(Future.failed(new RuntimeException("exception")))
 
@@ -157,7 +165,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       loc must include("failure=")
 
       verifyMock(connector)
-        .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using any(), any(), any())
       application.stop()
     }
   }

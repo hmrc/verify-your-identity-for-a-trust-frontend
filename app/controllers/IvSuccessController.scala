@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +38,7 @@ class IvSuccessController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   relationshipEstablishment: RelationshipEstablishment,
   withPlaybackView: IvSuccessView
-)(implicit ec: ExecutionContext, val config: FrontendAppConfig)
+)(using ec: ExecutionContext, val config: FrontendAppConfig)
     extends FrontendBaseController with I18nSupport with Logging with AuthPartialFunctions {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>

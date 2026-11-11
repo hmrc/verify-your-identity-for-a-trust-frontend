@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.{AuthorisationProblemView, CouldNotConfirmIdentityView}
 
 class FallbackFailureControllerSpec extends SpecBase {
@@ -57,7 +57,7 @@ class FallbackFailureControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view()(request, messages).toString
+        view()(using request, messages).toString
 
       application.stop()
     }
@@ -75,7 +75,7 @@ class FallbackFailureControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view()(request, messages).toString
+        view()(using request, messages).toString
 
       application.stop()
     }

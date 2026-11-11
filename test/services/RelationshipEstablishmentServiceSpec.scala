@@ -16,15 +16,14 @@
 
 package services
 
-import java.util.concurrent.TimeUnit
-
 import base.SpecBase
 import controllers.actions.{FakeAuthConnector, FakeFailingAuthConnector}
 import models.RelationshipForIdentifier
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.auth.core.{FailedRelationship, MissingBearerToken}
 
-import scala.concurrent.ExecutionContext.Implicits._
+import java.util.concurrent.TimeUnit
+import scala.concurrent.ExecutionContext.Implicits.*
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 

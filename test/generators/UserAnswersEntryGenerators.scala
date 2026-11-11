@@ -18,12 +18,12 @@ package generators
 
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import pages._
+import pages.*
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
 
-  implicit lazy val arbitraryIsAgentManagingTrustUserAnswersEntry: Arbitrary[(IsAgentManagingTrustPage.type, JsValue)] =
+  given arbitraryIsAgentManagingTrustUserAnswersEntry: Arbitrary[(IsAgentManagingTrustPage.type, JsValue)] =
     Arbitrary {
       for {
         page  <- arbitrary[IsAgentManagingTrustPage.type]

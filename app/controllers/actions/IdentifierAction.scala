@@ -19,8 +19,8 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.requests.IdentifierRequest
-import play.api.mvc._
-import uk.gov.hmrc.auth.core._
+import play.api.mvc.*
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
@@ -34,19 +34,24 @@ trait IdentifierAction
 class AuthenticatedIdentifierAction @Inject() (
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default
-)(implicit val executionContext: ExecutionContext, implicit val config: FrontendAppConfig)
+)()(using val executionContext: ExecutionContext, val config: FrontendAppConfig)
     extends IdentifierAction with AuthorisedFunctions with AuthPartialFunctions {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    authorised().retrieve(Retrievals.internalId and Retrievals.credentials and Retrievals.affinityGroup) {
-      case Some(internalId) ~ Some(credentials) ~ Some(affinityGroup) =>
-        block(IdentifierRequest(request, internalId, credentials, affinityGroup))
-      case _                                                          =>
-        throw new UnauthorizedException("Unable to retrieve internal Id")
-    } recoverWith
-      recoverFromException()
+    given hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+    given ExecutionContext  = executionContext
+    given FrontendAppConfig = config
+
+    authorised()
+      .retrieve(Retrievals.internalId and Retrievals.credentials and Retrievals.affinityGroup) {
+        case Some(internalId) ~ Some(credentials) ~ Some(affinityGroup) =>
+          block(IdentifierRequest(request, internalId, credentials, affinityGroup))
+        case _                                                          =>
+          throw new UnauthorizedException("Unable to retrieve internal Id")
+      }
+      .recoverWith(recoverFromException())(using executionContext)
   }
 
 }

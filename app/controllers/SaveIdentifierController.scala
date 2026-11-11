@@ -23,12 +23,12 @@ import pages.IdentifierPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{IdentifierRegex, Session}
-import javax.inject.Inject
-import repositories.SessionRepository
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveIdentifierController @Inject() (
@@ -37,7 +37,7 @@ class SaveIdentifierController @Inject() (
   getData: DataRetrievalAction,
   sessionRepository: SessionRepository,
   relationship: RelationshipEstablishment
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   def save(identifier: String): Action[AnyContent] = (identify andThen getData).async { implicit request =>
@@ -55,7 +55,7 @@ class SaveIdentifierController @Inject() (
 
   private def checkIfAlreadyHaveIvRelationship(
     identifier: String
-  )(implicit request: OptionalDataRequest[AnyContent]): Future[Result] =
+  )(using request: OptionalDataRequest[AnyContent]): Future[Result] =
     relationship.check(request.internalId, identifier) flatMap {
       case RelationshipFound    =>
         logger.info(
@@ -68,7 +68,7 @@ class SaveIdentifierController @Inject() (
         saveAndContinue(identifier)
     }
 
-  private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+  private def saveAndContinue(identifier: String)(using request: OptionalDataRequest[AnyContent]): Future[Result] = {
     val userAnswers = request.userAnswers match {
       case Some(userAnswers) =>
         userAnswers.set(IdentifierPage, identifier)
@@ -80,7 +80,7 @@ class SaveIdentifierController @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield {
       logger.info(
-        s"[Verifying][Session ID: ${Session.id(hc(request))}] user has started the verifying a trust journey for $identifier"
+        s"[Verifying][Session ID: ${Session.id(hc(using request))}] user has started the verifying a trust journey for $identifier"
       )
       Redirect(routes.IsAgentManagingTrustController.onPageLoad())
     }

@@ -17,7 +17,7 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import config.FrontendAppConfig
 import models.RelationshipEstablishmentStatus
 import org.scalatest.RecoverMethods
@@ -30,7 +30,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class RelationshipEstablishmentConnectorSpec extends SpecBase with WireMockHelper with RecoverMethods {
 
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   lazy val config: FrontendAppConfig                     = app.injector.instanceOf[FrontendAppConfig]
   lazy val connector: RelationshipEstablishmentConnector = app.injector.instanceOf[RelationshipEstablishmentConnector]
@@ -66,9 +66,8 @@ class RelationshipEstablishmentConnectorSpec extends SpecBase with WireMockHelpe
           expectedJourneyFailureReason = expectedJourneyFailureReason
         )
 
-        connector.journeyId(journeyFailure) map { status =>
-          status mustBe RelationshipEstablishmentStatus.Locked
-        }
+        connector.journeyId(journeyFailure).futureValue mustBe
+          RelationshipEstablishmentStatus.Locked
       }
 
       "returns 200 OK with a not found response" in {
@@ -83,9 +82,8 @@ class RelationshipEstablishmentConnectorSpec extends SpecBase with WireMockHelpe
           expectedJourneyFailureReason = expectedJourneyFailureReason
         )
 
-        connector.journeyId(journeyFailure) map { status =>
-          status mustBe RelationshipEstablishmentStatus.NotFound
-        }
+        connector.journeyId(journeyFailure).futureValue mustBe
+          RelationshipEstablishmentStatus.NotFound
       }
 
       "returns 200 OK with an InProcessing response" in {
@@ -100,9 +98,8 @@ class RelationshipEstablishmentConnectorSpec extends SpecBase with WireMockHelpe
           expectedJourneyFailureReason = expectedJourneyFailureReason
         )
 
-        connector.journeyId(journeyFailure) map { status =>
-          status mustBe RelationshipEstablishmentStatus.InProcessing
-        }
+        connector.journeyId(journeyFailure).futureValue mustBe
+          RelationshipEstablishmentStatus.InProcessing
       }
 
       "returns 200 OK with an unsupported status" in {
@@ -117,9 +114,8 @@ class RelationshipEstablishmentConnectorSpec extends SpecBase with WireMockHelpe
           expectedJourneyFailureReason = expectedJourneyFailureReason
         )
 
-        connector.journeyId(journeyFailure) map { status =>
-          status mustBe a[RelationshipEstablishmentStatus.UnsupportedRelationshipStatus]
-        }
+        connector.journeyId(journeyFailure).futureValue mustBe
+          a[RelationshipEstablishmentStatus.UnsupportedRelationshipStatus]
       }
     }
   }

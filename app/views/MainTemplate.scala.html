@@ -15,8 +15,8 @@
  *@
 
 @import config.FrontendAppConfig
-@import resources._
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import resources.*
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.*
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 
 @this(
@@ -30,22 +30,17 @@
 
 @(
     title: String,
-    sidebarLinks: Option[Html] = None,
-    contentHeader: Option[Html] = None,
-    bodyClasses: Option[String] = None,
-    mainClass: Option[String] = None,
-    scriptElem: Option[Html] = None,
     timeoutEnabled: Boolean = true,
     canSignOut: Boolean = true,
     showBackLink: Boolean = false,
     showPageNotWorkingLink: Boolean = true
-)(mainContent: Html)(implicit request: RequestHeader, messages: Messages)
+)(mainContent: Html)(using request: RequestHeader, messages: Messages)
 
 @additionalHead = {
     @if(timeoutEnabled) {
         @hmrcTimeoutDialogHelper(
-            signOutUrl = SessionTimeoutController.timeout.url,
-            keepAliveUrl = Some(SessionTimeoutController.keepAlive.url),
+            signOutUrl = controllers.routes.SessionTimeoutController.timeout.url,
+            keepAliveUrl = Some(controllers.routes.SessionTimeoutController.keepAlive.url),
             timeout = Some(appConfig.timeoutLength),
             countdown = Some(appConfig.countdownLength),
             title = Some(messages("timeout.title")),
@@ -78,7 +73,7 @@
     isWelshTranslationAvailable = true,
     serviceURLs = ServiceURLs(
         serviceUrl = Some(appConfig.trustsRegistration),
-        signOutUrl = if(canSignOut) Some(LogoutController.logout().url) else None
+        signOutUrl = if(canSignOut) Some(controllers.routes.LogoutController.logout().url) else None
     ),
     templateOverrides = TemplateOverrides(
         additionalHeadBlock = Some(additionalHead),

@@ -21,13 +21,13 @@ import forms.IsAgentManagingTrustFormProvider
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.Mockito.{verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
 import views.html.IsAgentManagingTrustView
@@ -69,7 +69,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, utr)(request, messages).toString
+        view(form, utr)(using request, messages).toString
 
       application.stop()
     }
@@ -97,7 +97,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), utr)(request, messages).toString
+        view(form.fill(true), utr)(using request, messages).toString
 
       application.stop()
     }
@@ -142,7 +142,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
       val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
       val fakeNavigator         = new FakeNavigator()
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder(
@@ -171,7 +171,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
       val mockSessionRepository = Mockito.mock(classOf[SessionRepository])
       val fakeNavigator         = new FakeNavigator()
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder(
@@ -221,7 +221,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, utr)(request, messages).toString
+        view(boundForm, utr)(using request, messages).toString
 
       application.stop()
     }

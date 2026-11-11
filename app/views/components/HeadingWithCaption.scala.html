@@ -18,7 +18,7 @@
     subHeading: SubHeading
 )
 
-@(headingPrefix: String, caption: String)(implicit messages: Messages)
+@(headingPrefix: String, caption: String)(using messages: Messages)
 
 <h1 class="govuk-heading-l">
     @subHeading(caption)
